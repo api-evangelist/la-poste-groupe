@@ -1,0 +1,87 @@
+generated: '2026-09-02'
+method: derived
+source: openapi/la-poste-groupe-digiposte-openapi.json, openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json,
+  openapi/la-poste-groupe-open-data-openapi.json, openapi/la-poste-groupe-suivi-openapi.json
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - cookie
+  - header
+  oauth2_flows:
+  - authorizationCode
+  - implicit
+schemes:
+- name: basic
+  type: http
+  scheme: basic
+  sources:
+  - openapi/la-poste-groupe-digiposte-openapi.json
+- name: oauth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: /
+    tokenUrl: /
+    scopes: 0
+  sources:
+  - openapi/la-poste-groupe-digiposte-openapi.json
+- name: default
+  type: oauth2
+  flows:
+  - flow: implicit
+    authorizationUrl: https://test.com
+    scopes: 0
+  sources:
+  - openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: x-apiKey
+  sources:
+  - openapi/la-poste-groupe-open-data-openapi.json
+- name: sdCookie
+  type: apiKey
+  in: cookie
+  parameter: id_token
+  sources:
+  - openapi/la-poste-groupe-open-data-openapi.json
+- name: OKAPIkey
+  type: apiKey
+  in: header
+  parameter: X-Okapi-Key
+  sources:
+  - openapi/la-poste-groupe-suivi-openapi.json
+- name: JWT
+  type: apiKey
+  in: cookie
+  parameter: access_token
+  sources:
+  - openapi/la-poste-groupe-suivi-openapi.json
+docs: https://developer.laposte.fr/getting-started
+primary_model: >-
+  API key in the X-Okapi-Key request header, issued per application on
+  developer.laposte.fr and bound to a plan subscription. Confirmed live: an
+  unauthenticated GET of https://api.laposte.fr/suivi/v2/idships/6M20132968235 on
+  2026-09-02 returned HTTP 401 with
+  {"code":"UNAUTHORIZED","message":"This action requires an authorization"}.
+sandbox_keys: >-
+  The same header carries both production and sandbox keys; nothing in the
+  credential distinguishes the two. See sandbox/la-poste-groupe-sandbox.yml.
+placeholder_warnings:
+- scheme: oauth2 (Digiposte v3)
+  finding: >-
+    authorizationUrl and tokenUrl are both the literal "/". The real token endpoint
+    is POST /digiposte/v3/oauth/token, discoverable only from the path list. Basic
+    auth mints the client_credentials token; bearer is used thereafter.
+- scheme: default (Lettre recommandee en ligne v1)
+  finding: >-
+    authorizationUrl is https://test.com - a springdoc generator default that
+    reached production. Not a usable authorization server; treat this API's
+    credential model as undocumented.
+- scheme: JWT (Suivi v2)
+  finding: >-
+    Declared as an apiKey in an access_token COOKIE. This is the browser-session
+    path, not a server-to-server one; server integrations use X-Okapi-Key.

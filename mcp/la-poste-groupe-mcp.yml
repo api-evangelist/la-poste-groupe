@@ -1,0 +1,98 @@
+generated: '2026-09-02'
+method: derived
+source: >-
+  openapi/la-poste-groupe-suivi-openapi.json,
+  openapi/la-poste-groupe-open-data-openapi.json,
+  openapi/la-poste-groupe-digiposte-openapi.json, and the public resource
+  catalogue at https://developer.laposte.fr/api/projects/apis/envs/resources/<envId>
+status: candidate
+search_result: >-
+  No La Poste Groupe MCP server exists. Searched the developer portal, the FAQ
+  knowledge base, documentation-okapi.laposte.fr, the DeveloperLaPoste and
+  LaPoste-Colissimo GitHub organisations, npm, PyPI and the web on 2026-09-02.
+  Nothing published, first-party or otherwise. The tools below are a DERIVED
+  candidate set - what an MCP server over these contracts would expose - not a
+  server that exists.
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: >-
+    Nobody ships a server. No hosted endpoint and no stdio package. `endpoint` and
+    `install` are deliberately empty; inventing either would read as a verified
+    agent surface that an agent could not reach.
+candidate_tools:
+- name: track_shipment
+  description: >-
+    Look up the harmonised delivery status and full routing history for one to ten
+    La Poste, Colissimo or Chronopost tracking numbers.
+  rest: {api: La Poste Suivi v2, operation: 'GET /idships/{idship}', operationId: '1.0'}
+  readonly: true
+- name: validate_address
+  description: Validate and normalise a French postal address against the SNA reference base.
+  rest: {api: La Poste ControlAdresse v2, operation: 'GET /adresses'}
+  readonly: true
+  note: No OpenAPI is published for this API; bound from the portal resource catalogue.
+- name: get_address_detail
+  description: Retrieve the full normalised address for an address code.
+  rest: {api: La Poste ControlAdresse v2, operation: 'GET /adresses/{code}'}
+  readonly: true
+- name: geocode_address
+  description: Resolve a known French postal address to the GPS coordinates La Poste holds for it.
+  rest: {api: La Poste Geolocalisation v1, operation: 'GET /adresses'}
+  readonly: true
+- name: reverse_geocode
+  description: Return up to five nearby French postal addresses for a latitude/longitude pair.
+  rest: {api: La Poste Geolocalisation inversee v1, operation: 'GET /adresses'}
+  readonly: true
+- name: lookup_postal_code
+  description: Query the La Poste open postal-code (hexasmal) dataset.
+  rest: {api: La Poste Open Data v1, operation: 'GET /codespostaux'}
+  readonly: true
+- name: find_contact_points
+  description: >-
+    Find La Poste contact points, post offices, opening hours, available services,
+    accessibility and self-service machines.
+  rest:
+    api: La Poste Open Data v1
+    operations: ['GET /pointscontact', 'GET /horairesbureaux', 'GET /servicesbureaux', 'GET /accessibilitebureaux', 'GET /automatesbureaux']
+  readonly: true
+- name: find_street_letterboxes
+  description: Locate street letterboxes from the open dataset.
+  rest: {api: La Poste Open Data v1, operation: 'GET /boitesrue'}
+  readonly: true
+- name: query_open_dataset
+  description: >-
+    Run a filtered, paginated, sparse-field query against any published La Poste
+    open dataset on data.laposte.fr.
+  rest: {api: La Poste Open Data v1, operation: 'GET /datasets/{id}/lines', operationId: readLines}
+  readonly: true
+- name: find_pickup_points
+  description: >-
+    Find Colissimo pickup points - post offices, Pickup lockers and relay merchants -
+    near an address.
+  soap: {api: Colissimo Web Services, operation: findRDVPointRetraitAcheminement}
+  readonly: true
+  note: SOAP, not REST. Source wsdl/la-poste-groupe-colissimo-point-retrait.wsdl.
+write_operations_deliberately_excluded:
+  note: >-
+    Digiposte's certified-document deposit and membership creation, Code de la
+    route's reservations, Lettre recommandee's order submission and Colissimo's
+    generateLabel are all real-world, irreversible or near-irreversible writes with
+    NO idempotency key (see conventions/la-poste-groupe-conventions.yml). They are
+    named here as out of scope for a read-oriented candidate tool set rather than
+    quietly dropped - any real server exposing them needs an escalation contract
+    first.
+  operations:
+  - 'POST /digiposte/v3/document/certified (Digiposte) - no published reversal'
+  - 'POST /digiposte/v3/membership (Digiposte) - reversible, window not stated'
+  - 'POST /reservations (Code de la route) - books a real exam seat'
+  - 'POST /lh/pro/orders (Lettre recommandee en ligne) - prints and posts physical mail'
+  - 'generateLabel (Colissimo) - franks a real shipping label, no void operation'
+authentication:
+  required: true
+  scheme: X-Okapi-Key header, per-application, tied to a plan subscription
+  note: >-
+    Every candidate tool needs a key. Six of the nine APIs have a free plan; Suivi's
+    only plan is marked private, so even the flagship tracking tool cannot be used
+    without an approved access request.

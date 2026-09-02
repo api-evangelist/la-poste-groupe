@@ -1,0 +1,73 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Digiposte v3
+  version: 1.0.0
+x-generated: '2026-09-02'
+x-method: generated
+x-source: >-
+  openapi/la-poste-groupe-digiposte-openapi.json plus the public resource catalogue
+  at developer.laposte.fr, which names the live endpoint and the obsolescence of
+  several v3 operations in prose.
+x-note: >-
+  Applies to openapi/la-poste-groupe-digiposte-openapi.json. The servers[] block in
+  the published document is EMPTY, and six operations that La Poste's own resource
+  catalogue calls OBSOLETE or PROCHAINEMENT DECOMISSIONNE carry no `deprecated`
+  flag. Both are corrected here, from La Poste's own published text, without
+  touching the original.
+x-extends: openapi/la-poste-groupe-digiposte-openapi.json
+actions:
+- target: $
+  description: >-
+    The document publishes servers: []. Supply the two real bases - the Okapi
+    gateway route (verified live 2026-09-02, returns 401 UNAUTHORIZED rather than
+    404) and the direct Digiposte host the portal names as this API's endpoint.
+  update:
+    servers:
+    - url: https://api.laposte.fr
+      description: >-
+        Okapi gateway. Paths in this document are absolute from the root
+        (/digiposte/v3/..., /partner/..., /user/...).
+    - url: https://api.digiposte.fr
+      description: >-
+        Direct Digiposte host named as this API's endpoint in the developer portal
+        catalog entry.
+- target: $.info
+  description: Add the terms of service the portal applies to every Okapi API.
+  update:
+    termsOfService: https://developer.laposte.fr/cgu
+    contact:
+      name: La Poste Developer (Okapi)
+      url: https://developer.laposte.fr/catalog-apis/digiposte@3
+- target: $.paths['/digiposte/v3/document/certified'].post
+  description: >-
+    La Poste's own resource catalogue titles this operation "Deposer un document
+    certifie par Id d'adhesion (version OBSOLETE)" and points integrators at
+    POST /api/v4/memberships/{route_code}/documents/certified. Make that
+    machine-readable.
+  update:
+    deprecated: true
+    x-replaced-by: 'POST https://api.digiposte.fr/api/v4/memberships/{route_code}/documents/certified'
+    x-deprecation-source: https://developer.laposte.fr/catalog-apis/digiposte@3
+- target: $.paths['/digiposte/v3/membership'].post
+  description: >-
+    Resource catalogue title - "Creer une Adhesion Active (Version OBSOLETE)".
+    Superseded by POST /api/v4/memberships.
+  update:
+    deprecated: true
+    x-replaced-by: 'POST https://api.digiposte.fr/api/v4/memberships'
+    x-deprecation-source: https://developer.laposte.fr/catalog-apis/digiposte@3
+- target: $.paths['/digiposte/v3/memberships'].get
+  description: >-
+    Resource catalogue title - "Lister les adhesions (Version Obsolete)".
+    Superseded by GET /api/v4/partner/{partner_id}/memberships.
+  update:
+    deprecated: true
+    x-replaced-by: 'GET https://api.digiposte.fr/api/v4/partner/{partner_id}/memberships'
+    x-deprecation-source: https://developer.laposte.fr/catalog-apis/digiposte@3
+- target: $.paths['/digiposte/v3/document/certified'].post
+  description: >-
+    Mark the consequence class. This write files a document into a probative-value
+    digital safe and the published contract exposes no reversal for it.
+  update:
+    x-reversible: false
+    x-consequence: irreversible

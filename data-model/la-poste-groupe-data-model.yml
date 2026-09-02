@@ -1,0 +1,171 @@
+generated: '2026-09-02'
+method: derived
+source: >-
+  openapi/la-poste-groupe-suivi-openapi.json,
+  openapi/la-poste-groupe-digiposte-openapi.json,
+  openapi/la-poste-groupe-open-data-openapi.json,
+  wsdl/la-poste-groupe-colissimo-point-retrait.wsdl, plus the public resource
+  catalogue at developer.laposte.fr.
+note: >-
+  There is no single La Poste data model. This estate is four unrelated domains
+  that happen to share a gateway - shipment tracking, certified document custody,
+  postal geography, and parcel pickup. Each is modelled separately below; there are
+  no $ref links across them and no shared identifier.
+domains:
+- name: tracking
+  api: La Poste Suivi v2
+  root: suiviShipment
+  entities:
+  - name: suiviShipment
+    id_field: idShip
+    description: >-
+      A tracked object. Composed by allOf from shipmentPropPub (commercial and
+      delivery properties) and shipmentTrk (the movement record).
+    relationships:
+    - {type: has_one, target: shipmentPropPub, via: allOf}
+    - {type: has_one, target: shipmentTrk, via: allOf}
+  - name: shipmentPropPub
+    fields: [holder, product, isFinal, entryDate, estimDate, estimHourMin, estimHourMax, deliveryDate, contextData, url]
+    relationships:
+    - {type: has_one, target: contextData, via: contextData}
+  - name: shipmentTrk
+    fields: [timeline, event]
+    relationships:
+    - {type: has_many, target: step, via: timeline}
+    - {type: has_one, target: event, via: event}
+  - name: contextData
+    fields: [deliveryChoice, removalPoint, originCountry, arrivalCountry, partner]
+    relationships:
+    - {type: has_one, target: deliveryChoice, via: deliveryChoice}
+    - {type: has_one, target: removalPoint, via: removalPoint}
+    - {type: has_one, target: partner, via: partner}
+  - name: step
+    fields: [id, shortLabel, longLabel, status, type, date, country]
+    description: One entry in the routing timeline.
+  - name: event
+    fields: [date, label, code]
+    description: The latest movement event.
+  - name: removalPoint
+    fields: [name, type]
+    description: >-
+      Where the object can be collected. This is the one concept that overlaps
+      conceptually with the Colissimo pickup-point model and with the Open Data
+      contact-points dataset - and there is NO shared identifier between the three.
+  - name: partner
+    fields: [name, network, reference, numberInstance, numberAVPI]
+    description: >-
+      The carrier leg - this is where Colissimo and Chronopost surface inside a
+      unified Suivi answer.
+  - name: baseResponse
+    fields: [lang, returnCode, scope]
+    description: >-
+      Envelope mixed into every response, success or failure. See
+      errors/la-poste-groupe-problem-types.yml.
+- name: certified-document-custody
+  api: Digiposte v3
+  entities:
+  - name: Partner
+    aka: emetteur
+    id_field: partner_id
+    description: An issuing organisation. Can be cloned from an archetype partner.
+    relationships:
+    - {type: belongs_to, target: Publisher, via: publisher_id}
+    - {type: has_many, target: Membership, via: partner_id}
+    - {type: has_many, target: PartnerSafe, via: partner_id}
+    - {type: has_many, target: UserProcedure, via: procedure_pid}
+  - name: Publisher
+    aka: emetteur-chapeau
+    id_field: publisher_id
+    relationships:
+    - {type: has_many, target: Partner, via: publisher_id}
+  - name: Membership
+    aka: adhesion
+    id_field: membership_id
+    description: >-
+      The consented link between an issuing partner and an end user's Digiposte
+      vault. Everything the partner may deposit flows through one of these.
+    relationships:
+    - {type: belongs_to, target: Partner, via: partner_id}
+    - {type: belongs_to, target: User, via: partner_user_id}
+    - {type: has_many, target: CertifiedDocument, via: route_code}
+  - name: CertifiedDocument
+    id_field: document_id
+    description: >-
+      A document filed into a user's probative-value vault, carrying the "certifie
+      La Poste" seal. No published deletion path.
+    relationships:
+    - {type: belongs_to, target: Membership, via: route_code}
+  - name: PartnerSafe
+    aka: coffre organisme
+    id_field: partner_safe_id
+    relationships:
+    - {type: belongs_to, target: Partner, via: partner_id}
+    - {type: has_many, target: Folder, via: partner_safe_id}
+    - {type: has_many, target: Document, via: partner_safe_id}
+  - name: Folder
+    id_field: folder_id
+    relationships:
+    - {type: belongs_to, target: PartnerSafe, via: partner_safe_id}
+    - {type: has_many, target: Folder, via: folder_id}
+  - name: Share
+    aka: partage organisme
+    id_field: partner_user_id
+    relationships:
+    - {type: belongs_to, target: User, via: partner_user_id}
+    - {type: has_many, target: Document, via: partner_user_id}
+  - name: UserProcedure
+    aka: demarche
+    id_field: user_procedure_id
+    relationships:
+    - {type: belongs_to, target: Partner, via: procedure_pid}
+    - {type: has_many, target: Document, via: user_procedure_id}
+  - name: User
+    aka: compte / compte partiel
+    description: >-
+      A Digiposte account holder. A "compte partiel" is a pre-created shell the user
+      completes through a personalisation URL (PURL).
+- name: postal-geography
+  api: La Poste Open Data v1 (Data Fair)
+  entities:
+  - name: Dataset
+    id_field: id
+    description: >-
+      Generic Data Fair container. The La Poste instance publishes postal codes,
+      contact points, opening hours, services, accessibility, self-service machines,
+      street letterboxes and new communes as separate datasets.
+    relationships:
+    - {type: has_many, target: Line, via: dataset_id}
+    - {type: has_one, target: Schema, via: dataset_id}
+    - {type: has_many, target: DataFile, via: dataset_id}
+    - {type: has_many, target: Attachment, via: dataset_id}
+  - name: Line
+    description: One record inside a dataset. Queried with q/select/sort/page/size/after.
+  - name: Schema
+    description: >-
+      Per-dataset field description, annotated with schema.org and RDF Schema
+      concept identifiers (see conformance domain_standards).
+  - name: Application
+    id_field: id
+    description: A published visualisation bound to one or more datasets.
+- name: parcel-pickup
+  api: Colissimo Web Services (SOAP)
+  entities:
+  - name: PointRetrait
+    description: >-
+      A pickup location - post office, Pickup locker (consigne) or relay merchant.
+      Fields include adresse1..adresse3, accesPersonneMobiliteReduite and opening
+      information.
+    source: wsdl/la-poste-groupe-colissimo-point-retrait.wsdl
+  - name: Label
+    description: >-
+      A generated shipping or return label plus its parcel number. Produced by
+      generateLabel; validated in advance by checkGenerateLabel.
+    source: wsdl/la-poste-groupe-colissimo-sls.wsdl
+  - name: Bordereau
+    description: Deposit slip covering a set of parcel numbers.
+    source: wsdl/la-poste-groupe-colissimo-sls.wsdl
+cross_domain_finding: >-
+  Three separate models of "a place where a parcel can be collected" exist in this
+  estate with no shared key - Suivi's removalPoint, Colissimo's PointRetrait, and
+  the Open Data pointscontact dataset. A consumer that needs to reconcile them has
+  to match on address text.

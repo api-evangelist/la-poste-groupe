@@ -1,0 +1,93 @@
+generated: '2026-09-02'
+method: searched
+source: >-
+  registry.npmjs.org, repo.packagist.org, pypi.org, rubygems.org,
+  search.maven.org and the first-party GitHub organisations
+  github.com/DeveloperLaPoste and github.com/LaPoste-Colissimo
+summary: >-
+  La Poste Groupe ships four first-party client libraries, and every one of them
+  is abandoned. The two Okapi platform packages (the JavaScript SDK and the `oka`
+  CLI) were last released in 2016 and 2017 respectively, against an Okapi platform
+  that has since been rebuilt on a Next.js portal at developer.laposte.fr with a
+  different subscription model. The two Magento 2 modules published by the
+  Colissimo organisation were last released in 2017 and 2019. No first-party
+  package exists for Suivi v2, ControlAdresse v2, Digiposte v3, Lettre recommandee
+  en ligne or the Open Data API - the four APIs La Poste actively documents. Every
+  package that speaks to those is third-party (hedii/colissimo-api,
+  dansmaculotte/laposte-php, rigwild/suivi-poste, cleverage/colissimo-bundle).
+packages:
+  - language: javascript
+    registry: npm
+    name: laposte-okapi-sdk
+    url: https://www.npmjs.com/package/laposte-okapi-sdk
+    install: npm install laposte-okapi-sdk
+    official: true
+    version: 0.0.6
+    published: '2016-10-15'
+    repository: https://github.com/DeveloperLaPoste/okapi-sdk-js
+    license: MIT
+    note: >-
+      First-party - npm author is developer@laposte.io with url
+      https://developer.laposte.fr/. Last release 2016-10-15, nearly ten years
+      before this probe; the Okapi platform it wraps has been rebuilt since.
+  - language: javascript
+    registry: npm
+    name: laposte-okapi-cli
+    url: https://www.npmjs.com/package/laposte-okapi-cli
+    install: npm install -g laposte-okapi-cli
+    official: true
+    version: 0.0.7
+    published: '2017-04-27'
+    repository: https://github.com/DeveloperLaPoste/okapi-cli
+    license: MIT
+    binary: oka
+    note: >-
+      First-party CLI (binary `oka`), same npm author identity as the SDK. Last
+      release 2017-04-27. See cli/la-poste-groupe-cli.yml.
+  - language: php
+    registry: packagist
+    name: laposte-colissimo/magento2-module-colissimo
+    url: https://packagist.org/packages/laposte-colissimo/magento2-module-colissimo
+    install: composer require laposte-colissimo/magento2-module-colissimo
+    official: true
+    version: 2.0.0
+    published: '2019-04-26'
+    repository: https://github.com/LaPoste-Colissimo/magento2-module-colissimo
+    note: >-
+      Magento 2 "Colissimo Simplicite" shipping module published under the
+      laposte-colissimo Packagist vendor, backed by the LaPoste-Colissimo GitHub
+      organisation. Two published versions; last release 2019-04-26.
+  - language: php
+    registry: packagist
+    name: laposte-colissimo/magento2-module-expeditor
+    url: https://packagist.org/packages/laposte-colissimo/magento2-module-expeditor
+    install: composer require laposte-colissimo/magento2-module-expeditor
+    official: true
+    version: 1.0.0
+    published: '2017-09-27'
+    repository: https://github.com/LaPoste-Colissimo/magento2-module-expeditor
+    note: >-
+      Magento 2 "Expeditor INet" module. One published version; last release
+      2017-09-27.
+absent:
+  - registry: pypi
+    checked: ['laposte', 'colissimo', 'digiposte', 'laposte-api']
+    finding: >-
+      `laposte` (0.1.1) and `colissimo` (0.3) exist but are third-party -
+      maintainers fr.ldxdev@gmail.com and laurent.stacul@gmail.com. `digiposte`
+      and `laposte-api` are unregistered. No first-party Python client.
+  - registry: rubygems
+    checked: ['laposte', 'la_poste']
+    finding: '`la_poste` 0.0.2 is third-party (github.com/hugolantaume). No first-party gem.'
+  - registry: maven-central
+    checked: ['laposte']
+    finding: >-
+      9 artifacts match, all third-party (org.ow2.petals.samples.mail.laposte
+      integration samples and org.dajlab:laposte-suivi-api). No first-party Java
+      client.
+  - registry: nuget
+    checked: ['laposte', 'colissimo']
+    finding: No first-party .NET client found.
+  - registry: crates.io
+    checked: ['laposte']
+    finding: No first-party Rust client found.

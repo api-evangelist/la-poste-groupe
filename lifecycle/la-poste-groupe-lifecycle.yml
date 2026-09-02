@@ -1,0 +1,151 @@
+generated: '2026-09-02'
+method: probed
+source: >-
+  https://developer.laposte.fr/status/api and its JSON backend
+  https://developer.laposte.fr/api/statusApi (fetched 2026-09-02),
+  https://developer.laposte.fr/api/catalog-apis (relatedVersions), and the four
+  harvested OpenAPI documents.
+status_page:
+  url: https://developer.laposte.fr/status/api
+  machine_readable: https://developer.laposte.fr/api/statusApi
+  auth_required: false
+  format: JSON
+  shape: 'statusApis.apiServer {name,state,duration} + statusApis.apis[] {name,state,duration}'
+  observed_2026_09_02:
+    gateway: 'okapi-api - OK (4 ms)'
+    services:
+    - {name: ControlAdresse v2, state: OK, duration_ms: 19}
+    - {name: ControlAdresse v1, state: OK, duration_ms: 25}
+    - {name: Digiposte v3, state: OK, duration_ms: 76}
+    - {name: Geolocalisation v1, state: OK, duration_ms: 38}
+    - {name: Suivi v2, state: OK, duration_ms: 59}
+    - {name: Geolocalisation inversee v1, state: OK, duration_ms: 92}
+    - {name: Code de la route v2, state: OK, duration_ms: 62}
+    - {name: Code de la route v1, state: OK, duration_ms: 92}
+    - {name: La Poste Open Data v1, state: OK, duration_ms: 69}
+  note: >-
+    This is a genuinely good surface and an under-advertised one - a public,
+    unauthenticated, machine-readable health endpoint with per-service latency,
+    reachable without a key. It is linked only from the portal footer
+    ("Etats des services").
+  finding: >-
+    The status page reports NINE services including ControlAdresse v1 and Code de la
+    route v1, which the catalog does not list. Two previous majors are still running
+    in production and still monitored while being invisible in the API catalogue.
+versioning:
+  policy_published: false
+  scheme: major version in the gateway path (/suivi/v2) and in the catalog slug (suivi@2)
+  coexistence: >-
+    Majors run side by side - v1 and v2 of both ControlAdresse and Code de la route
+    are live on the status page today. relatedVersions[] on each catalog entry is the
+    only machine-readable link between majors.
+  note: No written versioning policy is published anywhere on developer.laposte.fr.
+deprecation:
+  policy_published: false
+  sunset_header: not observed
+  deprecation_header: not observed
+  rfc8594: false
+  in_spec_deprecations:
+    openapi_deprecated_true: 0
+    note: >-
+      Not one operation across the four harvested OpenAPI documents carries
+      `deprecated: true`.
+  deprecations_signalled_in_prose_only:
+    surface: Digiposte v3 portal resource catalogue
+    finding: >-
+      Digiposte marks obsolescence in French prose inside resource names and
+      descriptions rather than in any machine-readable field. Operations whose own
+      title says OBSOLETE or PROCHAINEMENT DECOMISSIONNE (soon to be decommissioned)
+      include - POST /document/certified ("version OBSOLETE"), POST /membership
+      ("Version OBSOLETE"), GET /memberships ("Version Obsolete"), POST /partner
+      ("Version OBSOLETE"), POST /publisher ("obsolete"), and
+      POST /memberships/{route_code}/documents/certifiedbis
+      ("PROCHAINEMENT DECOMISSIONNE").
+    consequence: >-
+      An agent reading the contract sees no deprecation at all. A human reading the
+      French title sees six. There is no sunset date on any of them.
+    replacement_pattern: >-
+      The v3 operations are superseded by v4 equivalents on api.digiposte.fr
+      (/api/v4/memberships, /api/v4/partner/...), which the resource catalogue points
+      at as the live endpoint even for entries the OpenAPI still describes as v3.
+sla:
+  published: false
+  note: >-
+    No uptime commitment, credit schedule or support-response target is published on
+    the developer portal. The CGU at https://developer.laposte.fr/cgu are the only
+    contractual document, and paid plans (Serenite) are sold without a public SLA.
+support:
+  faq: https://faq.developer.laposte.fr
+  provider_documentation: https://documentation-okapi.laposte.fr/
+  contact_emails:
+  - serviceclients.sna@laposte.fr (ControlAdresse, Geolocalisation, Geolocalisation inversee)
+  - support.api@laposte.fr (Lettre recommandee en ligne)
+  - data.laposte@laposte.fr (Open Data)
+  note: Published verbatim in each catalog entry's contactEmail field.
+changelog:
+  published: false
+  note: >-
+    No dated changelog or release-notes surface was found on developer.laposte.fr,
+    faq.developer.laposte.fr or documentation-okapi.laposte.fr. The only version
+    signal an integrator gets is the x-powered-by header on the gateway
+    (okapi-api@4.77.1, observed 2026-09-02), which describes the platform, not the
+    APIs. No ChangeLog artifact or pointer is emitted, because there is nothing to
+    point at.
+contract_publication:
+  note: >-
+    How each harvested contract was obtained, and whether La Poste currently renders
+    it. The Okapi portal serves its Swagger tab from an unauthenticated JSON route,
+    https://developer.laposte.fr/api/projects/apis/envs/{environmentId}/swagger-docs,
+    and only renders a document whose `published` flag is true.
+  documents:
+  - file: openapi/la-poste-groupe-suivi-openapi.json
+    portal_published: true
+    fetched_from: >-
+      https://developer.laposte.fr/api/projects/apis/envs/5a426a96-58b3-4a43-91e5-e502b8a6d549/swagger-docs
+    rendered_at: https://developer.laposte.fr/catalog-apis/suivi@2 (Swagger tab)
+  - file: openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+    portal_published: true
+    rendered_at: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1 (Swagger tab)
+  - file: openapi/la-poste-groupe-digiposte-openapi.json
+    portal_published: false
+    finding: >-
+      The Digiposte v3 OpenAPI is served by La Poste's own unauthenticated portal
+      API, on both the production and sandbox environments, but its `published` flag
+      is FALSE - so the Swagger tab on
+      https://developer.laposte.fr/catalog-apis/digiposte@3 shows "Aucune
+      documentation Swagger n'est disponible pour cette API" while the 89KB
+      document sits one unauthenticated request away. Saved here verbatim with that
+      caveat recorded rather than presented as a rendered public reference.
+  - file: openapi/la-poste-groupe-open-data-openapi.json
+    portal_published: n/a
+    fetched_from: https://data.laposte.fr/data-fair/api/v1/api-docs.json
+    finding: >-
+      Served live and unauthenticated by the Data Fair instance itself, and pointed
+      at by the RFC 9727 catalog at https://data.laposte.fr/.well-known/api-catalog.
+      Its info.title is the upstream software's name ("API Data Fair"); servers[]
+      correctly names https://data.laposte.fr/data-fair/api/v1, which is why it is
+      attributed to La Poste. See overlays/la-poste-groupe-open-data-overlay.yaml.
+  - file: wsdl/la-poste-groupe-colissimo-sls.wsdl
+    fetched_from: https://ws.colissimo.fr/sls-ws/SlsServiceWS?wsdl
+    http_status: 200
+  - file: wsdl/la-poste-groupe-colissimo-point-retrait.wsdl
+    fetched_from: https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS?wsdl
+    http_status: 200
+    ownership_note: >-
+      targetNamespace is http://pointretrait.geopost.com/ rather than a laposte.fr
+      or colissimo.fr namespace. GeoPost is La Poste Groupe's wholly-owned parcel
+      and express arm (DPDgroup), the document is served from La Poste's own
+      ws.colissimo.fr host, and the service is the pickup-point lookup Colissimo's
+      own integration documentation directs merchants to - so it is a sibling-brand
+      namespace inside the same group, not a third party's contract.
+apis_without_a_published_contract:
+  note: >-
+    Four of the nine catalogued APIs publish no machine-readable contract at all.
+    For these the portal exposes only a resource list - HTTP method, route, name -
+    with no parameters, payloads or responses.
+  entries:
+  - {api: La Poste ControlAdresse v2, routes: 4}
+  - {api: La Poste Geolocalisation v1, routes: 4}
+  - {api: La Poste Geolocalisation inversee v1, routes: 1}
+  - {api: Code de la route v2, routes: 12}
+  - {api: Colissimo, routes: 0, note: 'REST catalogue empty; the real contracts are the two SOAP WSDLs.'}

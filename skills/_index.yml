@@ -1,0 +1,56 @@
+generated: '2026-09-02'
+method: generated
+source: >-
+  Authored from the harvested contracts in openapi/, the Colissimo WSDLs and the
+  public portal resource catalogue. Every operationId referenced was verified
+  against the spec it names; none was invented.
+note: >-
+  No provider-published Agent Skills or AGENTS.md exist for La Poste Groupe -
+  searched developer.laposte.fr, faq.developer.laposte.fr,
+  documentation-okapi.laposte.fr and the DeveloperLaPoste GitHub organisation on
+  2026-09-02.
+skills:
+- file: la-poste-groupe-track-a-shipment.md
+  name: la-poste-track-a-shipment
+  api: La Poste Suivi v2
+  operations: ['1.0', '1.1']
+  spec: openapi/la-poste-groupe-suivi-openapi.json
+  consequence: read-only
+- file: la-poste-groupe-deposit-a-certified-document.md
+  name: la-poste-deposit-a-certified-document
+  api: Digiposte v3
+  operations:
+  - "Obtenir un token « client_credentials »"
+  - "Créer une adhésion"
+  - "Récupérer la liste des adhésions existantes"
+  - "Déposer un document certifié"
+  - "Résilier une adhésion"
+  - "Créer un nouveau compte partiel"
+  - "Créer ou renouveler l'url de personnalisation d'un compte partiel"
+  spec: openapi/la-poste-groupe-digiposte-openapi.json
+  consequence: irreversible-write
+  warning: >-
+    Certified deposit has no published reversal and there is no idempotency key
+    anywhere in this contract.
+- file: la-poste-groupe-query-postal-open-data.md
+  name: la-poste-query-postal-open-data
+  api: La Poste Open Data v1
+  operations: [listDatasets, readDescription, readSchema, readLines, getValuesAgg, getVocabulary, readApiDoc, ping]
+  spec: openapi/la-poste-groupe-open-data-openapi.json
+  consequence: read-only
+not_written:
+- api: Lettre recommandee en ligne v1
+  reason: >-
+    The only two operations print and post physical mail with no published cancel
+    path, no stated cut-off, and an authentication model that is a springdoc
+    placeholder (authorizationUrl https://test.com). There is not enough published
+    truth to write safe operating instructions.
+- api: Code de la route v2
+  reason: >-
+    No OpenAPI is published - only a portal resource list of twelve routes with no
+    parameter, payload or response documentation. Grounding a skill in that would
+    mean inventing the request shape.
+- api: Colissimo Web Services
+  reason: >-
+    SOAP with no published credential model on the developer portal; label
+    generation is an irreversible physical action with no void operation.

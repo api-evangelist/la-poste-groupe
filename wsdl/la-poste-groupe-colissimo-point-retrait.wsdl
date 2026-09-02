@@ -1,0 +1,555 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://pointretrait.geopost.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="PointRetraitServiceWSService" targetNamespace="http://pointretrait.geopost.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="pointretrait.geopost.com" targetNamespace="pointretrait.geopost.com" version="1.0">
+
+  <xs:complexType name="PointRetrait">
+    <xs:sequence>
+      <xs:element name="accesPersonneMobiliteReduite" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="adresse1" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse2" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse3" type="xs:string"/>
+      <xs:element minOccurs="0" name="codePostal" type="xs:string"/>
+      <xs:element name="congesPartiel" type="xs:boolean"/>
+      <xs:element name="congesTotal" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="coordGeolocalisationLatitude" type="xs:string"/>
+      <xs:element minOccurs="0" name="coordGeolocalisationLongitude" type="xs:string"/>
+      <xs:element name="distanceEnMetre" type="xs:int"/>
+      <xs:element minOccurs="0" name="horairesOuvertureDimanche" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureJeudi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureLundi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureMardi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureMercredi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureSamedi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureVendredi" type="xs:string"/>
+      <xs:element minOccurs="0" name="identifiant" type="xs:string"/>
+      <xs:element minOccurs="0" name="indiceDeLocalisation" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="listeConges" nillable="true" type="tns:Conges"/>
+      <xs:element minOccurs="0" name="localite" type="xs:string"/>
+      <xs:element minOccurs="0" name="nom" type="xs:string"/>
+      <xs:element minOccurs="0" name="periodeActiviteHoraireDeb" type="xs:string"/>
+      <xs:element minOccurs="0" name="periodeActiviteHoraireFin" type="xs:string"/>
+      <xs:element name="poidsMaxi" type="xs:int"/>
+      <xs:element minOccurs="0" name="typeDePoint" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Conges">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="calendarDeDebut" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="calendarDeFin" type="xs:dateTime"/>
+      <xs:element name="numero" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://pointretrait.geopost.com/" xmlns:ns1="pointretrait.geopost.com" elementFormDefault="unqualified" targetNamespace="http://pointretrait.geopost.com/" version="1.0">
+
+  <xs:import namespace="pointretrait.geopost.com"/>
+
+  <xs:element name="findBureauIntance" type="tns:findBureauIntance"/>
+
+  <xs:element name="findBureauIntanceByRegate" type="tns:findBureauIntanceByRegate"/>
+
+  <xs:element name="findBureauIntanceByRegateResponse" type="tns:findBureauIntanceByRegateResponse"/>
+
+  <xs:element name="findBureauIntanceConsignesRelais" type="tns:findBureauIntanceConsignesRelais"/>
+
+  <xs:element name="findBureauIntanceConsignesRelaisResponse" type="tns:findBureauIntanceConsignesRelaisResponse"/>
+
+  <xs:element name="findBureauIntanceResponse" type="tns:findBureauIntanceResponse"/>
+
+  <xs:element name="findConsignesRelais" type="tns:findConsignesRelais"/>
+
+  <xs:element name="findConsignesRelaisResponse" type="tns:findConsignesRelaisResponse"/>
+
+  <xs:element name="findInternalPointRetraitAcheminementByID" type="tns:findInternalPointRetraitAcheminementByID"/>
+
+  <xs:element name="findInternalPointRetraitAcheminementByIDResponse" type="tns:findInternalPointRetraitAcheminementByIDResponse"/>
+
+  <xs:element name="findInternalRDVPointRetraitAcheminement" type="tns:findInternalRDVPointRetraitAcheminement"/>
+
+  <xs:element name="findInternalRDVPointRetraitAcheminementByID" type="tns:findInternalRDVPointRetraitAcheminementByID"/>
+
+  <xs:element name="findInternalRDVPointRetraitAcheminementByIDResponse" type="tns:findInternalRDVPointRetraitAcheminementByIDResponse"/>
+
+  <xs:element name="findInternalRDVPointRetraitAcheminementResponse" type="tns:findInternalRDVPointRetraitAcheminementResponse"/>
+
+  <xs:element name="findPointRetraitAcheminementByID" type="tns:findPointRetraitAcheminementByID"/>
+
+  <xs:element name="findPointRetraitAcheminementByIDResponse" type="tns:findPointRetraitAcheminementByIDResponse"/>
+
+  <xs:element name="findRDVPointRetraitAcheminement" type="tns:findRDVPointRetraitAcheminement"/>
+
+  <xs:element name="findRDVPointRetraitAcheminementResponse" type="tns:findRDVPointRetraitAcheminementResponse"/>
+
+  <xs:complexType name="findBureauIntanceByRegate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="regateCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findBureauIntanceByRegateResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bureauInstanceResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bureauInstanceResult">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="bureauInstance" nillable="true" type="tns:bureauInstance"/>
+      <xs:element name="errorCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="errorMessage" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bureauInstance">
+    <xs:sequence>
+      <xs:element name="accesPersonneMobiliteReduite" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="adresse1" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse2" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse3" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse4" type="xs:string"/>
+      <xs:element minOccurs="0" name="codePostal" type="xs:string"/>
+      <xs:element minOccurs="0" name="codeRegate" type="xs:string"/>
+      <xs:element name="congesPartiel" type="xs:boolean"/>
+      <xs:element name="congesTotal" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="coordGeolocalisationLatitude" type="xs:string"/>
+      <xs:element minOccurs="0" name="coordGeolocalisationLongitude" type="xs:string"/>
+      <xs:element name="delaiDistribution" type="xs:int"/>
+      <xs:element name="delaiRelance" type="xs:int"/>
+      <xs:element name="delaiReponse" type="xs:int"/>
+      <xs:element minOccurs="0" name="echecInteractivite" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureDimanche" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureJeudi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureLundi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureMardi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureMercredi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureSamedi" type="xs:string"/>
+      <xs:element minOccurs="0" name="horairesOuvertureVendredi" type="xs:string"/>
+      <xs:element minOccurs="0" name="idPartenaire" type="xs:string"/>
+      <xs:element minOccurs="0" name="identifiant" type="xs:string"/>
+      <xs:element minOccurs="0" name="nom" type="xs:string"/>
+      <xs:element name="parking" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="periodeActiviteHoraireDeb" type="xs:string"/>
+      <xs:element minOccurs="0" name="periodeActiviteHoraireFin" type="xs:string"/>
+      <xs:element minOccurs="0" name="reseau" type="xs:string"/>
+      <xs:element minOccurs="0" name="typePoint" type="xs:string"/>
+      <xs:element minOccurs="0" name="typeSiteRelais" type="xs:string"/>
+      <xs:element minOccurs="0" name="ville" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPointRetraitAcheminementByID">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element default="" minOccurs="0" name="apikey" nillable="true" type="xs:string"/>
+      <xs:element default="" minOccurs="0" name="codTiersPourPartenaire" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+      <xs:element minOccurs="0" name="weight" type="xs:string"/>
+      <xs:element minOccurs="0" name="filterRelay" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPointRetraitAcheminementByIDResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:pointRetraitAcheminementByIDResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pointRetraitAcheminementByIDResult">
+    <xs:sequence>
+      <xs:element name="errorCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="errorMessage" type="xs:string"/>
+      <xs:element minOccurs="0" name="pointRetraitAcheminement" type="tns:pointRetraitAcheminement"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pointRetraitAcheminement">
+    <xs:complexContent>
+      <xs:extension base="ns1:PointRetrait">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="distributionSort" type="xs:string"/>
+          <xs:element minOccurs="0" name="lotAcheminement" type="xs:string"/>
+          <xs:element minOccurs="0" name="versionPlanTri" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalRDVPointRetraitAcheminement">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element minOccurs="0" name="address" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="weight" type="xs:string"/>
+      <xs:element minOccurs="0" name="shippingDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="filterRelay" type="xs:string"/>
+      <xs:element minOccurs="0" name="requestId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalRDVPointRetraitAcheminementResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:rdvPointRetraitAcheminementResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rdvPointRetraitAcheminementResult">
+    <xs:complexContent>
+      <xs:extension base="tns:pointRetraitAcheminementResult">
+        <xs:sequence>
+          <xs:element name="rdv" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pointRetraitAcheminementResult">
+    <xs:sequence>
+      <xs:element name="errorCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="errorMessage" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="listePointRetraitAcheminement" nillable="true" type="tns:pointRetraitAcheminement"/>
+      <xs:element name="qualiteReponse" type="xs:int"/>
+      <xs:element minOccurs="0" name="wsRequestId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalRDVPointRetraitAcheminementByID">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+      <xs:element minOccurs="0" name="weight" type="xs:string"/>
+      <xs:element minOccurs="0" name="filterRelay" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalRDVPointRetraitAcheminementByIDResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:rdvPointRetraitAcheminementByIDResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rdvPointRetraitAcheminementByIDResult">
+    <xs:complexContent>
+      <xs:extension base="tns:pointRetraitAcheminementByIDResult">
+        <xs:sequence>
+          <xs:element name="rdv" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findRDVPointRetraitAcheminement">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element default="" minOccurs="0" name="apikey" nillable="true" type="xs:string"/>
+      <xs:element default="" minOccurs="0" name="codTiersPourPartenaire" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="address" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="weight" type="xs:string"/>
+      <xs:element minOccurs="0" name="shippingDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="filterRelay" type="xs:string"/>
+      <xs:element minOccurs="0" name="requestId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRDVPointRetraitAcheminementResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:rdvPointRetraitAcheminementResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalPointRetraitAcheminementByID">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findInternalPointRetraitAcheminementByIDResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:pointRetraitAcheminementByIDResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findBureauIntanceConsignesRelais">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse" type="xs:string"/>
+      <xs:element minOccurs="0" name="regateCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+      <xs:element minOccurs="0" name="codeProduct" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findBureauIntanceConsignesRelaisResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bureauInstanceResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findConsignesRelais">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="adresse" type="xs:string"/>
+      <xs:element minOccurs="0" name="regateCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+      <xs:element minOccurs="0" name="codeProduct" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findConsignesRelaisResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bureauInstanceResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findBureauIntance">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="regateCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="date" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findBureauIntanceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bureauInstanceResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findBureauIntanceResponse">
+    <wsdl:part element="tns:findBureauIntanceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findBureauIntanceByRegateResponse">
+    <wsdl:part element="tns:findBureauIntanceByRegateResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findBureauIntanceConsignesRelaisResponse">
+    <wsdl:part element="tns:findBureauIntanceConsignesRelaisResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalRDVPointRetraitAcheminementByIDResponse">
+    <wsdl:part element="tns:findInternalRDVPointRetraitAcheminementByIDResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findConsignesRelais">
+    <wsdl:part element="tns:findConsignesRelais" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findPointRetraitAcheminementByIDResponse">
+    <wsdl:part element="tns:findPointRetraitAcheminementByIDResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findBureauIntance">
+    <wsdl:part element="tns:findBureauIntance" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findBureauIntanceByRegate">
+    <wsdl:part element="tns:findBureauIntanceByRegate" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findPointRetraitAcheminementByID">
+    <wsdl:part element="tns:findPointRetraitAcheminementByID" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalRDVPointRetraitAcheminement">
+    <wsdl:part element="tns:findInternalRDVPointRetraitAcheminement" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalRDVPointRetraitAcheminementByID">
+    <wsdl:part element="tns:findInternalRDVPointRetraitAcheminementByID" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRDVPointRetraitAcheminement">
+    <wsdl:part element="tns:findRDVPointRetraitAcheminement" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findConsignesRelaisResponse">
+    <wsdl:part element="tns:findConsignesRelaisResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalPointRetraitAcheminementByID">
+    <wsdl:part element="tns:findInternalPointRetraitAcheminementByID" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRDVPointRetraitAcheminementResponse">
+    <wsdl:part element="tns:findRDVPointRetraitAcheminementResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findBureauIntanceConsignesRelais">
+    <wsdl:part element="tns:findBureauIntanceConsignesRelais" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalRDVPointRetraitAcheminementResponse">
+    <wsdl:part element="tns:findInternalRDVPointRetraitAcheminementResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findInternalPointRetraitAcheminementByIDResponse">
+    <wsdl:part element="tns:findInternalPointRetraitAcheminementByIDResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="PointRetraitServiceWS">
+<wsdl:documentation>SO Colissimo (mon Service mes Options) WEB Service Point Retrait</wsdl:documentation>
+    <wsdl:operation name="findBureauIntanceByRegate">
+<wsdl:documentation>Méthode pour récupèrer la liste des bureaux d'instance associé à un code regate</wsdl:documentation>
+      <wsdl:input message="tns:findBureauIntanceByRegate" name="findBureauIntanceByRegate">
+    </wsdl:input>
+      <wsdl:output message="tns:findBureauIntanceByRegateResponse" name="findBureauIntanceByRegateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findPointRetraitAcheminementByID">
+      <wsdl:input message="tns:findPointRetraitAcheminementByID" name="findPointRetraitAcheminementByID">
+    </wsdl:input>
+      <wsdl:output message="tns:findPointRetraitAcheminementByIDResponse" name="findPointRetraitAcheminementByIDResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalRDVPointRetraitAcheminement">
+      <wsdl:input message="tns:findInternalRDVPointRetraitAcheminement" name="findInternalRDVPointRetraitAcheminement">
+    </wsdl:input>
+      <wsdl:output message="tns:findInternalRDVPointRetraitAcheminementResponse" name="findInternalRDVPointRetraitAcheminementResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalRDVPointRetraitAcheminementByID">
+      <wsdl:input message="tns:findInternalRDVPointRetraitAcheminementByID" name="findInternalRDVPointRetraitAcheminementByID">
+    </wsdl:input>
+      <wsdl:output message="tns:findInternalRDVPointRetraitAcheminementByIDResponse" name="findInternalRDVPointRetraitAcheminementByIDResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRDVPointRetraitAcheminement">
+      <wsdl:input message="tns:findRDVPointRetraitAcheminement" name="findRDVPointRetraitAcheminement">
+    </wsdl:input>
+      <wsdl:output message="tns:findRDVPointRetraitAcheminementResponse" name="findRDVPointRetraitAcheminementResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalPointRetraitAcheminementByID">
+      <wsdl:input message="tns:findInternalPointRetraitAcheminementByID" name="findInternalPointRetraitAcheminementByID">
+    </wsdl:input>
+      <wsdl:output message="tns:findInternalPointRetraitAcheminementByIDResponse" name="findInternalPointRetraitAcheminementByIDResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findBureauIntanceConsignesRelais">
+<wsdl:documentation>Méthode pour récupèrer la liste des bureaux d'instance, des consignes et relais</wsdl:documentation>
+      <wsdl:input message="tns:findBureauIntanceConsignesRelais" name="findBureauIntanceConsignesRelais">
+    </wsdl:input>
+      <wsdl:output message="tns:findBureauIntanceConsignesRelaisResponse" name="findBureauIntanceConsignesRelaisResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findConsignesRelais">
+<wsdl:documentation>Méthode pour récupèrer la liste des consignes et relais</wsdl:documentation>
+      <wsdl:input message="tns:findConsignesRelais" name="findConsignesRelais">
+    </wsdl:input>
+      <wsdl:output message="tns:findConsignesRelaisResponse" name="findConsignesRelaisResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findBureauIntance">
+<wsdl:documentation>Méthode pour récupèrer la liste des bureaux d'instance</wsdl:documentation>
+      <wsdl:input message="tns:findBureauIntance" name="findBureauIntance">
+    </wsdl:input>
+      <wsdl:output message="tns:findBureauIntanceResponse" name="findBureauIntanceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PointRetraitServiceWSServiceSoapBinding" type="tns:PointRetraitServiceWS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="findBureauIntanceByRegate">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findBureauIntanceByRegate">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findBureauIntanceByRegateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findPointRetraitAcheminementByID">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findPointRetraitAcheminementByID">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findPointRetraitAcheminementByIDResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalRDVPointRetraitAcheminement">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findInternalRDVPointRetraitAcheminement">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findInternalRDVPointRetraitAcheminementResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalRDVPointRetraitAcheminementByID">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findInternalRDVPointRetraitAcheminementByID">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findInternalRDVPointRetraitAcheminementByIDResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRDVPointRetraitAcheminement">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findRDVPointRetraitAcheminement">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findRDVPointRetraitAcheminementResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findInternalPointRetraitAcheminementByID">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findInternalPointRetraitAcheminementByID">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findInternalPointRetraitAcheminementByIDResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findBureauIntanceConsignesRelais">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findBureauIntanceConsignesRelais">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findBureauIntanceConsignesRelaisResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findConsignesRelais">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findConsignesRelais">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findConsignesRelaisResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findBureauIntance">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findBureauIntance">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findBureauIntanceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PointRetraitServiceWSService">
+    <wsdl:port binding="tns:PointRetraitServiceWSServiceSoapBinding" name="PointRetraitServiceWSPort">
+      <soap:address location="https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

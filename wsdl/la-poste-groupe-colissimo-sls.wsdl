@@ -1,0 +1,1255 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://sls.ws.coliposte.fr" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="SlsServiceWS" targetNamespace="http://sls.ws.coliposte.fr">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:tns="http://sls.ws.coliposte.fr" elementFormDefault="unqualified" targetNamespace="http://sls.ws.coliposte.fr" version="1.0">
+
+  <xs:import namespace="http://www.w3.org/2005/05/xmlmime"/>
+  <xs:element name="checkGenerateLabel" type="tns:checkGenerateLabel"/>
+
+  <xs:element name="checkGenerateLabelResponse" type="tns:checkGenerateLabelResponse"/>
+
+  <xs:element name="checkGenerateLabelService" type="tns:checkGenerateLabelService"/>
+
+  <xs:element name="checkGenerateLabelServiceResponse" type="tns:checkGenerateLabelServiceResponse"/>
+
+  <xs:element name="generateBordereauByParcelsNumbers" type="tns:generateBordereauByParcelsNumbers"/>
+
+  <xs:element name="generateBordereauByParcelsNumbersResponse" type="tns:generateBordereauByParcelsNumbersResponse"/>
+
+  <xs:element name="generateBordereauByParcelsNumbersService" type="tns:generateBordereauByParcelsNumbersService"/>
+
+  <xs:element name="generateBordereauByParcelsNumbersServiceResponse" type="tns:generateBordereauByParcelsNumbersServiceResponse"/>
+
+  <xs:element name="generateLabel" type="tns:generateLabel"/>
+
+  <xs:element name="generateLabelResponse" type="tns:generateLabelResponse"/>
+
+  <xs:element name="generateLabelService" type="tns:generateLabelService"/>
+
+  <xs:element name="generateLabelServiceResponse" type="tns:generateLabelServiceResponse"/>
+
+  <xs:element name="generateToken" type="tns:generateToken"/>
+
+  <xs:element name="generateTokenResponse" type="tns:generateTokenResponse"/>
+
+  <xs:element name="generateTokenService" type="tns:generateTokenService"/>
+
+  <xs:element name="generateTokenServiceResponse" type="tns:generateTokenServiceResponse"/>
+
+  <xs:element name="getBordereauByNumber" type="tns:getBordereauByNumber"/>
+
+  <xs:element name="getBordereauByNumberResponse" type="tns:getBordereauByNumberResponse"/>
+
+  <xs:element name="getListMailBoxPickingDates" type="tns:getListMailBoxPickingDates"/>
+
+  <xs:element name="getListMailBoxPickingDatesResponse" type="tns:getListMailBoxPickingDatesResponse"/>
+
+  <xs:element name="getListMailBoxPickingDatesService" type="tns:getListMailBoxPickingDatesService"/>
+
+  <xs:element name="getListMailBoxPickingDatesServiceResponse" type="tns:getListMailBoxPickingDatesServiceResponse"/>
+
+  <xs:element name="getProductInter" type="tns:getProductInter"/>
+
+  <xs:element name="getProductInterResponse" type="tns:getProductInterResponse"/>
+
+  <xs:element name="getProductInterService" type="tns:getProductInterService"/>
+
+  <xs:element name="getProductInterServiceResponse" type="tns:getProductInterServiceResponse"/>
+
+  <xs:element name="planPickup" type="tns:planPickup"/>
+
+  <xs:element name="planPickupResponse" type="tns:planPickupResponse"/>
+
+  <xs:element name="planPickupService" type="tns:planPickupService"/>
+
+  <xs:element name="planPickupServiceResponse" type="tns:planPickupServiceResponse"/>
+
+  <xs:complexType name="checkGenerateLabelService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element minOccurs="0" name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typeOutputFormat">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="x" type="xs:int"/>
+      <xs:element minOccurs="0" name="y" type="xs:int"/>
+      <xs:element minOccurs="0" name="outputPrintingType" type="xs:string"/>
+      <xs:element minOccurs="0" name="dematerialized" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="returnType" type="xs:string"/>
+      <xs:element minOccurs="0" name="printCODDocument" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typeLetter">
+    <xs:sequence>
+      <xs:element name="service">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="productCode" type="xs:string"/>
+            <xs:element name="depositDate" type="xs:date"/>
+            <xs:element minOccurs="0" name="mailBoxPicking" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="mailBoxPickingDate" type="xs:date"/>
+            <xs:element minOccurs="0" name="vatCode" type="xs:int"/>
+            <xs:element minOccurs="0" name="vatPercentage" type="xs:int"/>
+            <xs:element minOccurs="0" name="vatAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="transportationAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="totalAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="orderNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="commercialName" type="xs:string"/>
+            <xs:element minOccurs="0" name="returnTypeChoice" type="xs:int"/>
+            <xs:element minOccurs="0" name="reseauPostal" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parcel">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="parcelNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="insuranceAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="insuranceValue" type="xs:int"/>
+            <xs:element minOccurs="0" name="recommendationLevel" type="xs:string"/>
+            <xs:element minOccurs="0" name="weight" type="xs:float"/>
+            <xs:element minOccurs="0" name="nonMachinable" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="COD" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="CODAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="CODCurrency" type="xs:string"/>
+            <xs:element minOccurs="0" name="returnReceipt" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="instructions" type="xs:string"/>
+            <xs:element minOccurs="0" name="pickupLocationId" type="xs:string"/>
+            <xs:element minOccurs="0" name="ftd" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="ddp" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="disabledDeliveryBlockingCode" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="customsDeclarations">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="includeCustomsDeclarations" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="numberOfCopies" type="xs:int"/>
+            <xs:element minOccurs="0" name="contents">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element maxOccurs="unbounded" minOccurs="0" name="article" nillable="true">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element minOccurs="0" name="description" type="xs:string"/>
+                        <xs:element name="quantity" type="xs:int"/>
+                        <xs:element name="weight" type="xs:float"/>
+                        <xs:element name="value" type="xs:float"/>
+                        <xs:element minOccurs="0" name="hsCode" type="xs:string"/>
+                        <xs:element minOccurs="0" name="originCountry" type="xs:string"/>
+                        <xs:element minOccurs="0" name="currency" type="xs:string"/>
+                        <xs:element minOccurs="0" name="artref" type="xs:string"/>
+                        <xs:element minOccurs="0" name="originalIdent" type="xs:string"/>
+                        <xs:element minOccurs="0" name="vatAmount" type="xs:float"/>
+                        <xs:element minOccurs="0" name="customsFees" type="xs:float"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element minOccurs="0" name="category">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="value" type="xs:int"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element maxOccurs="unbounded" minOccurs="0" name="original" nillable="true">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element minOccurs="0" name="originalIdent" type="xs:string"/>
+                        <xs:element minOccurs="0" name="originalInvoiceNumber" type="xs:string"/>
+                        <xs:element minOccurs="0" name="originalInvoiceDate" type="xs:date"/>
+                        <xs:element minOccurs="0" name="originalParcelNumber" type="xs:string"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element minOccurs="0" name="explanations" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="importersReference" type="xs:string"/>
+            <xs:element minOccurs="0" name="importersContact" type="xs:string"/>
+            <xs:element minOccurs="0" name="officeOrigin" type="xs:string"/>
+            <xs:element minOccurs="0" name="comments" type="xs:string"/>
+            <xs:element minOccurs="0" name="description" type="xs:string"/>
+            <xs:element minOccurs="0" name="invoiceNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="licenceNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="certificatNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="importerAddress" type="tns:typeAdresse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="sender">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="senderParcelRef" type="xs:string"/>
+            <xs:element minOccurs="0" name="address" type="tns:typeAdresse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="addressee">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="addresseeParcelRef" type="xs:string"/>
+            <xs:element minOccurs="0" name="codeBarForReference" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="serviceInfo" type="xs:string"/>
+            <xs:element minOccurs="0" name="promotionCode" type="xs:string"/>
+            <xs:element name="address" type="tns:typeAdresse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="codSenderAddress" type="tns:typeAdresse"/>
+      <xs:element minOccurs="0" name="uploadDocument">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="documentContent" type="xs:base64Binary"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typeAdresse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="companyName" type="xs:string"/>
+      <xs:element minOccurs="0" name="lastName" type="xs:string"/>
+      <xs:element minOccurs="0" name="firstName" type="xs:string"/>
+      <xs:element minOccurs="0" name="line0" type="xs:string"/>
+      <xs:element minOccurs="0" name="line1" type="xs:string"/>
+      <xs:element minOccurs="0" name="line2" type="xs:string"/>
+      <xs:element minOccurs="0" name="line3" type="xs:string"/>
+      <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="phoneNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="mobileNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="doorCode1" type="xs:string"/>
+      <xs:element minOccurs="0" name="doorCode2" type="xs:string"/>
+      <xs:element minOccurs="0" name="email" type="xs:string"/>
+      <xs:element minOccurs="0" name="intercom" type="xs:string"/>
+      <xs:element minOccurs="0" name="language" type="xs:string"/>
+      <xs:element minOccurs="0" name="stateOrProvinceCode" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typeFields">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="field" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkGenerateLabelServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:CheckGenerateLabelResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CheckGenerateLabelResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="baseResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="messages" nillable="true" type="tns:message"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="message">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+      <xs:element minOccurs="0" name="messageContent" type="xs:string"/>
+      <xs:element minOccurs="0" name="type" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateBordereauByParcelsNumbers">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element name="generateBordereauParcelNumberList">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="parcelsNumbers" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateBordereauByParcelsNumbersResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bordereauResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bordereauResponse">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bordereau" type="tns:bordereau"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bordereau">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="bordereauDataHandler" type="xs:base64Binary"/>
+      <xs:element minOccurs="0" name="bordereauHeader" type="tns:bordereauHeader"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bordereauHeader">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="address" type="xs:string"/>
+      <xs:element name="bordereauNumber" type="xs:long"/>
+      <xs:element minOccurs="0" name="clientNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="codeSitePCH" type="xs:int"/>
+      <xs:element minOccurs="0" name="company" type="xs:string"/>
+      <xs:element minOccurs="0" name="nameSitePCH" type="xs:string"/>
+      <xs:element name="numberOfParcels" type="xs:long"/>
+      <xs:element minOccurs="0" name="publishingDate" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateTokenService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateTokenServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GenerateTokenResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GenerateTokenResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="tokenResponse" type="tns:tokenResponse"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tokenResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="label" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="cn23" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="Cab2D" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="parcelNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="parcelNumberPartner" type="xs:string"/>
+      <xs:element minOccurs="0" name="pdfUrl" type="xs:string"/>
+      <xs:element minOccurs="0" name="token" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getProductInterService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="tns:GetProductInterRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetProductInterRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element name="productCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="insurance" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="nonMachinable" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="returnReceipt" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getProductInterServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GetProductInterResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetProductInterResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="product" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="partnerType" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="returnTypeChoice" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="getBordereauByNumber">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element name="bordereauNumber" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getBordereauByNumberResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bordereauResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getListMailBoxPickingDates">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="getListMailBoxPickingDatesRetourRequest" type="tns:GetListMailBoxPickingDatesRetourRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetListMailBoxPickingDatesRetourRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element name="sender">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="line0" type="xs:string"/>
+            <xs:element minOccurs="0" name="line1" type="xs:string"/>
+            <xs:element minOccurs="0" name="line2" type="xs:string"/>
+            <xs:element minOccurs="0" name="line3" type="xs:string"/>
+            <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+            <xs:element name="zipCode" type="xs:string"/>
+            <xs:element minOccurs="0" name="city" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getListMailBoxPickingDatesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GetListMailBoxPickingDatesResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetListMailBoxPickingDatesResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="mailBoxPickingDateMaxHour" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="mailBoxPickingDates" nillable="true" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="validityTime" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="generateLabelService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateLabelServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GenerateLabelResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GenerateLabelResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="labelXmlReponse" type="tns:xmlResponse"/>
+          <xs:element minOccurs="0" name="labelResponse" type="tns:labelResponse"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="xmlResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cn23" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="addressee">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="addresseeParcelRef" type="xs:string"/>
+            <xs:element minOccurs="0" name="codeBarForReference" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="serviceInfo" type="xs:string"/>
+            <xs:element minOccurs="0" name="promotionCode" type="xs:string"/>
+            <xs:element name="address" type="tns:typeAdresse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="barCodeCityssimo" type="xs:string"/>
+      <xs:element minOccurs="0" name="barCodePCH" type="xs:string"/>
+      <xs:element minOccurs="0" name="barCodeRouting" type="xs:string"/>
+      <xs:element minOccurs="0" name="belgiumLabel" type="tns:belgiumLabel"/>
+      <xs:element minOccurs="0" name="cabAztec" type="xs:string"/>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="elementVisual" nillable="true" type="tns:elementVisual"/>
+      <xs:element minOccurs="0" name="numberPCH" type="xs:string"/>
+      <xs:element minOccurs="0" name="numberRouting" type="xs:string"/>
+      <xs:element minOccurs="0" name="parcelNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="parcelNumberPartner" type="xs:string"/>
+      <xs:element minOccurs="0" name="pickupLocation" type="tns:pickupLocation"/>
+      <xs:element minOccurs="0" name="routing" type="tns:routing"/>
+      <xs:element minOccurs="0" name="sender">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="senderParcelRef" type="xs:string"/>
+            <xs:element minOccurs="0" name="address" type="tns:typeAdresse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="sitePCH" type="tns:site"/>
+      <xs:element minOccurs="0" name="swissLabel" type="tns:swissLabel"/>
+      <xs:element minOccurs="0" name="zoneRouting" type="tns:zoneRouting"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="belgiumLabel">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codeBarre" type="xs:string"/>
+      <xs:element minOccurs="0" name="codeVAS" type="tns:codeVAS"/>
+      <xs:element minOccurs="0" name="identification" type="xs:string"/>
+      <xs:element minOccurs="0" name="returnAddress" type="tns:returnAddressBelgium"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="codeVAS">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deliveryMode" type="xs:string"/>
+      <xs:element minOccurs="0" name="mention" type="xs:string"/>
+      <xs:element minOccurs="0" name="reserve" type="xs:string"/>
+      <xs:element minOccurs="0" name="signature" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="returnAddressBelgium">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="line1" type="xs:string"/>
+      <xs:element minOccurs="0" name="line2" type="xs:string"/>
+      <xs:element minOccurs="0" name="mention" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="elementVisual">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="position" type="xs:string"/>
+      <xs:element minOccurs="0" name="shortcut" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pickupLocation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="address" type="tns:addressPickupLocation"/>
+      <xs:element minOccurs="0" name="groupRouting" type="xs:string"/>
+      <xs:element minOccurs="0" name="idPartenaire" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="netWork" type="xs:string"/>
+      <xs:element minOccurs="0" name="pointId" type="xs:string"/>
+      <xs:element minOccurs="0" name="routingFileVersion" type="xs:string"/>
+      <xs:element minOccurs="0" name="routingZipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="serviceLabel" type="xs:string"/>
+      <xs:element minOccurs="0" name="sortDistribution" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="addressPickupLocation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="countryLabel" type="xs:string"/>
+      <xs:element minOccurs="0" name="line1" type="xs:string"/>
+      <xs:element minOccurs="0" name="line2" type="xs:string"/>
+      <xs:element minOccurs="0" name="line3" type="xs:string"/>
+      <xs:element minOccurs="0" name="line4" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="routing">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="barcodeId" type="xs:string"/>
+      <xs:element minOccurs="0" name="barcodePostcode" type="xs:string"/>
+      <xs:element minOccurs="0" name="buAlphaStr" type="xs:string"/>
+      <xs:element minOccurs="0" name="buCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="depotDest" type="xs:string"/>
+      <xs:element minOccurs="0" name="destinationCountry" type="xs:string"/>
+      <xs:element minOccurs="0" name="destinationCountryText" type="xs:string"/>
+      <xs:element minOccurs="0" name="destinationDepot" type="xs:string"/>
+      <xs:element minOccurs="0" name="destinationDepotCountry" type="xs:string"/>
+      <xs:element minOccurs="0" name="destinationDepotStr" type="xs:string"/>
+      <xs:element minOccurs="0" name="groupingPriority" type="xs:string"/>
+      <xs:element minOccurs="0" name="groupingPriorityLabel" type="xs:string"/>
+      <xs:element minOccurs="0" name="networkCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="partnerCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="partnerType" type="xs:string"/>
+      <xs:element minOccurs="0" name="routingVersion" type="xs:string"/>
+      <xs:element minOccurs="0" name="serviceMark" type="xs:string"/>
+      <xs:element minOccurs="0" name="serviceText" type="xs:string"/>
+      <xs:element minOccurs="0" name="sortDest" type="xs:string"/>
+      <xs:element minOccurs="0" name="sortOrigin" type="xs:string"/>
+      <xs:element minOccurs="0" name="version" type="xs:string"/>
+      <xs:element minOccurs="0" name="cSort" type="xs:string"/>
+      <xs:element minOccurs="0" name="dCountry" type="xs:string"/>
+      <xs:element minOccurs="0" name="dDepot" type="xs:string"/>
+      <xs:element minOccurs="0" name="dDepotCountry" type="xs:string"/>
+      <xs:element minOccurs="0" name="dDepotStr" type="xs:string"/>
+      <xs:element minOccurs="0" name="dSort" type="xs:string"/>
+      <xs:element minOccurs="0" name="oSort" type="xs:string"/>
+      <xs:element minOccurs="0" name="sSort" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="site">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="address" type="tns:addressPCH"/>
+      <xs:element minOccurs="0" name="code" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="RDepot" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="addressPCH">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="line0" type="xs:string"/>
+      <xs:element minOccurs="0" name="line1" type="xs:string"/>
+      <xs:element minOccurs="0" name="line2" type="xs:string"/>
+      <xs:element minOccurs="0" name="line3" type="xs:string"/>
+      <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="swissLabel">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="injectionSite" type="xs:string"/>
+      <xs:element minOccurs="0" name="signatureOption" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="codeSwissPost" type="xs:string"/>
+      <xs:element minOccurs="0" name="swissParcelNumber" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="zoneRouting">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="zoneCABRoutage" type="tns:zoneCABRoutage"/>
+      <xs:element minOccurs="0" name="zoneInfosRoutage" type="tns:zoneInfosRoutage"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="zoneCABRoutage">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="barCodeRouting" type="xs:string"/>
+      <xs:element minOccurs="0" name="parcelNumberRouting" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="zoneInfosRoutage">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="controlKeyTrackingNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="datePrinting" type="xs:string"/>
+      <xs:element minOccurs="0" name="hourPrinting" type="xs:string"/>
+      <xs:element minOccurs="0" name="identificationDestination1" type="xs:string"/>
+      <xs:element minOccurs="0" name="identificationDestination2" type="xs:string"/>
+      <xs:element minOccurs="0" name="MSort" type="xs:string"/>
+      <xs:element minOccurs="0" name="numberVersionWS" type="xs:string"/>
+      <xs:element minOccurs="0" name="routingVersion" type="xs:string"/>
+      <xs:element minOccurs="0" name="serviceMark" type="xs:string"/>
+      <xs:element minOccurs="0" name="sortDest" type="xs:string"/>
+      <xs:element minOccurs="0" name="sortOrigin" type="xs:string"/>
+      <xs:element minOccurs="0" name="trackingNumberRouting" type="xs:string"/>
+      <xs:element minOccurs="0" name="typeServiceLivraison" type="xs:string"/>
+      <xs:element minOccurs="0" name="rDepot" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="labelResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="label" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="cn23" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      <xs:element minOccurs="0" name="parcelNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="parcelNumberPartner" type="xs:string"/>
+      <xs:element minOccurs="0" name="pdfUrl" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateLabel">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="generateLabelRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateLabelResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GenerateLabelResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickup">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="planPickupRequest" type="tns:planPickupRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickupRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+      <xs:element name="parcelNumber" type="xs:string"/>
+      <xs:element minOccurs="0" name="mailBoxPickingDate" type="xs:date"/>
+      <xs:element name="sender" type="tns:typePlanPickupSender"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typePlanPickupSender">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="companyName" type="xs:string"/>
+      <xs:element minOccurs="0" name="lastName" type="xs:string"/>
+      <xs:element minOccurs="0" name="firstName" type="xs:string"/>
+      <xs:element minOccurs="0" name="line0" type="xs:string"/>
+      <xs:element minOccurs="0" name="line1" type="xs:string"/>
+      <xs:element minOccurs="0" name="line2" type="xs:string"/>
+      <xs:element minOccurs="0" name="line3" type="xs:string"/>
+      <xs:element name="zipCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="city" type="xs:string"/>
+      <xs:element minOccurs="0" name="countryCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="email" type="xs:string"/>
+      <xs:element minOccurs="0" name="phoneNumber" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickupResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:planPickupResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickupResponseType">
+    <xs:complexContent>
+      <xs:extension base="tns:baseResponse">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="generateBordereauByParcelsNumbersService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="parcelsNumbers" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="arg4" type="tns:typeFields"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateBordereauByParcelsNumbersServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:bordereauResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateToken">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="generateTokenRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generateTokenResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GenerateTokenResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickupService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="tns:planPickupRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="planPickupServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:planPickupResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkGenerateLabel">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="checkGenerateLabelRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="contractNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+            <xs:element minOccurs="0" name="outputFormat" type="tns:typeOutputFormat"/>
+            <xs:element name="letter" type="tns:typeLetter"/>
+            <xs:element minOccurs="0" name="fields" type="tns:typeFields"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkGenerateLabelResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:CheckGenerateLabelResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getListMailBoxPickingDatesService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="tns:GetListMailBoxPickingDatesRetourRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getListMailBoxPickingDatesServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GetListMailBoxPickingDatesResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getProductInter">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="getProductInterRequest" type="tns:GetProductInterRequest"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getProductInterResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:GetProductInterResponseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="generateLabelResponse">
+    <wsdl:part element="tns:generateLabelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateLabelServiceResponse">
+    <wsdl:part element="tns:generateLabelServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateTokenServiceResponse">
+    <wsdl:part element="tns:generateTokenServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="checkGenerateLabelService">
+    <wsdl:part element="tns:checkGenerateLabelService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getListMailBoxPickingDatesServiceResponse">
+    <wsdl:part element="tns:getListMailBoxPickingDatesServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBordereauByNumber">
+    <wsdl:part element="tns:getBordereauByNumber" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getListMailBoxPickingDates">
+    <wsdl:part element="tns:getListMailBoxPickingDates" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateBordereauByParcelsNumbersServiceResponse">
+    <wsdl:part element="tns:generateBordereauByParcelsNumbersServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateLabel">
+    <wsdl:part element="tns:generateLabel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="checkGenerateLabelResponse">
+    <wsdl:part element="tns:checkGenerateLabelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateToken">
+    <wsdl:part element="tns:generateToken" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="checkGenerateLabel">
+    <wsdl:part element="tns:checkGenerateLabel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getListMailBoxPickingDatesService">
+    <wsdl:part element="tns:getListMailBoxPickingDatesService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProductInter">
+    <wsdl:part element="tns:getProductInter" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProductInterServiceResponse">
+    <wsdl:part element="tns:getProductInterServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="planPickupResponse">
+    <wsdl:part element="tns:planPickupResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateTokenResponse">
+    <wsdl:part element="tns:generateTokenResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateBordereauByParcelsNumbers">
+    <wsdl:part element="tns:generateBordereauByParcelsNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateTokenService">
+    <wsdl:part element="tns:generateTokenService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProductInterService">
+    <wsdl:part element="tns:getProductInterService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateLabelService">
+    <wsdl:part element="tns:generateLabelService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="planPickupServiceResponse">
+    <wsdl:part element="tns:planPickupServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="planPickup">
+    <wsdl:part element="tns:planPickup" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="checkGenerateLabelServiceResponse">
+    <wsdl:part element="tns:checkGenerateLabelServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateBordereauByParcelsNumbersService">
+    <wsdl:part element="tns:generateBordereauByParcelsNumbersService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="planPickupService">
+    <wsdl:part element="tns:planPickupService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBordereauByNumberResponse">
+    <wsdl:part element="tns:getBordereauByNumberResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getListMailBoxPickingDatesResponse">
+    <wsdl:part element="tns:getListMailBoxPickingDatesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="generateBordereauByParcelsNumbersResponse">
+    <wsdl:part element="tns:generateBordereauByParcelsNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProductInterResponse">
+    <wsdl:part element="tns:getProductInterResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ServiceV3WS">
+    <wsdl:operation name="checkGenerateLabelService">
+      <wsdl:input message="tns:checkGenerateLabelService" name="checkGenerateLabelService">
+    </wsdl:input>
+      <wsdl:output message="tns:checkGenerateLabelServiceResponse" name="checkGenerateLabelServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateBordereauByParcelsNumbers">
+      <wsdl:input message="tns:generateBordereauByParcelsNumbers" name="generateBordereauByParcelsNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:generateBordereauByParcelsNumbersResponse" name="generateBordereauByParcelsNumbersResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateTokenService">
+      <wsdl:input message="tns:generateTokenService" name="generateTokenService">
+    </wsdl:input>
+      <wsdl:output message="tns:generateTokenServiceResponse" name="generateTokenServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProductInterService">
+      <wsdl:input message="tns:getProductInterService" name="getProductInterService">
+    </wsdl:input>
+      <wsdl:output message="tns:getProductInterServiceResponse" name="getProductInterServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBordereauByNumber">
+      <wsdl:input message="tns:getBordereauByNumber" name="getBordereauByNumber">
+    </wsdl:input>
+      <wsdl:output message="tns:getBordereauByNumberResponse" name="getBordereauByNumberResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListMailBoxPickingDates">
+      <wsdl:input message="tns:getListMailBoxPickingDates" name="getListMailBoxPickingDates">
+    </wsdl:input>
+      <wsdl:output message="tns:getListMailBoxPickingDatesResponse" name="getListMailBoxPickingDatesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateLabelService">
+      <wsdl:input message="tns:generateLabelService" name="generateLabelService">
+    </wsdl:input>
+      <wsdl:output message="tns:generateLabelServiceResponse" name="generateLabelServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateLabel">
+      <wsdl:input message="tns:generateLabel" name="generateLabel">
+    </wsdl:input>
+      <wsdl:output message="tns:generateLabelResponse" name="generateLabelResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="planPickup">
+      <wsdl:input message="tns:planPickup" name="planPickup">
+    </wsdl:input>
+      <wsdl:output message="tns:planPickupResponse" name="planPickupResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateBordereauByParcelsNumbersService">
+      <wsdl:input message="tns:generateBordereauByParcelsNumbersService" name="generateBordereauByParcelsNumbersService">
+    </wsdl:input>
+      <wsdl:output message="tns:generateBordereauByParcelsNumbersServiceResponse" name="generateBordereauByParcelsNumbersServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateToken">
+      <wsdl:input message="tns:generateToken" name="generateToken">
+    </wsdl:input>
+      <wsdl:output message="tns:generateTokenResponse" name="generateTokenResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="planPickupService">
+      <wsdl:input message="tns:planPickupService" name="planPickupService">
+    </wsdl:input>
+      <wsdl:output message="tns:planPickupServiceResponse" name="planPickupServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="checkGenerateLabel">
+      <wsdl:input message="tns:checkGenerateLabel" name="checkGenerateLabel">
+    </wsdl:input>
+      <wsdl:output message="tns:checkGenerateLabelResponse" name="checkGenerateLabelResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListMailBoxPickingDatesService">
+      <wsdl:input message="tns:getListMailBoxPickingDatesService" name="getListMailBoxPickingDatesService">
+    </wsdl:input>
+      <wsdl:output message="tns:getListMailBoxPickingDatesServiceResponse" name="getListMailBoxPickingDatesServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProductInter">
+      <wsdl:input message="tns:getProductInter" name="getProductInter">
+    </wsdl:input>
+      <wsdl:output message="tns:getProductInterResponse" name="getProductInterResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SlsServiceWSSoapBinding" type="tns:ServiceV3WS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="checkGenerateLabelService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="checkGenerateLabelService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="checkGenerateLabelServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateBordereauByParcelsNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateBordereauByParcelsNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateBordereauByParcelsNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateTokenService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateTokenService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateTokenServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProductInterService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getProductInterService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getProductInterServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBordereauByNumber">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getBordereauByNumber">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBordereauByNumberResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListMailBoxPickingDates">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getListMailBoxPickingDates">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getListMailBoxPickingDatesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateLabelService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateLabelService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateLabelServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateLabel">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateLabel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateLabelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="planPickup">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="planPickup">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="planPickupResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateBordereauByParcelsNumbersService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateBordereauByParcelsNumbersService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateBordereauByParcelsNumbersServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generateToken">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="generateToken">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="generateTokenResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="planPickupService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="planPickupService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="planPickupServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="checkGenerateLabel">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="checkGenerateLabel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="checkGenerateLabelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListMailBoxPickingDatesService">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getListMailBoxPickingDatesService">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getListMailBoxPickingDatesServiceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProductInter">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getProductInter">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getProductInterResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SlsServiceWS">
+    <wsdl:port binding="tns:SlsServiceWSSoapBinding" name="SlsServiceWSPort">
+      <soap:address location="http://ws.colissimo.fr/sls-ws/SlsServiceWS"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

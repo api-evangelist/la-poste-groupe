@@ -1,0 +1,55 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for La Poste Suivi v2
+  version: 1.0.0
+x-generated: '2026-09-02'
+x-method: generated
+x-source: openapi/la-poste-groupe-suivi-openapi.json
+x-note: >-
+  Applies to openapi/la-poste-groupe-suivi-openapi.json. Every action below is a
+  correction or an addition grounded in something La Poste itself publishes - the
+  catalog entry at developer.laposte.fr/catalog-apis/suivi@2, the status page, or a
+  live gateway response observed on 2026-09-02. Nothing here invents behaviour, and
+  the original document is never modified.
+x-extends: openapi/la-poste-groupe-suivi-openapi.json
+actions:
+- target: $.info
+  description: >-
+    Add the contact and documentation the portal publishes but the spec omits, and
+    correct a license block whose url is an empty string.
+  update:
+    contact:
+      name: La Poste Developer (Okapi)
+      url: https://developer.laposte.fr/catalog-apis/suivi@2
+    termsOfService: https://developer.laposte.fr/cgu
+- target: $.paths['/idships/{idship}'].get
+  description: >-
+    operationId is "1.0", a version number rather than an identifier. Replace it
+    with a stable, descriptive one so generated clients and agent tools get a usable
+    method name.
+  update:
+    operationId: getShipmentTracking
+- target: $.paths['/idships/{idship}'].options
+  description: operationId is "1.1"; same correction.
+  update:
+    operationId: preflightShipmentTracking
+- target: $.paths['/idships/{idship}'].get
+  description: >-
+    Record the plan quota the portal publishes for the only Suivi plan, so a client
+    can pace itself without reading the portal - 10 calls per second, and the plan
+    is private (access on request).
+  update:
+    x-rate-limit:
+      plan: free
+      privacy: private
+      limit: 10
+      window_seconds: 1
+      source: https://developer.laposte.fr/catalog-apis/suivi@2
+- target: $.paths['/idships/{idship}'].get.responses['207']
+  description: >-
+    Flag the trap in this contract - a 207 body is an array of per-shipment
+    envelopes each carrying its own returnCode, so HTTP status alone does not tell a
+    caller whether a given tracking number resolved.
+  update:
+    x-partial-success: true
+    x-per-item-status-field: returnCode

@@ -1,0 +1,64 @@
+generated: '2026-09-02'
+method: probed
+source: >-
+  https://developer.laposte.fr/api/projects/apis/envs/api/<slug>/autocomplete
+  (the unauthenticated environment list the portal itself renders) and the portal
+  application-key model observed in the Okapi front end (generateAppKey mutation
+  with a `sandbox` boolean), 2026-09-02.
+published: true
+model: >-
+  Okapi models test-vs-live as ENVIRONMENTS on the API plus a sandbox flag on the
+  application key, not as a separate host or a key prefix. Every Okapi-managed API
+  in the catalogue exposes exactly two environments - `production` (isDefault) and
+  `sandbox` - and an application can mint either a production key or a sandbox key
+  for the same subscription.
+environments:
+- value: production
+  name: Production
+  default: true
+- value: sandbox
+  name: Sandbox
+  default: false
+apis_with_sandbox:
+- {api: La Poste Suivi v2, slug: suivi@2}
+- {api: La Poste ControlAdresse v2, slug: controladresse@2}
+- {api: La Poste Geolocalisation v1, slug: geolocalisation@1}
+- {api: La Poste Geolocalisation inversee v1, slug: geolocinversee@1}
+- {api: Digiposte v3, slug: digiposte@3}
+- {api: Code de la route v2, slug: codedelaroute@2}
+- {api: La Poste Open Data v1, slug: opendata@1}
+- {api: Lettre recommandee en ligne v1, slug: lettre-recommandee-en-ligne@1}
+- {api: Colissimo, slug: colissimo@1}
+keys:
+  mechanism: application key with a sandbox boolean
+  header: X-Okapi-Key
+  prefix_distinguishes_mode: false
+  finding: >-
+    A sandbox key and a production key are both plain X-Okapi-Key values with no
+    distinguishing prefix. Unlike Stripe's sk_test_/sk_live_ split, there is nothing
+    in the credential itself that tells a caller - or an agent, or a code reviewer -
+    which mode it is operating in. Mode is a property of the key record on the
+    server, invisible at the call site.
+test_data:
+  published: false
+  finding: >-
+    No test tracking numbers, no test addresses, no fixture documents, no test
+    membership identifiers and no trigger/simulation tooling are published. The
+    Suivi spec's example identifiers (6S00993561113, 6M20132968235) are
+    documentation examples, not guaranteed sandbox fixtures, and are recorded here
+    as such rather than as test values.
+time_simulation:
+  published: false
+dry_run:
+  colissimo:
+    operations: [checkGenerateLabel, checkGenerateLabelService]
+    note: >-
+      The Colissimo SOAP contract is the only surface in the estate with a real
+      pre-flight - checkGenerateLabel validates a label request without producing a
+      label. Source: wsdl/la-poste-groupe-colissimo-sls.wsdl.
+  rest_apis:
+    supported: false
+gaps:
+- No published sandbox base URL - the sandbox is selected by key, not by host.
+- No test-mode indicator in the credential.
+- No published fixtures for any API.

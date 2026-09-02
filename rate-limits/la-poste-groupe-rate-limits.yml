@@ -1,0 +1,60 @@
+generated: '2026-09-02'
+method: probed
+source: >-
+  Plan quota limiters read from https://developer.laposte.fr/api/catalog-apis/<slug>
+  (quotaLimiter.quotaCount / quotaLimiter.quotaTime), plus a live unauthenticated
+  request to https://api.laposte.fr/suivi/v2/idships/6M20132968235 on 2026-09-02
+  to observe what the gateway actually returns.
+scope_note: >-
+  Limits on the Okapi gateway are attached to the PLAN a subscription sits on, not
+  to the endpoint. quotaTime is a window in seconds; quotaCount is the number of
+  calls allowed inside it.
+limit_count: 5
+limits:
+- api: La Poste Suivi v2
+  plan: free
+  scope: per-subscription (plan quota)
+  window: 1 second
+  limit: 10
+  burst: not published
+- api: La Poste ControlAdresse v2
+  plan: Freemium
+  scope: per-subscription (plan quota)
+  window: 31536001 seconds (one year)
+  limit: 2000
+  burst: not published
+- api: La Poste Geolocalisation v1
+  plan: Freemium
+  scope: per-subscription (plan quota)
+  window: 31536001 seconds (one year)
+  limit: 300
+  burst: not published
+- api: La Poste Geolocalisation inversee v1
+  plan: Freemium
+  scope: per-subscription (plan quota)
+  window: 31536001 seconds (one year)
+  limit: 300
+  burst: not published
+- api: Code de la route v2
+  plan: free
+  scope: per-subscription (plan quota)
+  window: 1 second
+  limit: 100
+  burst: not published
+unmetered:
+- api: Digiposte v3
+  note: plan carries no quotaLimiter
+- api: La Poste Open Data v1
+  note: plan carries no quotaLimiter
+response_headers:
+  observed: []
+  finding: >-
+    NONE. A live unauthenticated GET of https://api.laposte.fr/suivi/v2/idships/...
+    on 2026-09-02 returned HTTP 401 with headers
+    strict-transport-security, x-okapi-successful, x-okapi-request-id,
+    x-powered-by: okapi-api@4.77.1, served-by: Akamai - and no X-RateLimit-*,
+    no RateLimit-*, no Retry-After. The gateway publishes its quota in the plan
+    card but does not signal remaining quota at runtime, so an agent cannot pace
+    itself from the response and only learns it is over by being refused.
+  exhaustion_status: not documented
+  paced_from: plan card only

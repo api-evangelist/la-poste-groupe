@@ -1,0 +1,2478 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "**Bienvenue sur l’API Coffre-fort numérique Digiposte&nbsp;+.**\n\n![Digiposte](/upload/logos/digiposte-v1.png)\n\nCette API permet d’envoyer et archiver des documents certifiés dans un coffre-fort numérique Digiposte&nbsp;+ à valeur probante, pour vos clients ou utilisateurs.\n\nQue vous émettiez des factures, des attestations, des relevés, des avis… ou de simples courriers numériques, proposez à vos utilisateurs de les archiver automatiquement dans un coffre-fort numérique Digiposte&nbsp;+, dans lequel ils pourront centraliser tous leurs documents. Vous pouvez confier à Digiposte&nbsp;+ la responsabilité de l’archivage de vos documents clients et vous concentrer sur votre cœur de métier, tout en offrant un service innovant à vos clients.\n\nDigiposte&nbsp;+, c’est :\n\n- Un véritable coffre-fort numérique pour vos utilisateurs, pour conserver et retrouver leurs documents.\n\n- Un assistant personnel qui leur simplifiera les démarches administratives et quotidiennes.\n\n### Comment ça se passe pour vos utilisateurs ou vos clients ?\n\nDepuis votre site ou application, vous intégrez un bouton ou un lien (voir la partie Charte d'intégration).\n\nVotre utilisateur, en cliquant sur le bouton ou le lien, sera redirigé vers un parcours de consentement. S’il n’a pas de compte Digiposte&nbsp;+, il sera invité à créer un compte, sinon, à se connecter. Une fois cette étape terminée, vous pouvez le rediriger vers votre site.\n\nEnsuite, à chaque fois que vous enverrez un document dans Digiposte&nbsp;+ via les APIs de dépôt certifié, votre utilisateur recevra une notification (email et mobile) pour le prévenir.\nUn dossier sera automatiquement créé dans son coffre-fort Digiposte&nbsp;+, du nom de votre service, et tous les documents que vous enverrez y seront automatiquement archivés et classés.\n\nLes documents que vous envoyez dans Digiposte via l’API de dépôt certifié seront identifiés par un sigle « certifié La Poste », qui assure l’identité de l’émetteur (votre service) et la non altération du document pendant le process de dépôt et pendant toute sa durée de conservation. Vos utilisateurs bénéficieront ainsi d’un original numérique (ou copie certifiée conforme si vous conservez également le document dans votre espace client).\n\n## Les étapes à suivre pour intégrer nos APIs:\n\n### L’inscription\n\nPour commencer à utiliser les APIs, vous devez :\n\n- Disposer d’un compte « [La Poste Developer](https://developer.laposte.fr) » (inscription en libre-service sur ce site).\n\n- Souscrire à l’application Coffre-fort numérique Digiposte&nbsp;+ sur ce site « [La Poste Developer](https://developer.laposte.fr) ».\n\n- Générer une clé d’application « [La Poste Developer](https://developer.laposte.fr) » pour pouvoir consommer les ressources. Cette clé est associée au compte crée,\net doit être utilisée dans le header `X-Okapi-Key` à chaque requête.\n\nNote : « Emetteur » est le nom donné au service qui veut envoyer (déposer) des documents dans un coffre-fort utilisateur Digiposte&nbsp;+. En l’occurrence, l’émetteur, c’est votre service.\n\nVous pouvez dès à présent utiliser l'émetteur de recette `OKAPI` pour tester votre raccordement, et développer vos premiers de dépôt de documents avec cet émetteur.\n\n**Plateforme de recette « interop » :**\n\nLa plateforme de recette est accessible pour créer des comptes Digiposte factices :\n\nhttps://secure.interop.u-post.fr/inscription-plus\n\net\n\nhttps://secure.interop.u-post.fr/identification-plus\n\n**Émetteur de recette « OKAPI » :**\n\n`client_id: \"okapi\"`\n\n`client_secret : \"6mstVSvc38wq\"`\n\n`sender_PID : \"OKAPI\"`\n\nLes exemples ci-dessous utiliseront ces identifiants émetteurs.\n\nLa clé OKAPI `RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX` n'est pas fonctionnelle,\nil faut la remplacer par la vôtre, dans tous les appels de service ci-dessous.\n\n### La validation de votre demande\n\nEn tant que futur émetteur de documents certifiés Digiposte, des vérifications doivent être réalisées.\n\nPour cela, vous devez nous transmettre un certain nombre d'éléments qui serviront à établir votre statut d'émetteur.\n\nEnvoyez votre demande d’accès à [digiposte.api@laposte.fr](mailto:digiposte.api@laposte.fr) avec les informations suivantes :\n\n- Code SIRET/SIREN\n\n- Nom de la société\n\n- Description de votre activité et projet avec Digiposte&nbsp;+ (notamment la durée de conservation légale souhaitée de vos documents)\n\n- url de votre site web ou application mobile\n\n- url de votre logo (format 190x80px)\n\n- Coordonnées de contact (Nom, Prénom, Fonction, email, téléphone, adresse)\n\nDigiposte vous répondra dans les 2 jours ouvrés suivant votre demande. Sous réserve de l’acceptation de votre dossier, Digiposte vous fournira la clé API pour l’utilisation de ses APIs, ainsi que les informations pour l’environnement de préprod.\n\n### L’intégration\n\n**La recette**\n\nUne fois votre demande validée, Digiposte vous fournira les informations nécessaires à votre raccordement en tant\nqu'émetteur en recette.\n\n**La mise en production**\n\nUne fois la recette validée, Digiposte vous fournira les informations nécessaires à la mise en production.\n\n## Charte d’intégration\n\nL’utilisation du logo et de la marque Digiposte&nbsp;+ est soumise au respect de la charte d’intégration. Cette charte a pour objectif de vous fournir les guidelines d’intégration afin d’améliorer l’expérience utilisateur.\n\n### Intégration du bouton ou du lien sur votre espace client :\n\n« Archivez mes documents dans un coffre-fort numérique Digiposte&nbsp;+ ». Vous pouvez remplacer « documents » par un type plus précis de documents (factures, relevés, avis…) en fonction de votre service.\n\n### Description du service Digiposte&nbsp;+\n\nPour informer dès le début du parcours vos utilisateurs, vous pouvez insérer une courte description du service Digiposte&nbsp;+, en vous inspirant du contenu ci-dessous :\n\nDigiposte&nbsp;+ est un véritable coffre-fort numérique dans lequel vous pourrez conserver et retrouver vos documents en sécurité. L’archivage de vos documents de « nom de votre service » est gratuit, et pour vos autres documents, vous bénéficiez de 5Go de stockage gratuit. Au-delà, de nombreuses autres fonctionnalités font de Digiposte&nbsp;+ un assistant personnel qui vous simplifie la gestion administrative au quotidien.\nMessage de redirection\nUne fois le consentement effectué, vous pouvez rediriger votre utilisateur vers votre site. Il est recommandé de lui indiquer un message de confirmation de type « Votre demande a bien été prise en compte, vous recevrez vos documents dans votre compte Digiposte&nbsp;+ ».\n\n### Résiliation de l’adhésion\n\nSi l’utilisateur ne souhaite plus recevoir de documents dans son compte Digiposte&nbsp;+, il peut résilier l’adhésion dans son compte Digiposte&nbsp;+, depuis le web, dans mon profil / mes applications.\nSinon, vous pouvez également proposer un bouton ou un lien « Résilier l’adhésion à Digiposte&nbsp;+ » depuis votre site connecté, pour vos utilisateurs qui ont une adhésion active avec Digiposte&nbsp;+.\n\n## Principes du dépôt de document certifié\n\nUne fois raccordé, pour pouvoir déposer un document certifié, un émetteur doit :\n\n- Obtenir un jeton d'accès à un compte abonné Digiposte (Authentification)\n\n- Créer une adhésion à un flux documentaire (Adhésion)\n\n- Utiliser le code de routage généré pour transmettre un nouveau document à l'abonné (Dépôt)",
+    "title": "Digiposte v3",
+    "version": ""
+  },
+  "servers": [],
+  "paths": {
+    "/digiposte/v3/document/certified": {
+      "post": {
+        "parameters": [
+          {
+            "description": "e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "example": "RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "in": "header",
+            "name": "X-Okapi-Key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "e.g. ed249df4e1a149c9bc213bd9b4289a73",
+            "example": "ed249df4e1a149c9bc213bd9b4289a73",
+            "in": "header",
+            "name": "X-RouteCode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "e.g. 2",
+            "example": "2",
+            "in": "header",
+            "name": "X-Api-Version-Minor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json; charset=utf-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "document": {
+                        "algo": "SHA1",
+                        "archive_duration": "2020-07-26T13:27:45.690",
+                        "author_tags": "préfecture,essonne",
+                        "file_name": "test.pdf",
+                        "file_size": "140939",
+                        "hash": "e6122b1d8abd2afbeed93fb4672af8b23a5f56b6",
+                        "id_routage": "c441f90e99ca4f958131f1ed31e8fd65",
+                        "title": "Passeport certifié",
+                        "type": "PASSEPORT"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "Les contrôles d'intégrité sont assurés grâce à la taille du document et le calcul préalable d'une empreinte\ndu document, et transmis par le truchement des paramètres obligatoires suivants :\n\n- `file_size`: taille du document transmis en octets\n\n- `algo`: algorythme utilisé pour le calcul de l'empreinte (MD5, SHA1, SHA256 ou SHA512)\n\n- `hash`: Empreinte de contrôle du document\n\nPar défaut, si aucune valeur `archive_duration` n'est spécifiée, la durée d'archivage légale du type de\ndocument s'applique. Quand la durée est atteinte, le document est conservé mais sa taille compte alors\ndans le quota de stockage de l'abonné.\n\nLes `author_tags`peuvent être spécifiés pour permettre à l'abonné de rechercher ses documents par mots-clés.\n\nExemple de requête curl correspondant à l'appel décris ici :\n\n```\ncurl --header \"X-Okapi-Key: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX\" \\\\\n     --header \"Authorization: bearer 16fc0b67-ca75-4082-b6ba-2079db1ce34d\" \\\\\n     --header \"X-Dgp-UserId: 185fe86953e94e2692838a5f7cbff298\"\\\\\n     --header 'X-RouteCode: ed249df4e1a149c9bc213bd9b4289a73' \\\\\n     --header 'X-Api-Version-Minor: 2' \\\\\n     --header \"Content-Type:multipart/form-data\" \\\\\n     -X POST http://api.laposte.fr/digiposte/v3/document/certified \\\\\n     --form 'title=Passeport certifié' --form 'type=PASSEPORT' \\\\\n     --form 'algo=SHA1' --form 'hash=e6122b1d8abd2afbeed93fb4672af8b23a5f56b6' \\\\\n     --form 'file_name=test.pdf' --form 'file_size=140939' \\\\\n     --form 'archive=@test.pdf;type=application/pdf' \\\\\n     --form 'archive_duration=2020-07-26T13:27:45.690' \\\\\n     --form 'author_tags=préfecture,essonne'\n{\n  \"document\": {\n    \"type\": \"PASSEPORT\",\n    \"title\": \"Passeport certifié\",\n    \"file_name\": \"test.pdf\",\n    \"archive_duration\": \"2020-07-26T13:27:45.690\",\n    \"author_tags\": \"préfecture,essonne\",\n    \"hash\": \"e6122b1d8abd2afbeed93fb4672af8b23a5f56b6\",\n    \"algo\": \"SHA1\",\n    \"file_size\": \"140939\",\n    \"id_routage\": \"c441f90e99ca4f958131f1ed31e8fd65\"\n  }\n}\n```",
+        "operationId": "Déposer un document certifié",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "algo": {
+                    "description": "Algorithme de l'empreinte ex: MD5|SHA1|SHA256|SHA512",
+                    "type": "string"
+                  },
+                  "archive": {
+                    "description": "Document à ajouter (filename+type en header, binaire en body de la part)",
+                    "type": "string"
+                  },
+                  "archive_duration": {
+                    "description": "Date de fin d'archivage légal",
+                    "type": "string"
+                  },
+                  "author_tags": {
+                    "description": "Tags émetteur (séparés par des | ou des ,)",
+                    "type": "string"
+                  },
+                  "file_name": {
+                    "description": "Nom du document (déprécié, utiliser title)",
+                    "type": "string"
+                  },
+                  "file_size": {
+                    "description": "Taille du fichier en octets",
+                    "type": "string"
+                  },
+                  "hash": {
+                    "description": "Empreinte de contrôle du document",
+                    "type": "string"
+                  },
+                  "title": {
+                    "description": "Nom du document front sans extension",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Nature de document, liste accessible par GET /profile/documents",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "type",
+                  "algo",
+                  "hash",
+                  "file_name",
+                  "file_size",
+                  "archive"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Déposer un document certifié"
+      }
+    },
+    "/digiposte/v3/membership": {
+      "post": {
+        "parameters": [
+          {
+            "description": "e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "example": "RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "in": "header",
+            "name": "X-Okapi-Key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json; charset=utf-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "accept_full_dematerialization": false,
+                      "cancellable": true,
+                      "dematerialized_convention_date": "2017-05-30T12:46:34Z",
+                      "demo_account": false,
+                      "field1_label": "Aucun",
+                      "id": "ed249df4e1a149c9bc213bd9b4289a73",
+                      "inbox_folder_id": "c967c5116cb14e7aa172337f368ed172",
+                      "membership_date": "2017-05-30T12:46:34Z",
+                      "request_date": "2017-05-30T12:46:34Z",
+                      "sender": {
+                        "alternative_logo": "https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png",
+                        "auto_resiliation": true,
+                        "auto_validate_expiring_membership_default": false,
+                        "collected": false,
+                        "contracted": false,
+                        "contracted_creation_enabled": false,
+                        "convention_required": false,
+                        "convention_url": "https://api.laposte.fr",
+                        "document_naming": "Vos Documents Dématérialisés",
+                        "form_data": {
+                          "field1_label": "Aucun",
+                          "more_info": "Adhésion automatique",
+                          "security_plus": false,
+                          "sender_pid": "OKAPI"
+                        },
+                        "hr": false,
+                        "is_multi_subscription": true,
+                        "logo": "https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png",
+                        "mail_trust": false,
+                        "multilingual": false,
+                        "name": "OKAPI",
+                        "optional_address": true,
+                        "pid": "OKAPI",
+                        "sender_side_convention": true,
+                        "termination_message": "Parcours de résiliation",
+                        "type": "SENDER",
+                        "vip": false
+                      },
+                      "sender_kind": 0,
+                      "status": "ACTIVE"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "Pour faire adhérer un abonné à un nouveau flux documentaire.\n\nLe statut d'une adhésion valide est `ACTIVE`.",
+        "operationId": "Créer une adhésion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {},
+                "properties": {},
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Créer une adhésion"
+      }
+    },
+    "/digiposte/v3/membership/{id}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "Identifiant de l'adhésion à résilier",
+            "example": "ed249df4e1a149c9bc213bd9b4289a73",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "example": "RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "in": "header",
+            "name": "X-Okapi-Key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json; charset=utf-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "accept_full_dematerialization": false,
+                      "cancellable": true,
+                      "cancellation_date": "2017-05-30T12:50:40Z",
+                      "dematerialized_convention_date": "2017-05-30T12:46:34Z",
+                      "demo_account": false,
+                      "field1_label": "Aucun",
+                      "id": "ed249df4e1a149c9bc213bd9b4289a73",
+                      "inbox_folder_id": "c967c5116cb14e7aa172337f368ed172",
+                      "membership_date": "2017-05-30T12:46:34Z",
+                      "request_date": "2017-05-30T12:46:34Z",
+                      "sender": {
+                        "alternative_logo": "https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png",
+                        "auto_resiliation": true,
+                        "auto_validate_expiring_membership_default": false,
+                        "collected": false,
+                        "contracted": false,
+                        "contracted_creation_enabled": false,
+                        "convention_required": false,
+                        "convention_url": "https://api.laposte.fr",
+                        "document_naming": "Vos Documents Dématérialisés",
+                        "form_data": {
+                          "field1_label": "Aucun",
+                          "more_info": "Adhésion automatique",
+                          "security_plus": false,
+                          "sender_pid": "OKAPI"
+                        },
+                        "hr": false,
+                        "is_multi_subscription": true,
+                        "logo": "https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png",
+                        "mail_trust": false,
+                        "multilingual": false,
+                        "name": "OKAPI",
+                        "optional_address": true,
+                        "pid": "OKAPI",
+                        "sender_side_convention": true,
+                        "termination_message": "Parcours de résiliation",
+                        "type": "SENDER",
+                        "vip": false
+                      },
+                      "sender_kind": 0,
+                      "status": "ACTIVE"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "Pour mettre fin à l'adhésion entre l'abonné et l'émetteur.\n\nL'adhésion n'est pas immédiatement supprimée, mais son statut passe à `CANCEL_IN_PROGRESS`.\n\nSupprimer une adhésion, ne supprime pas les documents qui ont été déposés par cette dernière.",
+        "operationId": "Résilier une adhésion",
+        "summary": "Résilier une adhésion"
+      }
+    },
+    "/digiposte/v3/memberships": {
+      "get": {
+        "parameters": [
+          {
+            "description": "e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "example": "RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "in": "header",
+            "name": "X-Okapi-Key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json; charset=utf-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "memberships": [
+                        {
+                          "accept_full_dematerialization": false,
+                          "cancellable": true,
+                          "dematerialized_convention_date": "2017-05-30T12:46:34Z",
+                          "demo_account": false,
+                          "field1_label": "Aucun",
+                          "id": "ed249df4e1a149c9bc213bd9b4289a73",
+                          "inbox_folder_id": "c967c5116cb14e7aa172337f368ed172",
+                          "membership_date": "2017-05-30T12:46:34Z",
+                          "request_date": "2017-05-30T12:46:34Z",
+                          "sender": {
+                            "alternative_logo": "https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png",
+                            "auto_resiliation": true,
+                            "auto_validate_expiring_membership_default": false,
+                            "collected": false,
+                            "contracted": false,
+                            "contracted_creation_enabled": false,
+                            "convention_required": false,
+                            "convention_url": "https://api.laposte.fr",
+                            "document_naming": "Vos Documents Dématérialisés",
+                            "form_data": {
+                              "field1_label": "Aucun",
+                              "more_info": "Adhésion automatique",
+                              "security_plus": false,
+                              "sender_pid": "OKAPI"
+                            },
+                            "hr": false,
+                            "is_multi_subscription": true,
+                            "logo": "https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png",
+                            "mail_trust": false,
+                            "multilingual": false,
+                            "name": "OKAPI",
+                            "optional_address": true,
+                            "pid": "OKAPI",
+                            "sender_side_convention": true,
+                            "termination_message": "Parcours de résiliation",
+                            "type": "SENDER",
+                            "vip": false
+                          },
+                          "sender_kind": 0,
+                          "status": "ACTIVE"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "Pour connaitre la liste des adhésions en cours (et leur code de routage).",
+        "operationId": "Récupérer la liste des adhésions existantes",
+        "summary": "Récupérer la liste des adhésions existantes"
+      }
+    },
+    "/digiposte/v3/oauth/token": {
+      "post": {
+        "parameters": [
+          {
+            "description": "e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "example": "RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX",
+            "in": "header",
+            "name": "X-Okapi-Key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json; charset=utf-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "access_token": "b939b5d6-f3d1-43e4-877a-ecb46e616d40",
+                      "expires_in": 3599,
+                      "scope": "trust",
+                      "token_type": "bearer"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "tags": [],
+        "description": "Concernant le dépôt lui-même, il n'est pas nécessaire d'avoir un token d'accès relié au compte d'un abonné,\nle dépôt pouvant avoir lieu à n'importe quel moment (pas de notion de session abonné), et l'adhésion\nreprésentant alors le consentement de l'utilisateur.\n\nDans ce cas, un token en workflow oAuth standard « client_credentials » (token d'accès à l'application\nDigiposte) peut-être obtenu par cette requête de serveur à serveur.\n\n`POST /digiposte/v3/oauth/token` avec en body `grant_type=client_credentials`",
+        "operationId": "Obtenir un token « client_credentials »",
+        "summary": "Obtenir un token « client_credentials »"
+      }
+    },
+    "/partner/procedure/{procedure_pid}/qualify": {
+      "put": {
+        "parameters": [
+          {
+            "description": "PID de la démarche",
+            "in": "path",
+            "name": "procedure_pid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "invalid_parameter OR unauthorized_status",
+                        "error_description": "No user procedure corresponding to {userProcedureId} OR Status {status} not in : {STATUS ALLOWED FOR QUALIFICATION}"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Qualifier une démarche",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "refusalGround": "",
+                  "refusedDocuments": [
+                    {
+                      "documentId": "",
+                      "refusalGround": ""
+                    }
+                  ],
+                  "status": "STARTED"
+                },
+                "properties": {
+                  "refusalGround": {
+                    "description": "Cause du refus de la démarche",
+                    "type": "string"
+                  },
+                  "refusedDocuments": {
+                    "description": "Liste de documents refusés",
+                    "type": "array"
+                  },
+                  "status": {
+                    "description": "Statut de la démarche",
+                    "enum": [
+                      "STARTED",
+                      "REQUESTED",
+                      "VALIDATED",
+                      "COMPLETED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Qualifier une démarche"
+      }
+    },
+    "/partner/procedure/{user_procedure_id}/document/{document_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Identifiant de la démarche utilisateur",
+            "in": "path",
+            "name": "user_procedure_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Identifiant du document à retourner",
+            "in": "path",
+            "name": "document_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/octet-stream": {
+                "examples": {
+                  "response": {
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "invalid_parameter",
+                        "error_description": "No user procedure corresponding to {userProcedureId}."
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "application/octet-stream": {
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Récupérer un document d'une démarche",
+        "summary": "Récupérer un document d'une démarche"
+      }
+    },
+    "/partner/procedure/{user_procedure_id}/documents": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Identifiant de la démarche utilisateur",
+            "in": "path",
+            "name": "user_procedure_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/octet-stream": {
+                "examples": {
+                  "response": {
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "412": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "MAXIMUM_DOWNLOAD_SIZE_REACHED",
+                        "error_description": "archive to download is too big."
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "application/octet-stream": {
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Precondition Failed",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Récupérer tous les documents d'une démarche dans un fichier zip",
+        "summary": "Récupérer tous les documents d'une démarche dans un fichier zip"
+      }
+    },
+    "/partner/procedures/{procedure_pid}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "PID de la démarche",
+            "in": "path",
+            "name": "procedure_pid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "count": 0,
+                      "index": 0,
+                      "max_results": 0,
+                      "nb_started_segmented_procedures": 0,
+                      "procedures": [
+                        {
+                          "user": {
+                            "address": {
+                              "address_alias": "string",
+                              "country_code": "string",
+                              "extended_address": "string",
+                              "id": "string",
+                              "locality": "string",
+                              "post_office_box": "string",
+                              "postal_code": "string",
+                              "street_address": "string",
+                              "sub_locality": "string",
+                              "valid": true
+                            },
+                            "birth_date": "2019-04-10T10:06:51.998Z",
+                            "email": "string",
+                            "first_name": "string",
+                            "id_verified": true,
+                            "last_name": "string",
+                            "login": "string",
+                            "title": "string"
+                          },
+                          "user_procedure_data": {
+                            "assets": [
+                              {
+                                "asset_type": "string",
+                                "assets": [],
+                                "description": "string",
+                                "id": "string",
+                                "is_custom": true,
+                                "nb_documents": 0,
+                                "nb_documents_required": 0,
+                                "pid": "string",
+                                "title": "string",
+                                "visible": true
+                              }
+                            ],
+                            "associated_partners": [
+                              {
+                                "id": "string",
+                                "logo_url": "string",
+                                "name": "string"
+                              }
+                            ],
+                            "completed": true,
+                            "description": "string",
+                            "document_assets": {
+                              "asset_type": "string",
+                              "assets": [],
+                              "description": "string",
+                              "id": "string",
+                              "is_custom": true,
+                              "nb_documents": 0,
+                              "nb_documents_required": 0,
+                              "pid": "string",
+                              "title": "string",
+                              "visible": true
+                            },
+                            "image": "string",
+                            "link": "string",
+                            "link_description": "string",
+                            "membership_id": "string",
+                            "nb_assets_provided": 0,
+                            "nb_assets_required": 0,
+                            "partner": {
+                              "id": "string",
+                              "logo_url": "string",
+                              "name": "string"
+                            },
+                            "personal": true,
+                            "procedure_id": "string",
+                            "procedure_pid": "string",
+                            "qualification_date": "2019-04-10T10:06:51.998Z",
+                            "refusal_ground": "string",
+                            "requested_date": "2019-04-10T10:06:51.998Z",
+                            "shared": true,
+                            "short_description": "string",
+                            "status": "string",
+                            "title": "string",
+                            "type": "string",
+                            "universes": {
+                              "contacts": [
+                                {
+                                  "id": "string",
+                                  "name": "string"
+                                }
+                              ],
+                              "goods": [
+                                {
+                                  "id": "string",
+                                  "name": "string"
+                                }
+                              ],
+                              "health": [
+                                {
+                                  "id": "string",
+                                  "name": "string"
+                                }
+                              ],
+                              "housings": [
+                                {
+                                  "id": "string",
+                                  "name": "string"
+                                }
+                              ],
+                              "jobs": [
+                                {
+                                  "id": "string",
+                                  "name": "string"
+                                }
+                              ]
+                            },
+                            "user_procedure_id": "string",
+                            "visible": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "number"
+                    },
+                    "index": {
+                      "type": "number"
+                    },
+                    "max_results": {
+                      "type": "number"
+                    },
+                    "nb_started_segmented_procedures": {
+                      "type": "number"
+                    },
+                    "procedures": {
+                      "items": {},
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "invalid_parameter",
+                        "error_description": "No procedure corresponding to PID {pid}, Procedure {id} corresponding to PID {pid} is not published, Procedure {id} corresponding to PID {pid} is public. Only Submitted user procedures can be requested.",
+                        "field": "procedure_pid"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Récupérer les démarches d'un partenaire",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "index": 0,
+                  "maxResults": 0,
+                  "status": "STARTED"
+                },
+                "properties": {
+                  "index": {
+                    "description": "Numéro de la page",
+                    "type": "number"
+                  },
+                  "maxResults": {
+                    "description": "nombre maximum de démarches à retourner",
+                    "type": "number"
+                  },
+                  "status": {
+                    "description": "Statut de la démarche",
+                    "enum": [
+                      "STARTED",
+                      "REQUESTED",
+                      "VALIDATED",
+                      "COMPLETED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Récupérer les démarches d'un partenaire"
+      }
+    },
+    "/user/customizationurl": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "customization_url": "string"
+                    }
+                  }
+                },
+                "schema": {
+                  "properties": {
+                    "customization_url": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "invalid_parameter",
+                        "error_description": "Description de l'erreur en fonction du champ impacté",
+                        "field": "{field_name}"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {}
+          },
+          "403": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "forbidden",
+                        "error_description": "For coregistration user only"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Forbidden",
+            "headers": {}
+          },
+          "404": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "not_found",
+                        "error_description": "Expect user"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Not Found",
+            "headers": {}
+          },
+          "409": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "conflict",
+                        "error_description": "The account is not partial or already customized"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Créer ou renouveler l'url de personnalisation d'un compte partiel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "birth_name": "string",
+                  "company_mandatory_attributs_set_or_null": true,
+                  "company_name": "string",
+                  "date_of_birth": "2019-04-12",
+                  "email": "string",
+                  "first_name": "string",
+                  "last_name": "string",
+                  "partner_user_id": "string",
+                  "title": "string",
+                  "user_type": "string"
+                },
+                "properties": {
+                  "birth_name": {
+                    "description": "Nom de naissance",
+                    "type": "string"
+                  },
+                  "company_name": {
+                    "description": "Nom de l'entreprise",
+                    "type": "string"
+                  },
+                  "date_of_birth": {
+                    "description": "Date de naissance",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Email",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "description": "Prénom",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "description": "Nom",
+                    "type": "string"
+                  },
+                  "partner_user_id": {
+                    "description": "Identifiant de l'utilisateur dans le référentiel du partenaire",
+                    "type": "string"
+                  },
+                  "title": {
+                    "description": "Civilité de l'utilisateur",
+                    "type": "string"
+                  },
+                  "user_type": {
+                    "description": "Type de l'utilisateur",
+                    "enum": [
+                      "PERSON",
+                      "COMPANY",
+                      "string"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Créer ou renouveler l'url de personnalisation d'un compte partiel",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ]
+      }
+    },
+    "/user/partial": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "route_code": "string",
+                      "userOutput": {
+                        "account_type": "string",
+                        "created_at": "2019-04-10T12:50:08.215Z",
+                        "date_of_birth": "2019-04-10",
+                        "email": "string",
+                        "first_name": "string",
+                        "id_xiti": 0,
+                        "idnlinked": true,
+                        "last_name": "string",
+                        "login": "string",
+                        "partial_account": true,
+                        "partner": {
+                          "application_name": "string",
+                          "document_name": "string",
+                          "logo_url": "string",
+                          "partner_id": "string",
+                          "sender": {
+                            "alternative_logo": "string",
+                            "auto_resiliation": true,
+                            "auto_validate_expiring_membership_default": true,
+                            "category": "string",
+                            "category_id": "string",
+                            "collected": true,
+                            "contracted": true,
+                            "contracted_creation_enabled": true,
+                            "convention_required": true,
+                            "convention_url": "string",
+                            "convention_version": "string",
+                            "document_naming": "string",
+                            "form_data": {
+                              "creation_info": "string",
+                              "field1_label": "string",
+                              "field2_label": "string",
+                              "more_info": "string",
+                              "presentation": "string",
+                              "security_plus": true,
+                              "sender_pid": "string"
+                            },
+                            "hr": true,
+                            "logo": "string",
+                            "mail_trust": true,
+                            "multi_subscription": true,
+                            "multilingual": true,
+                            "name": "string",
+                            "optional_address": true,
+                            "pfm_id": "string",
+                            "pid": "string",
+                            "push_block": "string",
+                            "sender_side_convention": true,
+                            "subscription_url": "string",
+                            "termination_message": "string",
+                            "type": "string",
+                            "url_lost_password": "string",
+                            "url_selfcare": "string",
+                            "url_sign_up": "string",
+                            "vip": true
+                          }
+                        },
+                        "partner_user_id": "string",
+                        "procedures": [
+                          {
+                            "id": "string",
+                            "name": "string",
+                            "type": "string"
+                          }
+                        ],
+                        "status": "string",
+                        "title": "string",
+                        "user_type": "string"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "properties": {
+                    "route_code": {
+                      "type": "string"
+                    },
+                    "userOutput": {
+                      "properties": {
+                        "account_type": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "date_of_birth": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "type": "string"
+                        },
+                        "id_xiti": {
+                          "type": "number"
+                        },
+                        "idnlinked": {
+                          "type": "boolean"
+                        },
+                        "last_name": {
+                          "type": "string"
+                        },
+                        "login": {
+                          "type": "string"
+                        },
+                        "partial_account": {
+                          "type": "boolean"
+                        },
+                        "partner": {
+                          "properties": {
+                            "application_name": {
+                              "type": "string"
+                            },
+                            "document_name": {
+                              "type": "string"
+                            },
+                            "logo_url": {
+                              "type": "string"
+                            },
+                            "partner_id": {
+                              "type": "string"
+                            },
+                            "sender": {
+                              "properties": {
+                                "alternative_logo": {
+                                  "type": "string"
+                                },
+                                "auto_resiliation": {
+                                  "type": "boolean"
+                                },
+                                "auto_validate_expiring_membership_default": {
+                                  "type": "boolean"
+                                },
+                                "category": {
+                                  "type": "string"
+                                },
+                                "category_id": {
+                                  "type": "string"
+                                },
+                                "collected": {
+                                  "type": "boolean"
+                                },
+                                "contracted": {
+                                  "type": "boolean"
+                                },
+                                "contracted_creation_enabled": {
+                                  "type": "boolean"
+                                },
+                                "convention_required": {
+                                  "type": "boolean"
+                                },
+                                "convention_url": {
+                                  "type": "string"
+                                },
+                                "convention_version": {
+                                  "type": "string"
+                                },
+                                "document_naming": {
+                                  "type": "string"
+                                },
+                                "form_data": {
+                                  "properties": {
+                                    "creation_info": {
+                                      "type": "string"
+                                    },
+                                    "field1_label": {
+                                      "type": "string"
+                                    },
+                                    "field2_label": {
+                                      "type": "string"
+                                    },
+                                    "more_info": {
+                                      "type": "string"
+                                    },
+                                    "presentation": {
+                                      "type": "string"
+                                    },
+                                    "security_plus": {
+                                      "type": "boolean"
+                                    },
+                                    "sender_pid": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "type": "object"
+                                },
+                                "hr": {
+                                  "type": "boolean"
+                                },
+                                "logo": {
+                                  "type": "string"
+                                },
+                                "mail_trust": {
+                                  "type": "boolean"
+                                },
+                                "multi_subscription": {
+                                  "type": "boolean"
+                                },
+                                "multilingual": {
+                                  "type": "boolean"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "optional_address": {
+                                  "type": "boolean"
+                                },
+                                "pfm_id": {
+                                  "type": "string"
+                                },
+                                "pid": {
+                                  "type": "string"
+                                },
+                                "push_block": {
+                                  "type": "string"
+                                },
+                                "sender_side_convention": {
+                                  "type": "boolean"
+                                },
+                                "subscription_url": {
+                                  "type": "string"
+                                },
+                                "termination_message": {
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "type": "string"
+                                },
+                                "url_lost_password": {
+                                  "type": "string"
+                                },
+                                "url_selfcare": {
+                                  "type": "string"
+                                },
+                                "url_sign_up": {
+                                  "type": "string"
+                                },
+                                "vip": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "partner_user_id": {
+                          "type": "string"
+                        },
+                        "procedures": {
+                          "items": {},
+                          "type": "array"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "user_type": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "409": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "conflict",
+                        "error_description": "client id already exist for current partner"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "",
+        "operationId": "Créer un nouveau compte partiel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "birth_name": "Test",
+                  "date_of_birth": "2019-04-10",
+                  "email": "test@test.com",
+                  "first_name": "Test",
+                  "last_name": "Digiposte",
+                  "partner_user_id": "af201906",
+                  "title": "MR"
+                },
+                "properties": {
+                  "birth_name": {
+                    "description": "Nom de naissance",
+                    "type": "string"
+                  },
+                  "date_of_birth": {
+                    "description": "Date de naissance",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Email de l'utilisateur",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "description": "Le prénom de l'utilisateur",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "description": "Le nom de l'utilisateur",
+                    "type": "string"
+                  },
+                  "partner_user_id": {
+                    "description": "L'id de l'utilisateur dans le référentiel du partenaire",
+                    "type": "string"
+                  },
+                  "title": {
+                    "description": "Civilité de l'utilisateur, peut etre null",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "partner_user_id"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Créer un nouveau compte partiel",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ]
+      }
+    },
+    "/api/v4/resend-purl": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "bad_request",
+                        "error_description": "parameters invalid"
+                      },
+                      {
+                        "error": "bad_request",
+                        "error_description": "missing senderPid"
+                      },
+                      {
+                        "error": "bad_request",
+                        "error_description": "email invalid <email>"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "input parameters are not valid",
+            "headers": {}
+          },
+          "403": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "forbidden",
+                        "error_description": "cannot act as ${senderPid}"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "le partenaire n'a pas le droit de faire cette operation au nom de l'emetteur designé",
+            "headers": {}
+          },
+          "404": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "not_found",
+                        "error_description": "resource not found"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "adhésion non trouvée",
+            "headers": {}
+          },
+          "409": {
+            "content": {
+              "application/json;charset=UTF-8": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "error": "conflict",
+                        "error_description": "membership expired or consumed"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "items": {},
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Adhesion expirée ou coffre déjà personnalisé",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "tags": [],
+        "description": "Renvoyer le lien de personnalisation à un utilisateur",
+        "operationId": "Renvoyer le lien de personnalisation à un utilisateur",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "partner_id": "Test",
+                  "partner_user_id": "af201906",
+                  "route_code": "Test",
+                  "email": "test@test.com"
+                },
+                "properties": {
+                  "partner_id": {
+                    "description": "Identifiant Digiposte de l'organisme (code émetteur) de celui qui a effectué le provisioning à la base",
+                    "type": "string"
+                  },
+                  "partner_user_id": {
+                    "description": "Identifiant du client dans le référentiel de l'organisme (matricule, code 1) ",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Email de l'utilisateur",
+                    "type": "string"
+                  },
+                  "route_code": {
+                    "description": "code de routage de l'adhesion",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "partner_user_id"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Renvoyer le lien de personnalisation à un utilisateur",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/okapiKeyParameter"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Adh_sion": {},
+      "Asset": {
+        "properties": {
+          "asset_type": {
+            "type": "string"
+          },
+          "assets": {
+            "items": {},
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_custom": {
+            "type": "boolean"
+          },
+          "nb_documents": {
+            "type": "number"
+          },
+          "nb_documents_required": {
+            "type": "number"
+          },
+          "pid": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Authentification": {},
+      "BadRequest_GetPartnerProcedureDocuments": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Description de l'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_GetPartnerProcedures": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Description de l'erreur",
+            "type": "string"
+          },
+          "field": {
+            "description": "Champ concerné par l'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description",
+          "field"
+        ],
+        "type": "object"
+      },
+      "BadRequest_GetPartnerProceduresDocument": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Description de l'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_PostUserCustomizationUrl_Conflict": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Message d'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_PostUserCustomizationUrl_Empty": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Message d'erreur",
+            "type": "string"
+          },
+          "field": {
+            "description": "Nom du champ impacté",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_PostUserCustomizationUrl_Forbidden": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Message d'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_PostUserCustomizationUrl_NotFound": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Message d'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "BadRequest_PutPartnerProcedure": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Description de l'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "Compte_partiel": {},
+      "Consulter_les_d_marches_partenaire": {},
+      "CustomizationUrlOutput": {
+        "properties": {
+          "customization_url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Document_certifi_": {},
+      "G_rer_les_d_marches_partenaire": {},
+      "Get_User_Partial_Error_Message": {
+        "properties": {
+          "error": {
+            "description": "Type d'erreur",
+            "type": "string"
+          },
+          "error_description": {
+            "description": "Message d'erreur",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "type": "object"
+      },
+      "ItemData": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PartialAccountTypedInput": {
+        "properties": {
+          "birth_name": {
+            "description": "Nom de naissance",
+            "type": "string"
+          },
+          "company_name": {
+            "description": "Nom de l'entreprise",
+            "type": "string"
+          },
+          "date_of_birth": {
+            "description": "Date de naissance",
+            "type": "string"
+          },
+          "email": {
+            "description": "Email",
+            "type": "string"
+          },
+          "first_name": {
+            "description": "Prénom",
+            "type": "string"
+          },
+          "last_name": {
+            "description": "Nom",
+            "type": "string"
+          },
+          "partner_user_id": {
+            "description": "Identifiant de l'utilisateur dans le référentiel du partenaire",
+            "type": "string"
+          },
+          "title": {
+            "description": "Civilité de l'utilisateur",
+            "type": "string"
+          },
+          "user_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserType"
+              },
+              {
+                "properties": {},
+                "type": "object"
+              }
+            ],
+            "description": "Type de l'utilisateur"
+          }
+        },
+        "type": "object"
+      },
+      "PartnerData": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "logo_url": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PartnerProceduresList": {
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "index": {
+            "type": "number"
+          },
+          "max_results": {
+            "type": "number"
+          },
+          "nb_started_segmented_procedures": {
+            "type": "number"
+          },
+          "procedures": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "PartnerUserProcedureData": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserData"
+          },
+          "user_procedure_data": {
+            "$ref": "#/components/schemas/UserProcedureData"
+          }
+        },
+        "type": "object"
+      },
+      "ProcedureStatus": {
+        "enum": [
+          "STARTED",
+          "REQUESTED",
+          "VALIDATED",
+          "COMPLETED"
+        ],
+        "type": "string"
+      },
+      "ProfileAddressData": {
+        "properties": {
+          "address_alias": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "extended_address": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "locality": {
+            "type": "string"
+          },
+          "post_office_box": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "street_address": {
+            "type": "string"
+          },
+          "sub_locality": {
+            "type": "string"
+          },
+          "valid": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "RefusedDocument": {
+        "properties": {
+          "documentId": {
+            "description": "ID du document",
+            "type": "string"
+          },
+          "refusalGround": {
+            "description": "Cause du refus du document",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UniverseItemSets": {
+        "properties": {
+          "contacts": {
+            "items": {},
+            "type": "array"
+          },
+          "goods": {
+            "items": {},
+            "type": "array"
+          },
+          "health": {
+            "items": {},
+            "type": "array"
+          },
+          "housings": {
+            "items": {},
+            "type": "array"
+          },
+          "jobs": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Url_de_personnalisation_d_un_compte_partiel": {},
+      "UserData": {
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/ProfileAddressData"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "id_verified": {
+            "type": "boolean"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UserProcedureData": {
+        "properties": {
+          "assets": {
+            "items": {},
+            "type": "array"
+          },
+          "associated_partners": {
+            "items": {},
+            "type": "array"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "document_assets": {
+            "$ref": "#/components/schemas/Asset"
+          },
+          "image": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "link_description": {
+            "type": "string"
+          },
+          "membership_id": {
+            "type": "string"
+          },
+          "nb_assets_provided": {
+            "type": "number"
+          },
+          "nb_assets_required": {
+            "type": "number"
+          },
+          "partner": {
+            "$ref": "#/components/schemas/PartnerData"
+          },
+          "personal": {
+            "type": "boolean"
+          },
+          "procedure_id": {
+            "type": "string"
+          },
+          "procedure_pid": {
+            "type": "string"
+          },
+          "qualification_date": {
+            "type": "string"
+          },
+          "refusal_ground": {
+            "type": "string"
+          },
+          "requested_date": {
+            "type": "string"
+          },
+          "shared": {
+            "type": "boolean"
+          },
+          "short_description": {
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProcedureStatus"
+              },
+              {
+                "properties": {},
+                "type": "object"
+              }
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "universes": {
+            "$ref": "#/components/schemas/UniverseItemSets"
+          },
+          "user_procedure_id": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UserType": {
+        "enum": [
+          "PERSON",
+          "COMPANY"
+        ],
+        "type": "string"
+      },
+      "form_data": {
+        "properties": {
+          "creation_info": {
+            "type": "string"
+          },
+          "field1_label": {
+            "type": "string"
+          },
+          "field2_label": {
+            "type": "string"
+          },
+          "more_info": {
+            "type": "string"
+          },
+          "presentation": {
+            "type": "string"
+          },
+          "security_plus": {
+            "type": "boolean"
+          },
+          "sender_pid": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "partialUserCreationResult": {
+        "properties": {
+          "route_code": {
+            "type": "string"
+          },
+          "userOutput": {
+            "$ref": "#/components/schemas/userOutput"
+          }
+        },
+        "type": "object"
+      },
+      "partner": {
+        "properties": {
+          "application_name": {
+            "type": "string"
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "logo_url": {
+            "type": "string"
+          },
+          "partner_id": {
+            "type": "string"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/sender"
+          }
+        },
+        "type": "object"
+      },
+      "procedure": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "sender": {
+        "properties": {
+          "alternative_logo": {
+            "type": "string"
+          },
+          "auto_resiliation": {
+            "type": "boolean"
+          },
+          "auto_validate_expiring_membership_default": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "collected": {
+            "type": "boolean"
+          },
+          "contracted": {
+            "type": "boolean"
+          },
+          "contracted_creation_enabled": {
+            "type": "boolean"
+          },
+          "convention_required": {
+            "type": "boolean"
+          },
+          "convention_url": {
+            "type": "string"
+          },
+          "convention_version": {
+            "type": "string"
+          },
+          "document_naming": {
+            "type": "string"
+          },
+          "form_data": {
+            "$ref": "#/components/schemas/form_data"
+          },
+          "hr": {
+            "type": "boolean"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "mail_trust": {
+            "type": "boolean"
+          },
+          "multi_subscription": {
+            "type": "boolean"
+          },
+          "multilingual": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "optional_address": {
+            "type": "boolean"
+          },
+          "pfm_id": {
+            "type": "string"
+          },
+          "pid": {
+            "type": "string"
+          },
+          "push_block": {
+            "type": "string"
+          },
+          "sender_side_convention": {
+            "type": "boolean"
+          },
+          "subscription_url": {
+            "type": "string"
+          },
+          "termination_message": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "url_lost_password": {
+            "type": "string"
+          },
+          "url_selfcare": {
+            "type": "string"
+          },
+          "url_sign_up": {
+            "type": "string"
+          },
+          "vip": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "userOutput": {
+        "properties": {
+          "account_type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "id_xiti": {
+            "type": "number"
+          },
+          "idnlinked": {
+            "type": "boolean"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "partial_account": {
+            "type": "boolean"
+          },
+          "partner": {
+            "$ref": "#/components/schemas/partner"
+          },
+          "partner_user_id": {
+            "type": "string"
+          },
+          "procedures": {
+            "items": {},
+            "type": "array"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "basic": {
+        "scheme": "basic",
+        "type": "http"
+      },
+      "oauth2": {
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "/",
+            "scopes": {},
+            "tokenUrl": "/"
+          }
+        },
+        "type": "oauth2"
+      }
+    },
+    "parameters": {
+      "okapiKeyParameter": {
+        "description": "Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>",
+        "example": "okapi-key",
+        "in": "header",
+        "name": "X-Okapi-Key",
+        "required": true,
+        "x-example": "okapi-key",
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "tags": []
+}

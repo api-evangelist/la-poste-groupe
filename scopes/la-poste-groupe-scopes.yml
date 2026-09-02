@@ -1,0 +1,29 @@
+generated: '2026-09-02'
+method: derived
+source: openapi/la-poste-groupe-digiposte-openapi.json, openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+schemes:
+- name: oauth2
+  source: openapi/la-poste-groupe-digiposte-openapi.json
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: /
+    tokenUrl: /
+- name: default
+  source: openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+  flows:
+  - flow: implicit
+    authorizationUrl: https://test.com
+scopes: []
+scope_count: 0
+finding: >-
+  Both oauth2 declarations in this estate carry an EMPTY scopes map, and no scope or
+  permission reference page exists on developer.laposte.fr,
+  faq.developer.laposte.fr or documentation-okapi.laposte.fr (searched 2026-09-02).
+  Digiposte v3 uses client_credentials with no scope narrowing - a partner token is
+  all-or-nothing across memberships, certified deposit, organisation safes and
+  sharing. Lettre recommandee en ligne's oauth2 block is a springdoc placeholder
+  pointed at https://test.com and is not a real authorization surface.
+  Authorisation on the rest of the estate is not OAuth at all: it is a per-plan
+  X-Okapi-Key, where the PLAN (not a scope) decides which routes and methods the
+  key may call - the portal exposes that as filteredRoutes / filteredMethods /
+  filteredResourcesCount on each plan.

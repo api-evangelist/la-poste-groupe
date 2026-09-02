@@ -1,0 +1,28 @@
+generated: '2026-09-02'
+method: searched
+source: https://github.com/DeveloperLaPoste/okapi-cli
+name: okapi-cli
+binary: oka
+official: true
+status: abandoned
+version: 0.0.7
+published: '2017-04-27'
+install:
+  - method: npm
+    command: npm install -g laposte-okapi-cli
+    registry: https://www.npmjs.com/package/laposte-okapi-cli
+license: MIT
+maintainer_identity: developer@laposte.io (https://developer.laposte.fr/)
+note: >-
+  The only first-party command-line client La Poste Groupe has published. Last
+  release 2017-04-27 against the first-generation Okapi platform; the current
+  developer.laposte.fr portal (Next.js, api.laposte.fr gateway, X-Okapi-Key
+  header) post-dates it and the CLI is not referenced anywhere in the live
+  documentation. Recorded here as a real published surface with an honest decay
+  signal, not as a recommended integration path.
+command_surface:
+  note: >-
+    Not enumerated. The published README and the npm tarball are the only
+    remaining description of the command set; no command reference is served on
+    developer.laposte.fr. Recording the binary and its abandonment rather than
+    inventing a command tree.

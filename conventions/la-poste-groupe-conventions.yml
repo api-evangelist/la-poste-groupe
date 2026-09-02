@@ -1,0 +1,197 @@
+generated: '2026-09-02'
+method: derived
+source: >-
+  openapi/la-poste-groupe-suivi-openapi.json,
+  openapi/la-poste-groupe-digiposte-openapi.json,
+  openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json,
+  openapi/la-poste-groupe-open-data-openapi.json,
+  wsdl/la-poste-groupe-colissimo-sls.wsdl, plus a live unauthenticated probe of
+  https://api.laposte.fr/suivi/v2/idships/6M20132968235 on 2026-09-02
+scope_note: >-
+  La Poste Groupe does not publish one cross-cutting API style guide. What follows
+  is what the four harvested contracts and the live gateway actually do, recorded
+  per surface rather than asserted as a group-wide standard - because they are not
+  consistent with one another.
+authentication:
+  primary: >-
+    API key in the X-Okapi-Key request header, issued per application by the Okapi
+    portal at developer.laposte.fr and scoped to a plan subscription.
+  observed_live: >-
+    An unauthenticated call returns HTTP 401 with
+    {"code":"UNAUTHORIZED","message":"This action requires an authorization"}.
+  per_surface:
+  - api: Suivi v2
+    scheme: 'apiKey header X-Okapi-Key (alternative: JWT in an access_token cookie)'
+  - api: Digiposte v3
+    scheme: >-
+      HTTP Basic on POST /digiposte/v3/oauth/token to mint a client_credentials
+      token, then OAuth 2.0 bearer on every other operation. The spec's
+      authorizationUrl and tokenUrl are both the placeholder "/", so the real token
+      endpoint is only discoverable from the path list, not from the security scheme.
+  - api: Lettre recommandee en ligne v1
+    scheme: >-
+      oauth2 implicit with authorizationUrl https://test.com - a springdoc default
+      placeholder, not a usable authorization server. Treated as undocumented.
+  - api: La Poste Open Data v1 (data.laposte.fr Data Fair)
+    scheme: apiKey header x-apiKey, or an id_token cookie for browser sessions
+  see: authentication/la-poste-groupe-authentication.yml
+idempotency:
+  supported: false
+  evidence: >-
+    Zero occurrences of "idempoten" across all four harvested OpenAPI documents and
+    both WSDLs. No Idempotency-Key header, no client-supplied request identifier,
+    no documented replay semantics.
+  consequence: >-
+    Every write in this estate is unsafe to retry blind. Digiposte
+    POST /memberships and POST /documents/certified, Code de la route
+    POST /reservations, and Colissimo generateLabel all create real-world side
+    effects (a vault membership, a filed certified document, a booked exam seat, a
+    franked label) with no dedupe key. An agent that times out mid-write cannot tell
+    a lost response from a lost request.
+pagination:
+  per_surface:
+  - api: La Poste Open Data v1 (Data Fair)
+    style: page-number
+    params: [page, size, after, sort, select, q, format]
+    note: >-
+      `after` is offered alongside `page` for deep paging; `size` appears on 39
+      operations, `page` on 4 of the collection endpoints.
+  - api: Digiposte v3
+    style: limit-only
+    params: [max_results]
+  - api: Suivi v2
+    style: none
+    note: >-
+      Batch is expressed by passing up to ten comma-separated tracking numbers in
+      the idship path segment; the multi-item answer comes back as HTTP 207 with an
+      array of per-item results.
+versioning:
+  style: path segment, per API, on the gateway
+  form: https://api.laposte.fr/<context>/v<major>
+  examples: ['/suivi/v2', '/controladresse/v2', '/digiposte/v3', '/geolocalisation/v1']
+  portal_form: >-
+    The catalog addresses the same thing as <slug>@<major> (suivi@2, digiposte@3),
+    and each entry carries relatedVersions[] so an older major stays addressable.
+  note: >-
+    Majors genuinely coexist - the status page reports ControlAdresse v1 AND v2 and
+    Code de la route v1 AND v2 as live services, while the catalog only lists v2.
+error_envelope:
+  gateway:
+    shape: '{"code": "<UPPER_SNAKE>", "message": "<human sentence>"}'
+    observed: 'HTTP 401 {"code":"UNAUTHORIZED","message":"This action requires an authorization"}'
+    note: emitted by the Okapi gateway itself, before the backend is reached
+  suivi_v2:
+    shape: '{"returnCode": <int>, "returnMessage": "<French sentence for the end user>", "idShip": "<id>", "lang": "<locale>", "scope": "open"}'
+    note: >-
+      Suivi carries a SECOND status vocabulary inside a 200/207 body - returnCode is
+      an enum of 101, 104, 105, 109, 200, 201, 208, 504 - so the HTTP status is not
+      the whole answer. A 207 body is an array of per-shipment envelopes each with
+      its own returnCode.
+  rfc9457: false
+  note: No surface in this estate returns application/problem+json.
+rate_limit_signaling:
+  headers: none
+  see: rate-limits/la-poste-groupe-rate-limits.yml
+request_tracing:
+  header: x-okapi-request-id
+  direction: response
+  observed: 'x-okapi-request-id 2932cd80-e862-4e8d-b399-a913e6da0924'
+  note: >-
+    The gateway stamps a per-request UUID on the response. It is not documented, but
+    it is present on every gateway answer including errors, and it is the identifier
+    to quote to support.
+  also_observed: 'x-powered-by okapi-api@4.77.1; x-okapi-successful false; served-by Akamai'
+content_negotiation:
+  json_only: true
+  note: >-
+    Suivi v2 explicitly pins Content-Type to application/json and states "Only Json,
+    xml is depracated" [sic]. Digiposte mixes application/json and
+    application/json;charset=UTF-8 across its error responses. Colissimo's contracts
+    are SOAP 1.1 over text/xml.
+field_expansion:
+  supported: partial
+  note: >-
+    Data Fair exposes `select` for sparse fieldsets on dataset line queries. No other
+    surface offers expansion or sparse fields.
+metadata:
+  supported: false
+reversibility:
+  grade: documented
+  assessment: >-
+    Reversal operations exist and are named, but not one of them states a window,
+    which is exactly the fact an agent needs before it acts. Graded `documented`
+    (0.4), not `verified`.
+  read_only: false
+  operations:
+  - api: Digiposte v3
+    action: create a membership
+    forward: POST /digiposte/v3/membership
+    reversal: DELETE /digiposte/v3/membership/{id}
+    reversal_name: Resilier une adhesion
+    window: not stated
+    note: >-
+      The published reference names the terminate operation but states no deadline
+      and no grace period; the resource catalogue additionally exposes
+      DELETE /partner/{partner_id}/memberships/{partner_user_id} for the issuer side.
+  - api: Digiposte v3
+    action: deposit a certified document into a user's vault
+    forward: POST /digiposte/v3/document/certified
+    reversal: none published
+    window: not applicable
+    note: >-
+      This is the highest-consequence write in the estate and it has NO published
+      reversal. A certified document lands in a probative-value vault; the OpenAPI
+      exposes no delete for it. The wider resource catalogue does expose
+      DELETE /partner/safes/{id}/documents/{document_id} for an ORGANISATION safe,
+      which is a different object.
+  - api: Digiposte v3
+    action: create an organisation-safe folder or document
+    forward: POST /partner/safes/{partner_safe_id}/documents
+    reversal: DELETE /partner/safes/{partner_safe_id}/documents/{document_id}
+    window: not stated
+    note: >-
+      The resource description warns the delete is permanent ("supprimer
+      definitivement") - so this reversal is itself irreversible.
+  - api: Digiposte v3
+    action: share documents with an organisation
+    forward: POST /partner/shares/{partner_user_id}/documents
+    reversal: DELETE /partner/shares/{partner_user_id}/documents/{document_id}
+    window: not stated
+  - api: Code de la route v2
+    action: book an exam seat
+    forward: POST /reservations
+    reversal: PUT /reservations/{id}
+    window: not stated
+    note: >-
+      Cancellation appears to be modelled as a status update on the reservation
+      rather than a delete. No OpenAPI is published for this API, only the portal
+      resource list, so the exact cancellation payload is not public.
+  - api: Colissimo Web Services
+    action: generate a shipping label
+    forward: generateLabel / generateLabelService
+    reversal: none published
+    window: not applicable
+    note: >-
+      The WSDL has no void/cancel operation. checkGenerateLabel is a pre-flight
+      validation, which is a dry-run affordance, not a reversal.
+  - api: Lettre recommandee en ligne v1
+    action: submit a registered letter for printing and posting
+    forward: POST /lh/pro/orders
+    reversal: none published
+    window: not stated
+    note: >-
+      A physical, franked, delivered artefact. The published contract has no cancel
+      or recall operation, and no cut-off before hand-off to production is stated.
+dry_run_mode:
+  supported: partial
+  evidence: >-
+    Colissimo publishes checkGenerateLabel and checkGenerateLabelService, which
+    validate a label request without producing one. No Okapi REST API offers a
+    dry-run flag; the sandbox environment is the substitute.
+  see: sandbox/la-poste-groupe-sandbox.yml
+cross_links:
+  errors: errors/la-poste-groupe-problem-types.yml
+  lifecycle: lifecycle/la-poste-groupe-lifecycle.yml
+  authentication: authentication/la-poste-groupe-authentication.yml
+  rate_limits: rate-limits/la-poste-groupe-rate-limits.yml
+  sandbox: sandbox/la-poste-groupe-sandbox.yml

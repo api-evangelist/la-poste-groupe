@@ -1,0 +1,117 @@
+generated: '2026-09-02'
+method: derived
+source: >-
+  openapi/la-poste-groupe-suivi-openapi.json,
+  openapi/la-poste-groupe-digiposte-openapi.json,
+  openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json,
+  openapi/la-poste-groupe-open-data-openapi.json, plus a live unauthenticated
+  request to https://api.laposte.fr/suivi/v2/idships/6M20132968235 (2026-09-02)
+format: vendor
+rfc9457: false
+finding: >-
+  There is no single error contract across this estate. Three different envelopes
+  are in play - the Okapi gateway's {code,message}, Suivi's returnCode/returnMessage
+  body carried INSIDE a 200 or 207, and Data Fair's text/plain error strings - and
+  none of them is application/problem+json.
+envelopes:
+- name: okapi-gateway
+  applies_to: every API routed through https://api.laposte.fr
+  media_type: application/json
+  shape:
+    code: UPPER_SNAKE machine token
+    message: human sentence
+  observed: 'HTTP 401 -> {"code":"UNAUTHORIZED","message":"This action requires an authorization"}'
+- name: suivi-returncode
+  applies_to: La Poste Suivi v2
+  media_type: application/json
+  shape:
+    returnCode: integer enum
+    returnMessage: French sentence intended to be shown to the end customer
+    idShip: the tracking number the row is about
+    lang: response locale (fr_FR, en_GB, de_DE, it_IT, es_ES, nl_NL)
+    scope: 'open'
+  warning: >-
+    The HTTP status is not the whole answer. A batch call returns HTTP 207 whose
+    body is an ARRAY of these envelopes, each carrying its own returnCode - so a
+    207 can contain a mix of successes and per-shipment failures. A client that
+    branches only on the HTTP status will silently treat a failed lookup as a hit.
+- name: data-fair-text
+  applies_to: La Poste Open Data v1 (data.laposte.fr)
+  media_type: text/plain
+  shape: bare message string
+  note: 404, 409, 413 and 500 are returned as text/plain, not JSON.
+problem_types:
+- id: UNAUTHORIZED
+  status: 401
+  envelope: okapi-gateway
+  title: This action requires an authorization
+  detail: >-
+    No X-Okapi-Key header, an unknown key, or a key with no active subscription to
+    the plan that fronts this API.
+  remediation: >-
+    Subscribe an application to a plan on developer.laposte.fr and send its key in
+    the X-Okapi-Key header.
+  evidence: live probe of https://api.laposte.fr/suivi/v2/idships/... on 2026-09-02
+- id: suivi-400
+  status: 400
+  envelope: suivi-returncode
+  title: 'Invalid request: missing parameter'
+  detail: >-
+    Published example returnMessage - "Le numero que vous avez saisi n'est pas
+    valide. Nous vous invitons a verifier votre saisie, en particulier le nombre de
+    caracteres."
+  remediation: Check the tracking number, in particular its length.
+  source: openapi/la-poste-groupe-suivi-openapi.json (components.responses.response400)
+- id: suivi-401
+  status: 401
+  envelope: suivi-returncode
+  title: 'Unauthorized: HMAC verification failed'
+  detail: The spec names HMAC verification specifically, not just a missing key.
+  source: openapi/la-poste-groupe-suivi-openapi.json (components.responses.response401)
+- id: suivi-404
+  status: 404
+  envelope: suivi-returncode
+  return_code: 104
+  title: Unknown or invalid idShip
+  detail: >-
+    Published example returnMessage - "Votre suivi n'est pas encore disponible. Si
+    vous avez depose votre envoi, les informations de suivi peuvent etre affichees
+    avec un delai, veuillez reessayer ulterieurement."
+  remediation: >-
+    Retry later. This is explicitly a not-yet rather than a never - the shipment may
+    simply not have entered the network.
+  source: openapi/la-poste-groupe-suivi-openapi.json (components.responses.response404)
+- id: suivi-207
+  status: 207
+  envelope: suivi-returncode
+  title: Multiple operation
+  detail: Array of per-shipment envelopes; documented member codes are 200, 101, 104, 105, 109.
+  source: openapi/la-poste-groupe-suivi-openapi.json (components.responses.response207g)
+suivi_return_codes:
+  note: >-
+    baseResponse.returnCode is declared as an enum. The spec enumerates the VALUES
+    but publishes a meaning for only three of them (200 success, 400 invalid input,
+    104 unknown/not-yet-available). The rest are listed here as declared-but-undefined
+    rather than guessed at.
+  declared: [101, 104, 105, 109, 200, 201, 208, 504]
+  documented: [104, 200]
+  undocumented: [101, 105, 109, 201, 208, 504]
+digiposte_statuses:
+  note: >-
+    Digiposte returns 400, 403, 404, 409 and 412 across its twelve documented
+    operations, each with a named response schema (BadRequest_GetPartnerProcedures,
+    BadRequest_PostUserCustomizationUrl_Conflict, ...). The schema NAMES carry the
+    semantics; no separate error-code registry is published.
+  statuses: [400, 403, 404, 409, 412]
+open_data_statuses:
+  statuses: [400, 404, 409, 413, 500]
+  note: 413 appears on 12 operations - Data Fair enforces a payload/result size ceiling.
+gaps:
+- No application/problem+json anywhere.
+- No stable error-code registry document on developer.laposte.fr.
+- >-
+  Six of Suivi's eight declared returnCode values have no published meaning, which
+  is the single most actionable error-documentation gap in this estate.
+- >-
+  Lettre recommandee en ligne declares 400/401/403/404 with media type */* and no
+  described schema beyond a generic Error object.

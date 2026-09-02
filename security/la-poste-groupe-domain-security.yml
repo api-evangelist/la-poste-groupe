@@ -1,0 +1,51 @@
+generated: '2026-09-02'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.lapostegroupe.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 22 07:01:18 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: developer.laposte.fr
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 28 10:01:31 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.laposte.fr
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 28 10:01:31 2026 GMT
+  hsts: null
+domains:
+- domain: lapostegroupe.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: laposte.fr
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+notes:
+  api_laposte_fr_hsts: >-
+    The automated probe recorded hsts: null for api.laposte.fr because the host root
+    does not answer with the header. A live GET of a real API path
+    (https://api.laposte.fr/suivi/v2/idships/... , HTTP 401, 2026-09-02) DID return
+    strict-transport-security: max-age=31536000; includeSubDomains. HSTS is present
+    on the API surface itself.
+  hosts_not_probed: >-
+    ws.colissimo.fr, data.laposte.fr and api.digiposte.fr are real hosts in this
+    estate that this run's automated probe did not cover. Both Colissimo WSDLs and
+    the data.laposte.fr OpenAPI and .well-known documents were fetched over HTTPS
+    successfully on 2026-09-02, so all three serve TLS; their HSTS, CAA and DNSSEC
+    posture is unmeasured rather than absent.
+  dmarc_finding: >-
+    laposte.fr - the domain carrying the developer portal, the API gateway and the
+    CERT contact address - publishes DMARC p=none (monitor only), while
+    lapostegroupe.com publishes p=reject.

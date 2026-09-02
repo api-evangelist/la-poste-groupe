@@ -1,0 +1,111 @@
+generated: '2026-09-02'
+method: probed
+source: >-
+  https://developer.laposte.fr/api/catalog-apis/<slug> - the unauthenticated JSON
+  endpoint the Okapi developer portal itself renders the plan cards from
+  (apiBySlugPublic.plans). Values below are copied verbatim from that response;
+  they are the same numbers a signed-out visitor sees on each
+  developer.laposte.fr/catalog-apis/<slug> page.
+currency: EUR
+billing_note: >-
+  `price` is the excluding-tax figure the portal shows; `price_with_tax` is the
+  same plan including French VAT. `period` is the billing period in seconds as
+  the platform stores it (-1 = no recurring period / perpetual, 1 = per-second
+  metering window, 2419200 = 28 days). Plans marked `privacy: private` cannot be
+  self-subscribed - the portal requires an access request that La Poste approves.
+plan_count: 9
+plans:
+- api: La Poste Suivi v2
+  api_slug: suivi@2
+  name: free
+  price: 0
+  price_with_tax: 0
+  privacy: private
+  period_seconds: -1
+  quota: 10 calls per 1 second
+  note: >-
+    Free of charge but NOT self-serve - the portal marks the only Suivi plan
+    private, so access is granted on request.
+- api: La Poste ControlAdresse v2
+  api_slug: controladresse@2
+  name: Freemium
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: -1
+  quota: 2000 calls per 31536001 seconds (one year)
+- api: La Poste ControlAdresse v2
+  api_slug: controladresse@2
+  name: Serenite
+  price: 50
+  price_with_tax: 60
+  privacy: private
+  period_seconds: 2419200
+  quota: not published on the plan card
+  note: EUR 50 excl. tax / EUR 60 incl. tax per 28-day period.
+- api: La Poste Geolocalisation v1
+  api_slug: geolocalisation@1
+  name: Freemium
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: 1
+  quota: 300 calls per 31536001 seconds (one year)
+- api: La Poste Geolocalisation v1
+  api_slug: geolocalisation@1
+  name: Serenite
+  price: 50
+  price_with_tax: 60
+  privacy: private
+  period_seconds: 2419200
+  quota: not published on the plan card
+- api: La Poste Geolocalisation inversee v1
+  api_slug: geolocinversee@1
+  name: Freemium
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: 1
+  quota: 300 calls per 31536001 seconds (one year)
+- api: La Poste Geolocalisation inversee v1
+  api_slug: geolocinversee@1
+  name: Serenite
+  price: 50
+  price_with_tax: 60
+  privacy: private
+  period_seconds: 2419200
+  quota: not published on the plan card
+- api: Code de la route v2
+  api_slug: codedelaroute@2
+  name: free
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: 1
+  quota: 100 calls per 1 second
+- api: Digiposte v3
+  api_slug: digiposte@3
+  name: Digiposte
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: 1
+  quota: no quota limiter configured on the plan
+- api: La Poste Open Data v1
+  api_slug: opendata@1
+  name: free
+  price: 0
+  price_with_tax: 0
+  privacy: public
+  period_seconds: -1
+  quota: no quota limiter configured on the plan
+no_plans:
+- api: Lettre recommandee en ligne v1
+  reason: >-
+    Not an Okapi-managed API (isOkapi:false); the portal entry carries no plans
+    and routes to https://laposte.fr/entreprise-collectivites/vos-envois-recommandes
+    for a commercial conversation.
+- api: Colissimo Web Services
+  reason: >-
+    Not an Okapi-managed API; Colissimo contract pricing is negotiated through
+    colissimo.entreprise.laposte.fr, not published as a plan.

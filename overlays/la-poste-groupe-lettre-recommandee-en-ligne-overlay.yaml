@@ -1,0 +1,62 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Lettre recommandee en ligne v1
+  version: 1.0.0
+x-generated: '2026-09-02'
+x-method: generated
+x-source: openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+x-note: >-
+  Applies to openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json. This
+  document is a raw springdoc export that reached production with its generator
+  defaults intact - title "OpenAPI definition", version "v0", a servers[] entry
+  naming an internal La Poste build host, and an oauth2 implicit flow pointed at
+  https://test.com. The overlay names the product, records the contact La Poste
+  publishes, and flags the placeholders rather than silently repairing them into
+  something that would look authoritative.
+x-extends: openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
+actions:
+- target: $.info
+  description: >-
+    Replace the springdoc default title and add the support address and terms the
+    portal publishes for this API.
+  update:
+    title: La Poste Lettre recommandee en ligne (LReL) - PRO
+    description: >-
+      Order registered letters (lettres recommandees) through the API - La Poste
+      prints, folds and inserts, franks and delivers them - and request a proof of
+      deposit for a batch of orders.
+    contact:
+      name: La Poste API Support
+      email: support.api@laposte.fr
+      url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+    termsOfService: https://developer.laposte.fr/cgu
+- target: $.servers[0]
+  description: >-
+    The published server is api-order-lh-pro-ct-sacc.paas-01.build.net.intra.laposte.fr,
+    an internal La Poste build/staging host that is not resolvable or callable from
+    the public internet. Flag it as such. A public base is NOT substituted here,
+    because La Poste does not publish one for this API - the portal entry carries no
+    endpoint and the Okapi gateway does not route it.
+  update:
+    x-reachable: false
+    x-note: >-
+      Internal build host, not a public base URL. The public base for this API is
+      not published; see lifecycle and apis.yml, where baseURL is deliberately left
+      absent.
+- target: $.components.securitySchemes.default
+  description: >-
+    authorizationUrl is https://test.com - a springdoc placeholder, not an
+    authorization server. Flag it rather than guess at the real one.
+  update:
+    x-placeholder: true
+    x-note: >-
+      Not a usable OAuth surface. The real credential model for this API is not
+      published; treat authentication as undocumented.
+- target: $.paths['/lh/pro/orders'].post
+  description: >-
+    Mark the consequence class. This write causes physical mail to be printed,
+    franked and delivered, and the contract publishes no cancel or recall operation
+    and no cut-off before hand-off to production.
+  update:
+    x-reversible: false
+    x-consequence: irreversible-physical

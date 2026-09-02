@@ -1,0 +1,5 @@
+Contact: https://data.laposte.fr/contact
+Contact: https://github.com/data-fair
+Expires: 2027-09-02T19:20:29.046Z
+Preferred-Languages: fr, en
+Canonical: https://data.laposte.fr/.well-known/security.txt

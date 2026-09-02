@@ -1,0 +1,162 @@
+generated: '2026-09-02'
+method: derived
+source: >-
+  The four harvested OpenAPI documents, the two Colissimo WSDLs,
+  well-known/la-poste-groupe-api-catalog.json,
+  well-known/la-poste-groupe-security.txt, and live probes of
+  https://data.laposte.fr/data-fair/api/v1/vocabulary and
+  https://api.laposte.fr/suivi/v2/... on 2026-09-02.
+note: >-
+  Every entry below is judged from the contract or the served document, not from a
+  marketing claim. `conforms: false` with evidence is as much a finding as a true.
+entries:
+- id: openapi-3
+  conforms: true
+  evidence: >-
+    Four documents parse as OpenAPI - Suivi v2 (3.0.1), Lettre recommandee en ligne
+    (3.0.1), Digiposte v3 (3.0.0), La Poste Open Data / Data Fair (3.1.0).
+- id: soap-wsdl-1.1
+  conforms: true
+  evidence: >-
+    https://ws.colissimo.fr/sls-ws/SlsServiceWS?wsdl (15 operations, service
+    SlsServiceWS, targetNamespace http://sls.ws.coliposte.fr) and
+    https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS?wsdl
+    (9 operations, service PointRetraitServiceWSService). Both HTTP 200, both
+    parse as WSDL 1.1 with SOAP 1.1 bindings.
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: >-
+    https://data.laposte.fr/.well-known/api-catalog returns HTTP 200 with a
+    linkset of 21 anchors, each carrying service-desc
+    (application/vnd.oai.openapi+json;version=3.0), service-doc (text/html) and
+    status links. This is the only RFC 9727 catalog in the estate and La Poste does
+    not link to it from its developer portal.
+- id: rfc9116-security-txt
+  conforms: partial
+  evidence: >-
+    www.laposte.fr and www.lapostegroupe.com serve a valid RFC 9116 body with
+    Contact, Policy, Preferred-Languages and Expires (2028-01-01). Both serve it
+    with Content-Type text/html rather than the required text/plain, and neither is
+    signed. data.laposte.fr serves a separate, correctly-typed text/plain document
+    with a Canonical field.
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    Digiposte v3 declares an oauth2 authorizationCode scheme and exposes
+    POST /digiposte/v3/oauth/token for client_credentials, but both authorizationUrl
+    and tokenUrl in the security scheme are the literal placeholder "/". Lettre
+    recommandee en ligne declares an oauth2 implicit flow whose authorizationUrl is
+    https://test.com - a springdoc default that was never replaced. Neither is a
+    usable machine-readable OAuth surface.
+- id: oidc
+  conforms: false
+  evidence: >-
+    /.well-known/openid-configuration returns 404 on api.laposte.fr,
+    developer.laposte.fr, api.digiposte.fr, www.laposte.fr and data.laposte.fr, and
+    410 on www.lapostegroupe.com. No OpenID Connect discovery document is served.
+- id: rfc8414-oauth-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server 404s on every host probed.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No operation in any harvested document returns application/problem+json. Three
+    incompatible vendor envelopes are in use instead - see
+    errors/la-poste-groupe-problem-types.yml.
+- id: rfc8594-sunset
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation response header observed, and zero operations carry
+    `deprecated: true`, despite six Digiposte v3 operations being labelled OBSOLETE
+    or PROCHAINEMENT DECOMISSIONNE in their French prose titles.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    Zero occurrences of "idempoten" across all four OpenAPI documents and both
+    WSDLs. No Idempotency-Key, no client request identifier, no replay semantics.
+- id: pagination
+  conforms: partial
+  evidence: >-
+    Data Fair (Open Data) publishes page/size plus an `after` cursor and `sort`.
+    Digiposte exposes only max_results. Suivi has no pagination - batching is a
+    comma-separated path segment answered with HTTP 207.
+- id: rate-limit-headers
+  conforms: false
+  evidence: >-
+    A live 401 from https://api.laposte.fr/suivi/v2/idships/... on 2026-09-02
+    carried strict-transport-security, x-okapi-successful, x-okapi-request-id,
+    x-powered-by and served-by, and no RateLimit-* / X-RateLimit-* / Retry-After.
+- id: cors
+  conforms: true
+  evidence: >-
+    Suivi v2 and ControlAdresse v2 publish explicit OPTIONS preflight operations
+    alongside every GET, and the Suivi spec documents an X-Forwarded-For header
+    parameter - the surface is designed to be called from a browser.
+- id: hsts
+  conforms: partial
+  evidence: >-
+    developer.laposte.fr and www.lapostegroupe.com send Strict-Transport-Security
+    with max-age 31536000. api.laposte.fr sent no HSTS on the root probe recorded in
+    security/la-poste-groupe-domain-security.yml, but DID send
+    strict-transport-security max-age=31536000 includeSubDomains on the live 401
+    from a real API path - so the header is present on the API surface itself.
+- id: dnssec
+  conforms: false
+  evidence: 'laposte.fr and lapostegroupe.com both return no DNSKEY - see security/la-poste-groupe-domain-security.yml.'
+- id: caa
+  conforms: false
+  evidence: No CAA record on either laposte.fr or lapostegroupe.com.
+- id: dmarc
+  conforms: partial
+  evidence: >-
+    lapostegroupe.com publishes DMARC p=reject. laposte.fr - the domain that carries
+    the developer portal, the API gateway and the CERT contact address - publishes
+    DMARC p=none, which monitors but does not enforce.
+domain_standards:
+  note: >-
+    The Kin Score domain-standard check is reward-only. Postal and parcel logistics
+    has no standard on the scored shortlist, and La Poste's contracts declare none
+    (no UPU S10 reference in the Suivi spec, no GS1, no EDIFACT, no ISO 20022). The
+    one real domain-standard signature in this estate sits on the open-data side.
+  entries:
+  - id: schema-org-rdf-vocabulary
+    conforms: true
+    market: open data / public sector
+    evidence: >-
+      The Open Data OpenAPI carries 97 schema.org URIs inside its own schema
+      annotations - http://schema.org/DigitalDocument (27),
+      http://schema.org/name (28), http://schema.org/image (27),
+      http://schema.org/identifier (6), http://schema.org/Date (6),
+      http://schema.org/SearchAction (2), http://schema.org/CheckAction (1). The
+      backing instance additionally serves a concept vocabulary at
+      https://data.laposte.fr/data-fair/api/v1/vocabulary (HTTP 200) that maps each
+      concept to RDF identifiers including
+      http://www.w3.org/2000/01/rdf-schema#label and http://schema.org/description.
+      A consumer that already speaks schema.org can bind these datasets without a
+      bespoke connector.
+  - id: dcat
+    conforms: false
+    market: open data / public sector
+    evidence: >-
+      No DCAT or DCAT-AP catalog surface found. /catalog.jsonld and
+      /data-fair/api/v1/catalog both 404 on data.laposte.fr. The catalogue is
+      exposed as an RFC 9727 linkset instead, which is a discovery standard, not a
+      dataset-description one.
+  - id: upu-s10
+    conforms: false
+    market: postal / parcel
+    evidence: >-
+      The Suivi v2 contract accepts an `idship` string and gives examples
+      (6S00993561113, 6M20132968235) that are shaped like UPU S10 identifiers, but
+      the spec never names S10, never states the format, and never publishes a
+      pattern. Recorded as not declared rather than inferred.
+compliance_claims:
+  published_certifications: none found
+  note: >-
+    Digiposte v3's own description claims a "coffre-fort numerique a valeur
+    probante" and a "certifie La Poste" seal guaranteeing issuer identity and
+    document non-alteration. That is a legal-quality claim, not a named
+    certification - no NF Z42-020, no eIDAS qualification, no ISO 27001, no SOC 2
+    and no audit report is cited anywhere on the developer portal, and no trust
+    centre was found. No `Compliance` pointer is emitted, because there is no
+    published certification to point at.

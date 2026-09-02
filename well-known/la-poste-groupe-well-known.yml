@@ -1,0 +1,163 @@
+generated: '2026-09-02'
+method: probed
+source: >-
+  Direct unauthenticated GET of the named /.well-known/ path list against every
+  host named in apis.yml baseURL and in the harvested OpenAPI servers[] blocks.
+notes: >-
+  Three hosts serve a real document. www.laposte.fr and www.lapostegroupe.com serve
+  the same RFC 9116 security.txt for the CERT du Groupe La Poste (Content-Type is
+  text/html, which is a deviation from RFC 9116 section 3, but the body is a valid
+  security.txt). data.laposte.fr serves BOTH a security.txt and a real RFC 9727
+  /.well-known/api-catalog linkset with 21 anchors pointing at OpenAPI
+  service-desc documents. api.laposte.fr, developer.laposte.fr, api.digiposte.fr
+  and www.lapostesanteetautonomie.fr return a clean 404 on every path.
+  www.lapostegroupe.com answers 410 Gone (not 404) for every path it does not
+  serve, which is unusual but is a real negative.
+path_echo_control: passed
+hit_count: 4
+hosts:
+  - host: https://www.laposte.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: la-poste-groupe-security.txt
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/la-poste-groupe-negative-control-7f3ab91c.json
+        status: 404
+        note: negative control - correctly refuses a path that cannot exist
+  - host: https://data.laposte.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: la-poste-groupe-data-security.txt
+      - path: /.well-known/api-catalog
+        status: 200
+        file: la-poste-groupe-api-catalog.json
+        note: >-
+          RFC 9727 linkset, 21 anchors; each anchor carries a service-desc href to an
+          application/vnd.oai.openapi+json;version=3.0 document plus service-doc and
+          status links. This is the strongest machine-readable discovery surface La
+          Poste operates.
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/la-poste-groupe-negative-control-7f3ab91c.json
+        status: 404
+        note: negative control - HTML 404 page, correct negative
+  - host: https://www.lapostegroupe.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: la-poste-groupe-security.txt
+        note: byte-identical to the www.laposte.fr document
+      - path: /.well-known/openid-configuration
+        status: 410
+      - path: /.well-known/oauth-authorization-server
+        status: 410
+      - path: /.well-known/oauth-protected-resource
+        status: 410
+      - path: /.well-known/api-catalog
+        status: 410
+      - path: /.well-known/ai-plugin.json
+        status: 410
+      - path: /.well-known/agent-card.json
+        status: 410
+      - path: /.well-known/agent.json
+        status: 410
+      - path: /.well-known/la-poste-groupe-negative-control-7f3ab91c.json
+        status: 410
+        note: negative control - 410 Gone, correct negative
+  - host: https://api.laposte.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://developer.laposte.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.digiposte.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://www.lapostesanteetautonomie.fr
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
