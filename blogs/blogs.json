@@ -1,0 +1,14 @@
+{
+  "repo": "la-poste-groupe",
+  "feeds": [
+    {
+      "source": "https://faq.developer.laposte.fr",
+      "feed_url": "https://faq.developer.laposte.fr",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-06T19:17:18Z"
+}
