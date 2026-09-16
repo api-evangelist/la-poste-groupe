@@ -30,36 +30,29 @@ tags:
 - Addresses
 - Geocoding
 - Open Data
+- Document-Management
+- Identity
+- Government
+- France
+tags_raw:
+- Company
+- Logistics
+- Shipping
+- Package Tracking
+- Postal
+- Addresses
+- Geocoding
+- Open Data
 - Document Management
 - Identity
 - Government
 - France
 apis:
-- name: La Poste Suivi v2
-  description: >-
-    Real-time tracking for La Poste shipments. Suivi v2 harmonises the delivery
-    status of tracked mail (courrier suivi), Colissimo parcels and Chronopost
-    express into one simplified status plus the full routing history, for one to
-    ten tracking numbers per call.
-  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
-  baseURL: https://api.laposte.fr/suivi/v2
-  tags:
-  - Package Tracking
-  - Shipping
-  - Logistics
-  properties:
-  - type: OpenAPI
-    url: openapi/la-poste-groupe-suivi-openapi.json
-  - type: Overlay
-    url: overlays/la-poste-groupe-suivi-overlay.yaml
-  - type: Documentation
-    url: https://developer.laposte.fr/catalog-apis/suivi@2
 - name: La Poste ControlAdresse v2
   description: >-
-    Address validation and normalisation against the French Service National de
-    l'Adresse reference base. Autocompletes and corrects addresses as they are
-    typed in signup forms, checkout flows and CRM records, and returns a
-    normalised postal address for a given address code.
+    Address validation and normalisation against the French Service National de l'Adresse reference base.
+    Autocompletes and corrects addresses as they are typed in signup forms, checkout flows and CRM records,
+    and returns a normalised postal address for a given address code.
   humanURL: https://developer.laposte.fr/catalog-apis/controladresse@2
   baseURL: https://api.laposte.fr/controladresse/v2
   tags:
@@ -70,9 +63,8 @@ apis:
     url: https://developer.laposte.fr/catalog-apis/controladresse@2
 - name: La Poste Geolocalisation v1
   description: >-
-    Forward geocoding over the La Poste address base - resolve a known postal
-    address to the GPS coordinates La Poste holds for it, for mapping, routing
-    and territory analysis.
+    Forward geocoding over the La Poste address base - resolve a known postal address to the GPS coordinates
+    La Poste holds for it, for mapping, routing and territory analysis.
   humanURL: https://developer.laposte.fr/catalog-apis/geolocalisation@1
   baseURL: https://api.laposte.fr/geolocalisation/v1
   tags:
@@ -83,8 +75,8 @@ apis:
     url: https://developer.laposte.fr/catalog-apis/geolocalisation@1
 - name: La Poste Geolocalisation inversee v1
   description: >-
-    Reverse geocoding - given a latitude/longitude pair, returns between one and
-    five nearby French postal addresses within a predefined radius.
+    Reverse geocoding - given a latitude/longitude pair, returns between one and five nearby French postal
+    addresses within a predefined radius.
   humanURL: https://developer.laposte.fr/catalog-apis/geolocinversee@1
   baseURL: https://api.laposte.fr/geolocinversee/v1
   tags:
@@ -93,48 +85,11 @@ apis:
   properties:
   - type: Documentation
     url: https://developer.laposte.fr/catalog-apis/geolocinversee@1
-- name: Digiposte v3
-  description: >-
-    Partner API for Digiposte+, La Poste's certified digital safe (coffre-fort
-    numerique a valeur probante). Lets an issuer create and manage memberships,
-    deposit certified documents into a user's vault, run organisation safes and
-    sharing spaces, and drive partner enrolment procedures.
-  humanURL: https://developer.laposte.fr/catalog-apis/digiposte@3
-  baseURL: https://api.laposte.fr/digiposte/v3
-  tags:
-  - Document Management
-  - Identity
-  - Archiving
-  properties:
-  - type: OpenAPI
-    url: openapi/la-poste-groupe-digiposte-openapi.json
-  - type: Overlay
-    url: overlays/la-poste-groupe-digiposte-overlay.yaml
-  - type: Documentation
-    url: https://developer.laposte.fr/catalog-apis/digiposte@3
-- name: Lettre recommandee en ligne v1
-  description: >-
-    Online registered-mail ordering. Businesses submit a registered letter
-    through the API and La Poste prints it, folds and inserts it, franks it and
-    delivers it, then returns a proof of deposit (preuve de depot) for a batch of
-    orders.
-  humanURL: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
-  tags:
-  - Postal
-  - Registered Mail
-  properties:
-  - type: OpenAPI
-    url: openapi/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json
-  - type: Overlay
-    url: overlays/la-poste-groupe-lettre-recommandee-en-ligne-overlay.yaml
-  - type: Documentation
-    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
 - name: Code de la route v2
   description: >-
-    Booking API for "Passer mon code avec La Poste" - the official La Poste
-    driving-theory examination service. Covers session lookup, candidate
-    validation, pre-reservations and reservations for both the standard (CLR) and
-    CNM exam tracks.
+    Booking API for "Passer mon code avec La Poste" - the official La Poste driving-theory examination
+    service. Covers session lookup, candidate validation, pre-reservations and reservations for both the
+    standard (CLR) and CNM exam tracks.
   humanURL: https://developer.laposte.fr/catalog-apis/codedelaroute@2
   baseURL: https://api.laposte.fr/codedelaroute/v2
   tags:
@@ -143,34 +98,11 @@ apis:
   properties:
   - type: Documentation
     url: https://developer.laposte.fr/catalog-apis/codedelaroute@2
-- name: La Poste Open Data v1
-  description: >-
-    Gateway over La Poste's open datasets - postal codes (hexasmal), contact
-    points, post-office opening hours, services and accessibility, street
-    letterboxes, self-service machines and new communes. Fronted through the
-    Okapi gateway and served by the Data Fair instance at data.laposte.fr, which
-    publishes its own OpenAPI 3.1 and an RFC 9727 /.well-known/api-catalog.
-  humanURL: https://developer.laposte.fr/catalog-apis/opendata@1
-  baseURL: https://api.laposte.fr/opendata/v1
-  tags:
-  - Open Data
-  - Addresses
-  - Geocoding
-  properties:
-  - type: OpenAPI
-    url: openapi/la-poste-groupe-open-data-openapi.json
-  - type: Overlay
-    url: overlays/la-poste-groupe-open-data-overlay.yaml
-  - type: Documentation
-    url: https://developer.laposte.fr/catalog-apis/opendata@1
-  - type: APICatalog
-    url: well-known/la-poste-groupe-api-catalog.json
 - name: Colissimo Web Services
   description: >-
-    Colissimo's SOAP web services for e-commerce shipping - shipping-label and
-    return-label generation, pickup planning, deposit-slip (bordereau)
-    generation, international product lookup, and pickup-point / relay-point
-    search across post offices, Consignes Pickup lockers and relay merchants.
+    Colissimo's SOAP web services for e-commerce shipping - shipping-label and return-label generation,
+    pickup planning, deposit-slip (bordereau) generation, international product lookup, and pickup-point
+    / relay-point search across post offices, Consignes Pickup lockers and relay merchants.
   humanURL: https://www.colissimo.entreprise.laposte.fr/outils-et-solutions
   baseURL: https://ws.colissimo.fr
   tags:
@@ -184,12 +116,261 @@ apis:
     url: wsdl/la-poste-groupe-colissimo-point-retrait.wsdl
   - type: Documentation
     url: https://developer.laposte.fr/catalog-apis/colissimo@1
+- aid: la-poste-groupe:la-poste-groupe-administration-api
+  name: La Poste Groupe Administration API
+  description: The Administration API from La Poste Groupe — 3 operation(s) for administration.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Administration
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-administration-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-applications-api
+  name: La Poste Groupe Applications API
+  description: The Applications API from La Poste Groupe — 2 operation(s) for applications.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Applications
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-applications-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-digiposte-api
+  name: La Poste Groupe Digiposte API
+  description: The Digiposte API from La Poste Groupe — 5 operation(s) for digiposte.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Digiposte
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-digiposte-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-jdd-ditable-api
+  name: La Poste Groupe JDD / Éditable API
+  description: The JDD / Éditable API from La Poste Groupe — 10 operation(s) for jdd / éditable.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - JDD / Éditable
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-jdd-ditable-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-jdd-donn-es-api
+  name: La Poste Groupe JDD / Données API
+  description: The JDD / Données API from La Poste Groupe — 18 operation(s) for jdd / données.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - JDD / Données
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-jdd-donn-es-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-jdd-m-tadonn-es-api
+  name: La Poste Groupe JDD / Métadonnées API
+  description: The JDD / Métadonnées API from La Poste Groupe — 12 operation(s) for jdd / métadonnées.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - JDD / Métadonnées
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-jdd-m-tadonn-es-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-jeux-de-donn-es-jdd-api
+  name: La Poste Groupe Jeux de données (JDD) API
+  description: >-
+    The Jeux de données (JDD) API from La Poste Groupe — 1 operation(s) for jeux de données (jdd).
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Jeux de données (JDD)
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-jeux-de-donn-es-jdd-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-lh-pro-resources-api
+  name: La Poste Groupe LH PRO resources API
+  description: The LH PRO resources API from La Poste Groupe — 2 operation(s) for lh pro resources.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - LH PRO resources
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-lh-pro-resources-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-partner-api
+  name: La Poste Groupe Partner API
+  description: The Partner API from La Poste Groupe — 4 operation(s) for partner.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Partner
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-partner-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-resend-purl-api
+  name: La Poste Groupe Resend Purl API
+  description: The Resend Purl API from La Poste Groupe — 1 operation(s) for resend purl.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Resend Purl
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-resend-purl-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-suivi-api
+  name: La Poste Groupe Suivi API
+  description: Everything about one to 10 trackings with or without account's link
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - Suivi
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-suivi-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
+- aid: la-poste-groupe:la-poste-groupe-user-api
+  name: La Poste Groupe User API
+  description: The User API from La Poste Groupe — 2 operation(s) for user.
+  humanURL: https://developer.laposte.fr/catalog-apis/suivi@2
+  baseURL: https://api.laposte.fr/suivi/v2
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/la-poste-groupe-user-api-openapi.yml
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/suivi@2
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/digiposte@3
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/lettre-recommandee-en-ligne@1
+  - type: Documentation
+    url: https://developer.laposte.fr/catalog-apis/opendata@1
+  - type: APICatalog
+    url: well-known/la-poste-groupe-api-catalog.json
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/la-poste-groupe-suivi-overlay.yaml
+- type: Overlay
+  url: overlays/la-poste-groupe-digiposte-overlay.yaml
+- type: Overlay
+  url: overlays/la-poste-groupe-lettre-recommandee-en-ligne-overlay.yaml
+- type: Overlay
+  url: overlays/la-poste-groupe-open-data-overlay.yaml
 - type: VulnerabilityDisclosure
   url: security/la-poste-groupe-vulnerability-disclosure.yml
 - type: DomainSecurity
