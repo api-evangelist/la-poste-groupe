@@ -1,0 +1,132 @@
+openapi: 3.2.0
+info:
+  description: '**Bienvenue sur l’API Coffre-fort numérique Digiposte +.**
+
+
+    !Digiposte
+
+
+    Cette API permet d’envoyer et archiver des documents certifiés dans un coffre-fort numérique Digiposte + à valeur probante, pour vos clients ou utilisateurs.'
+  title: Digiposte v3 Resend Purl API
+  version: ''
+servers: []
+tags:
+- name: Resend Purl
+paths:
+  /api/v4/resend-purl:
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+        '400':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: bad_request
+                    error_description: parameters invalid
+                  - error: bad_request
+                    error_description: missing senderPid
+                  - error: bad_request
+                    error_description: email invalid <email>
+              schema:
+                items: {}
+                type: array
+          description: input parameters are not valid
+          headers: {}
+        '403':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: forbidden
+                    error_description: cannot act as ${senderPid}
+              schema:
+                items: {}
+                type: array
+          description: le partenaire n'a pas le droit de faire cette operation au nom de l'emetteur designé
+          headers: {}
+        '404':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: not_found
+                    error_description: resource not found
+              schema:
+                items: {}
+                type: array
+          description: adhésion non trouvée
+          headers: {}
+        '409':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: conflict
+                    error_description: membership expired or consumed
+              schema:
+                items: {}
+                type: array
+          description: Adhesion expirée ou coffre déjà personnalisé
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Resend Purl
+      operationId: Renvoyer le lien de personnalisation à un utilisateur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                partner_id: Test
+                partner_user_id: af201906
+                route_code: Test
+                email: test@test.com
+              properties:
+                partner_id:
+                  description: Identifiant Digiposte de l'organisme (code émetteur) de celui qui a effectué le provisioning à la base
+                  type: string
+                partner_user_id:
+                  description: 'Identifiant du client dans le référentiel de l''organisme (matricule, code 1) '
+                  type: string
+                email:
+                  description: Email de l'utilisateur
+                  type: string
+                route_code:
+                  description: code de routage de l'adhesion
+                  type: string
+              required:
+              - partner_user_id
+              type: object
+      summary: Renvoyer le lien de personnalisation à un utilisateur
+      parameters:
+      - $ref: '#/components/parameters/okapiKeyParameter'
+components:
+  parameters:
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: okapi-key
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: okapi-key
+      schema:
+        type: string
+  securitySchemes:
+    basic:
+      scheme: basic
+      type: http
+    oauth2:
+      flows:
+        authorizationCode:
+          authorizationUrl: /
+          scopes: {}
+          tokenUrl: /
+      type: oauth2

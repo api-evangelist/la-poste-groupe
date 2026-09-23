@@ -1,0 +1,428 @@
+openapi: 3.2.0
+info:
+  description: '**Bienvenue sur l’API Coffre-fort numérique Digiposte +.**
+
+
+    !Digiposte
+
+
+    Cette API permet d’envoyer et archiver des documents certifiés dans un coffre-fort numérique Digiposte + à valeur probante, pour vos clients ou utilisateurs.'
+  title: Digiposte v3 User API
+  version: ''
+servers: []
+tags:
+- name: User
+paths:
+  /user/customizationurl:
+    post:
+      responses:
+        '200':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                    customization_url: string
+              schema:
+                properties:
+                  customization_url:
+                    type: string
+                type: object
+          description: OK
+          headers: {}
+        '400':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: invalid_parameter
+                    error_description: Description de l'erreur en fonction du champ impacté
+                    field: '{field_name}'
+              schema:
+                items: {}
+                type: array
+          description: Bad Request
+          headers: {}
+        '403':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: forbidden
+                    error_description: For coregistration user only
+              schema:
+                items: {}
+                type: array
+          description: Forbidden
+          headers: {}
+        '404':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: not_found
+                    error_description: Expect user
+              schema:
+                items: {}
+                type: array
+          description: Not Found
+          headers: {}
+        '409':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: conflict
+                    error_description: The account is not partial or already customized
+              schema:
+                items: {}
+                type: array
+          description: Conflict
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - User
+      description: ''
+      operationId: Créer ou renouveler l'url de personnalisation d'un compte partiel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                birth_name: string
+                company_mandatory_attributs_set_or_null: true
+                company_name: string
+                date_of_birth: '2019-04-12'
+                email: string
+                first_name: string
+                last_name: string
+                partner_user_id: string
+                title: string
+                user_type: string
+              properties:
+                birth_name:
+                  description: Nom de naissance
+                  type: string
+                company_name:
+                  description: Nom de l'entreprise
+                  type: string
+                date_of_birth:
+                  description: Date de naissance
+                  type: string
+                email:
+                  description: Email
+                  type: string
+                first_name:
+                  description: Prénom
+                  type: string
+                last_name:
+                  description: Nom
+                  type: string
+                partner_user_id:
+                  description: Identifiant de l'utilisateur dans le référentiel du partenaire
+                  type: string
+                title:
+                  description: Civilité de l'utilisateur
+                  type: string
+                user_type:
+                  description: Type de l'utilisateur
+                  enum:
+                  - PERSON
+                  - COMPANY
+                  - string
+                  type: string
+              type: object
+      summary: Créer ou renouveler l'url de personnalisation d'un compte partiel
+      parameters:
+      - $ref: '#/components/parameters/okapiKeyParameter'
+  /user/partial:
+    post:
+      responses:
+        '200':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                    route_code: string
+                    userOutput:
+                      account_type: string
+                      created_at: '2019-04-10T12:50:08.215Z'
+                      date_of_birth: '2019-04-10'
+                      email: string
+                      first_name: string
+                      id_xiti: 0
+                      idnlinked: true
+                      last_name: string
+                      login: string
+                      partial_account: true
+                      partner:
+                        application_name: string
+                        document_name: string
+                        logo_url: string
+                        partner_id: string
+                        sender:
+                          alternative_logo: string
+                          auto_resiliation: true
+                          auto_validate_expiring_membership_default: true
+                          category: string
+                          category_id: string
+                          collected: true
+                          contracted: true
+                          contracted_creation_enabled: true
+                          convention_required: true
+                          convention_url: string
+                          convention_version: string
+                          document_naming: string
+                          form_data:
+                            creation_info: string
+                            field1_label: string
+                            field2_label: string
+                            more_info: string
+                            presentation: string
+                            security_plus: true
+                            sender_pid: string
+                          hr: true
+                          logo: string
+                          mail_trust: true
+                          multi_subscription: true
+                          multilingual: true
+                          name: string
+                          optional_address: true
+                          pfm_id: string
+                          pid: string
+                          push_block: string
+                          sender_side_convention: true
+                          subscription_url: string
+                          termination_message: string
+                          type: string
+                          url_lost_password: string
+                          url_selfcare: string
+                          url_sign_up: string
+                          vip: true
+                      partner_user_id: string
+                      procedures:
+                      - id: string
+                        name: string
+                        type: string
+                      status: string
+                      title: string
+                      user_type: string
+              schema:
+                properties:
+                  route_code:
+                    type: string
+                  userOutput:
+                    properties:
+                      account_type:
+                        type: string
+                      created_at:
+                        type: string
+                      date_of_birth:
+                        type: string
+                      email:
+                        type: string
+                      first_name:
+                        type: string
+                      id_xiti:
+                        type: number
+                      idnlinked:
+                        type: boolean
+                      last_name:
+                        type: string
+                      login:
+                        type: string
+                      partial_account:
+                        type: boolean
+                      partner:
+                        properties:
+                          application_name:
+                            type: string
+                          document_name:
+                            type: string
+                          logo_url:
+                            type: string
+                          partner_id:
+                            type: string
+                          sender:
+                            properties:
+                              alternative_logo:
+                                type: string
+                              auto_resiliation:
+                                type: boolean
+                              auto_validate_expiring_membership_default:
+                                type: boolean
+                              category:
+                                type: string
+                              category_id:
+                                type: string
+                              collected:
+                                type: boolean
+                              contracted:
+                                type: boolean
+                              contracted_creation_enabled:
+                                type: boolean
+                              convention_required:
+                                type: boolean
+                              convention_url:
+                                type: string
+                              convention_version:
+                                type: string
+                              document_naming:
+                                type: string
+                              form_data:
+                                properties:
+                                  creation_info:
+                                    type: string
+                                  field1_label:
+                                    type: string
+                                  field2_label:
+                                    type: string
+                                  more_info:
+                                    type: string
+                                  presentation:
+                                    type: string
+                                  security_plus:
+                                    type: boolean
+                                  sender_pid:
+                                    type: string
+                                type: object
+                              hr:
+                                type: boolean
+                              logo:
+                                type: string
+                              mail_trust:
+                                type: boolean
+                              multi_subscription:
+                                type: boolean
+                              multilingual:
+                                type: boolean
+                              name:
+                                type: string
+                              optional_address:
+                                type: boolean
+                              pfm_id:
+                                type: string
+                              pid:
+                                type: string
+                              push_block:
+                                type: string
+                              sender_side_convention:
+                                type: boolean
+                              subscription_url:
+                                type: string
+                              termination_message:
+                                type: string
+                              type:
+                                type: string
+                              url_lost_password:
+                                type: string
+                              url_selfcare:
+                                type: string
+                              url_sign_up:
+                                type: string
+                              vip:
+                                type: boolean
+                            type: object
+                        type: object
+                      partner_user_id:
+                        type: string
+                      procedures:
+                        items: {}
+                        type: array
+                      status:
+                        type: string
+                      title:
+                        type: string
+                      user_type:
+                        type: string
+                    type: object
+                type: object
+          description: OK
+          headers: {}
+        '409':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: conflict
+                    error_description: client id already exist for current partner
+              schema:
+                items: {}
+                type: array
+          description: Conflict
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - User
+      description: ''
+      operationId: Créer un nouveau compte partiel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                birth_name: Test
+                date_of_birth: '2019-04-10'
+                email: test@test.com
+                first_name: Test
+                last_name: Digiposte
+                partner_user_id: af201906
+                title: MR
+              properties:
+                birth_name:
+                  description: Nom de naissance
+                  type: string
+                date_of_birth:
+                  description: Date de naissance
+                  type: string
+                email:
+                  description: Email de l'utilisateur
+                  type: string
+                first_name:
+                  description: Le prénom de l'utilisateur
+                  type: string
+                last_name:
+                  description: Le nom de l'utilisateur
+                  type: string
+                partner_user_id:
+                  description: L'id de l'utilisateur dans le référentiel du partenaire
+                  type: string
+                title:
+                  description: Civilité de l'utilisateur, peut etre null
+                  type: string
+              required:
+              - partner_user_id
+              type: object
+      summary: Créer un nouveau compte partiel
+      parameters:
+      - $ref: '#/components/parameters/okapiKeyParameter'
+components:
+  parameters:
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: okapi-key
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: okapi-key
+      schema:
+        type: string
+  securitySchemes:
+    basic:
+      scheme: basic
+      type: http
+    oauth2:
+      flows:
+        authorizationCode:
+          authorizationUrl: /
+          scopes: {}
+          tokenUrl: /
+      type: oauth2

@@ -1,0 +1,467 @@
+openapi: 3.2.0
+info:
+  title: Swagger Suivi API
+  description: Tracking La Poste
+  license:
+    name: GNU
+    url: ''
+  version: Suivi-1.0.0
+servers:
+- url: https://api.laposte.fr/suivi/v2
+tags:
+- name: Suivi
+  description: Everything about one to 10 trackings with or without account's link
+paths:
+  /idships/{idship}:
+    get:
+      tags:
+      - Suivi
+      operationId: '1.0'
+      summary: Getting tracking informations for an object
+      description: All connected applications use this service to track. These calls represent nearly 95% of traffic
+      deprecated: false
+      parameters:
+      - $ref: '#/components/parameters/idshipP'
+      - $ref: '#/components/parameters/langQ'
+      - $ref: '#/components/parameters/acceptH'
+      - $ref: '#/components/parameters/xffH'
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          description: Successful unitary operation
+          headers:
+            Content-Type:
+              description: Only Json, xml is depracated
+              schema:
+                type: string
+                enum:
+                - application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/baseResponse'
+                  - type: object
+                    properties:
+                      returnCode:
+                        example: 200
+                      shipment:
+                        $ref: '#/components/schemas/suiviShipment'
+        '207':
+          $ref: '#/components/responses/response207g'
+        '400':
+          $ref: '#/components/responses/response400'
+        '401':
+          $ref: '#/components/responses/response401'
+        '404':
+          $ref: '#/components/responses/response404'
+      security:
+      - OKAPIkey: []
+      - JWT: []
+    options:
+      tags:
+      - Suivi
+      operationId: '1.1'
+      summary: Used by browsers to check request
+      description: Used by browsers to verify allowed methods, domain origin...
+      deprecated: false
+      parameters:
+      - $ref: '#/components/parameters/idshipP'
+      - $ref: '#/components/parameters/langQ'
+      - $ref: '#/components/parameters/acceptH'
+      - $ref: '#/components/parameters/xffH'
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '204':
+          description: Successful operation
+          headers:
+            X-Frame-Options:
+              description: SAMEORIGIN
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: boolean
+            Access-Control-Allow-Methods:
+              description: GET,HEAD,PUT,PATCH,POST,DELETE
+              schema:
+                type: string
+        default:
+          description: Invalid operation
+      security:
+      - OKAPIkey: []
+      - JWT: []
+components:
+  schemas:
+    removalPoint:
+      type: object
+      readOnly: true
+      description: Description of removal point
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: 'Name of removal point. [scope: open]'
+        type:
+          type: string
+          description: 'Kind of point (''BDP'', ''A2P'' ...). [scope: open]'
+    deliveryChoice:
+      type: object
+      readOnly: true
+      description: List of delivery services possible or chosen
+      required:
+      - deliveryChoice
+      properties:
+        deliveryChoice:
+          type: number
+          description: '0=No, 1=Possible, 2=Chosen. [scope: open]'
+    suiviShipment:
+      description: Unified tracking object returned
+      allOf:
+      - type: object
+        required:
+        - idShip
+        properties:
+          idShip:
+            type: string
+            description: 'Identifier of object composed from 11 to 15 alphanumeric characters. [scope: open]'
+            example: 1B34567890123
+      - $ref: '#/components/schemas/shipmentTrk'
+      - $ref: '#/components/schemas/shipmentPropPub'
+    event:
+      type: object
+      required:
+      - order
+      - date
+      - label
+      - code
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: 'Date of event, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope: open]'
+          example: '2020-12-07T00:00:00+01:00'
+        label:
+          type: string
+          description: 'Message of event. [scope: open'
+          example: Votre colis est en cours de distribution
+        code:
+          type: string
+          description: 'Code of event. [scope: open]'
+          example: ET2
+    shipmentPropPub:
+      type: object
+      description: Properties of object returned
+      properties:
+        holder:
+          type: number
+          readOnly: true
+          description: 'Holder in charge :  1=Courrier,  3=Chronopost,  4=Colissimo.  [scope: open]'
+          enum:
+          - 1
+          - 3
+          - 4
+        product:
+          type: string
+          readOnly: true
+          description: 'Name or category of product. [scope: open]'
+          example: Lettre Recommandée
+        isFinal:
+          type: boolean
+          readOnly: true
+          description: 'Is object delivered? [scope: open]'
+        entryDate:
+          type: string
+          format: date-time
+          readOnly: true
+          description: 'Date of entry into network, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope: open]'
+          example: '2017-12-01T09:14:00+02:00'
+        estimDate:
+          type: string
+          format: date-time
+          example: '2017-12-02T09:11:00+02:00'
+        estimHourMin:
+          type: string
+          format: date-time
+          example: '2017-12-02T09:11:00+02:00'
+        estimHourMax:
+          type: string
+          format: date-time
+          example: '2017-12-02T09:11:30+02:00'
+        deliveryDate:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date of delivery, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope]
+          example: '2020-12-03T15:32:00+02:00'
+        contextData:
+          $ref: '#/components/schemas/contextData'
+        url:
+          type: string
+          readOnly: true
+          description: 'Url of tracking onto laposte.fr = $url+idship. [scope: open]'
+    partner:
+      type: object
+      readOnly: true
+      description: 'Informations onto partner network and additional identifiers. [scope: open]'
+      properties:
+        name:
+          type: string
+          description: Name of Partner
+        network:
+          type: string
+          description: Network of Partner
+        reference:
+          type: string
+          description: Identifier of the object for the Partner
+        numberInstance:
+          type: string
+          description: Number of instance
+        numberAVPI:
+          type: string
+          description: Number of advise
+    shipmentTrk:
+      type: object
+      description: Informations on tracking of object returned
+      properties:
+        timeline:
+          type: array
+          readOnly: true
+          description: 'Definition of timeline : 5 items given'
+          items:
+            $ref: '#/components/schemas/step'
+        event:
+          type: array
+          readOnly: true
+          description: List of event given into anti chronological order
+          items:
+            $ref: '#/components/schemas/event'
+    baseResponse:
+      type: object
+      required:
+      - returnCode
+      properties:
+        lang:
+          type: string
+          description: Language of the returned response
+          enum:
+          - fr_FR
+          - en_GB
+          - de_DE
+          - it_IT
+          - es_ES
+          - nl_NL
+        returnCode:
+          type: integer
+          format: int32
+          description: Returned value gaving treatment result
+          enum:
+          - 101
+          - 104
+          - 105
+          - 109
+          - 200
+          - 201
+          - 208
+          - 504
+        scope:
+          type: string
+          description: Scope used into response
+          enum:
+          - open
+    step:
+      type: object
+      required:
+      - id
+      - shortLabel
+      - status
+      - type
+      properties:
+        id:
+          type: number
+          description: 'Identifier of the step (1 to 5). [scope: open]'
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        shortLabel:
+          type: string
+          description: 'Short label of the step, displayed onto timeline. [scope: open]'
+          example: En cours de traitement
+        longLabel:
+          type: string
+          description: 'Long label of the step, displayed into hot zone. [scope: open]'
+          example: Votre colis est en train de voyager dans un train.
+        status:
+          type: boolean
+          description: Is step active?
+        type:
+          type: number
+          description: 'Kind of step : 1=OK, 0=Information, -1=KO. [scope: open]'
+          enum:
+          - -1
+          - 0
+          - 1
+        date:
+          type: string
+          format: date-time
+          description: 'Event''s date, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope: open]'
+          example: '2020-12-07T00:00:00+01:00'
+        country:
+          type: string
+          description: 'Event''s country code. [scope: open]'
+          example: DE
+    contextData:
+      type: object
+      description: Contextual Informations on call and object
+      properties:
+        deliveryChoice:
+          $ref: '#/components/schemas/deliveryChoice'
+        removalPoint:
+          $ref: '#/components/schemas/removalPoint'
+        originCountry:
+          type: string
+          readOnly: true
+          description: 'Code of origin country. [scope: open]'
+        arrivalCountry:
+          type: string
+          readOnly: true
+          description: 'Code of delivery country. [scope: open]'
+        partner:
+          $ref: '#/components/schemas/partner'
+  parameters:
+    acceptH:
+      name: Accept
+      in: header
+      description: Only json, xml is depracated
+      required: true
+      schema:
+        type: string
+        enum:
+        - application/json
+    idshipP:
+      name: idship
+      in: path
+      description: ID of object (1 to 10, comma separated)
+      required: true
+      example: CB662173705US
+      schema:
+        type: string
+    xffH:
+      name: X-Forwarded-For
+      in: header
+      description: Must contains customer's IP
+      required: false
+      example: 111.222.333.444
+      schema:
+        type: string
+    langQ:
+      name: lang
+      in: query
+      description: Lang desired
+      required: false
+      schema:
+        type: string
+        enum:
+        - fr_FR
+        - en_GB
+        - de_DE
+        - es_ES
+        - it_IT
+        - nl_NL
+        default: fr_FR
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
+      schema:
+        type: string
+  responses:
+    response207g:
+      description: Multiple operation
+      headers:
+        Content-Type:
+          description: application/json
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+              description: Array of unitary responses 200, 101, 104, 105 nor 109
+              example: '[{response 200},{response 404}]'
+    response401:
+      description: 'Unauthorized: HMAC verification failed'
+      headers:
+        Content-Type:
+          description: application/json
+          schema:
+            type: string
+    response400:
+      description: 'Invalid request: missing parameter'
+      headers:
+        Content-Type:
+          description: application/json
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                returnCode:
+                  example: 400
+                returnMessage:
+                  type: string
+                  description: Message to be shown to customer
+                  example: Le numéro que vous avez saisi n’est pas valide. Nous vous invitons à vérifier votre saisie, en particulier le nombre de caractères.
+                idShip:
+                  type: string
+                  description: Asked object identifier
+                  example: 6S00993561113
+            - $ref: '#/components/schemas/baseResponse'
+    response404:
+      description: Unknown or Invalid idShip
+      headers:
+        Content-Type:
+          description: application/json
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                returnCode:
+                  example: 104
+                returnMessage:
+                  type: string
+                  description: Message to be shown to customer
+                  example: Votre suivi n'est pas encore disponible. Si vous avez déposé votre envoi, les informations de suivi peuvent être affichées avec un délai, veuillez réessayer ultérieurement.
+                idShip:
+                  type: string
+                  description: Asked object identifier
+                  example: 6S00993561113
+            - $ref: '#/components/schemas/baseResponse'
+  securitySchemes:
+    OKAPIkey:
+      type: apiKey
+      name: X-Okapi-Key
+      in: header
+    JWT:
+      type: apiKey
+      name: access_token
+      in: cookie

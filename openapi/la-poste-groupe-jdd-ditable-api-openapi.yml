@@ -1,0 +1,1741 @@
+openapi: 3.2.0
+info:
+  title: Data Fair JDD / Éditable API
+  description: 'Cette documentation interactive à destination des développeurs permet de gérer les ressources de ce service de publication de données et de consommer les opérations applicables aux jeux de données (toutes variantes confondues : fichier, éditable, virtuel, métadonnées seules, master data), incluant les opérations privées et d''administration.'
+  version: 6.17.2
+  x-api-id: data-fair
+  termsOfService: https://koumoul.com/pages/conditions-generales-dutilisation
+  contact:
+    name: Koumoul
+    url: https://koumoul.com
+    email: support@koumoul.com
+servers:
+- url: https://data.laposte.fr/data-fair/api/v1
+  description: Instance Data Fair - data.laposte.fr
+security:
+- apiKey: []
+- sdCookie: []
+tags:
+- name: JDD / Éditable
+paths:
+  /datasets/{id}/lines:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    post:
+      summary: Ajouter une ligne
+      description: Ajouter une nouvelle ligne au jeu de données.
+      operationId: createLine
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '201':
+          description: La ligne de données ajoutée.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: Supprimer toutes les lignes
+      description: Supprimer toutes les lignes du jeu de données.
+      operationId: deleteAllLines
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      responses:
+        '204':
+          description: Toutes les lignes de données ont été supprimées.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/revisions:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    get:
+      summary: Récupérer les révisions
+      description: Récupérer les révisions de lignes triées du plus récent au plus ancien.
+      operationId: readRevisions
+      x-permissionClass: read
+      tags:
+      - JDD / Éditable
+      parameters:
+      - in: query
+        name: size
+        description: Le nombre de résultats à retourner (taille de la pagination).
+        schema:
+          title: Taille de la pagination
+          default: 12
+          type: integer
+          maximum: 10000
+      - in: query
+        name: before
+        description: 'Pagination pour remonter dans l''historique.
+
+
+          *Automatiquement renseigné par la propriété **next** du résultat de la requête précédente.*'
+        schema:
+          title: Pagination pour remonter dans l'historique
+          default: 1
+          type: integer
+      responses:
+        '200':
+          description: Les révisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Le nombre total de résultat si on ignore la pagination.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: []
+                      properties:
+                        name:
+                          type: string
+                          title: Nom
+                          x-refersTo: http://schema.org/name
+                        description:
+                          type: string
+                          title: Description
+                        category:
+                          type: string
+                          title: Catégorie
+                        value:
+                          type: number
+                          title: Valeur
+                        siret:
+                          type: string
+                          title: SIRET
+                          x-refersTo: http://dbpedia.org/ontology/siret
+                        image:
+                          type: string
+                          title: Image
+                          x-refersTo: http://schema.org/image
+                        document:
+                          type: string
+                          title: Document
+                          x-refersTo: http://schema.org/DigitalDocument
+                        _action:
+                          type: string
+                          title: Action
+                          enum:
+                          - create
+                          - delete
+                          - update
+                          - createOrUpdate
+                          - patch
+                          description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+                  next:
+                    type: string
+                    description: URL pour continuer la pagination.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/lines/{lineId}/revisions:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: lineId
+      description: Identifiant de la ligne.
+      required: true
+      schema:
+        title: Identifiant de la ligne
+        type: string
+    get:
+      summary: Récupérer les révisions d'une ligne
+      description: Récupérer les révisions d'une ligne triées du plus récent au plus ancien.
+      operationId: readLineRevisions
+      x-permissionClass: read
+      tags:
+      - JDD / Éditable
+      parameters:
+      - in: query
+        name: size
+        description: Le nombre de résultats à retourner (taille de la pagination).
+        schema:
+          title: Taille de la pagination
+          default: 12
+          type: integer
+          maximum: 10000
+      - in: query
+        name: before
+        description: 'Pagination pour remonter dans l''historique.
+
+
+          *Automatiquement renseigné par la propriété **next** du résultat de la requête précédente.*'
+        schema:
+          title: Pagination pour remonter dans l'historique
+          default: 1
+          type: integer
+      responses:
+        '200':
+          description: Les révisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Le nombre total de résultat si on ignore la pagination.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: []
+                      properties:
+                        name:
+                          type: string
+                          title: Nom
+                          x-refersTo: http://schema.org/name
+                        description:
+                          type: string
+                          title: Description
+                        category:
+                          type: string
+                          title: Catégorie
+                        value:
+                          type: number
+                          title: Valeur
+                        siret:
+                          type: string
+                          title: SIRET
+                          x-refersTo: http://dbpedia.org/ontology/siret
+                        image:
+                          type: string
+                          title: Image
+                          x-refersTo: http://schema.org/image
+                        document:
+                          type: string
+                          title: Document
+                          x-refersTo: http://schema.org/DigitalDocument
+                        _action:
+                          type: string
+                          title: Action
+                          enum:
+                          - create
+                          - delete
+                          - update
+                          - createOrUpdate
+                          - patch
+                          description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+                  next:
+                    type: string
+                    description: URL pour continuer la pagination.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/lines/{lineId}:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: lineId
+      description: L'identifiant de la ligne.
+      required: true
+      schema:
+        title: Identifiant de la ligne
+        type: string
+    get:
+      summary: Récupérer une ligne
+      description: Récupérer le contenu complet d'une ligne par son identifiant.
+      operationId: readLine
+      x-permissionClass: read
+      tags:
+      - JDD / Éditable
+      responses:
+        '200':
+          description: Le contenu d'une ligne de données.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Remplacer une ligne
+      description: Remplacer entièrement le contenu d'une ligne par son identifiant.
+      operationId: updateLine
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '200':
+          description: La ligne de données modifiée.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+    patch:
+      summary: Modifier une ligne
+      description: Modifier partiellement le contenu d'une ligne par son identifiant.
+      operationId: patchLine
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu partiel d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '200':
+          description: La ligne de données après modification.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: Supprimer une ligne
+      description: Supprimer une ligne par son identifiant.
+      operationId: deleteLine
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      responses:
+        '204':
+          description: La ligne de données a été supprimée.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/_bulk_lines:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    post:
+      summary: Effectuer des opérations en masse
+      description: Créer/modifier/supprimer de multiples lignes en une seule opération.
+      operationId: bulkLines
+      x-permissionClass: write
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Les opérations à appliquer.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+                  _action:
+                    type: string
+                    title: Action
+                    enum:
+                    - create
+                    - delete
+                    - update
+                    - createOrUpdate
+                    - patch
+                    description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+          application/x-ndjson:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+                _action:
+                  type: string
+                  title: Action
+                  enum:
+                  - create
+                  - delete
+                  - update
+                  - createOrUpdate
+                  - patch
+                  description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+      responses:
+        '200':
+          description: Le résultat des opérations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nbOk:
+                    type: integer
+                  nbNotModified:
+                    type: integer
+                  nbErrors:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        line:
+                          type: integer
+                        error:
+                          type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /datasets/{id}/own/{owner}/lines:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: owner
+      description: Le propriétaire des lignes.
+      required: true
+      schema:
+        title: Propriétaire des lignes
+        type: string
+    get:
+      summary: Lire les lignes (par propriétaire)
+      description: Requêter les lignes du jeu de données. (restreint par propriétaire de ligne)
+      operationId: readOwnLines
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      parameters:
+      - in: query
+        name: after
+        description: 'Pagination en profondeur.
+
+
+          *Automatiquement renseigné par la propriété **next** du résultat de la requête précédente.*'
+        schema:
+          title: Pagination en profondeur
+          type: integer
+      - in: query
+        name: page
+        description: 'Le numéro de la page (indice de la pagination). Débute à 1.
+
+
+          *Pour paginer sur de gros volumes de données utilisez plutôt le paramètre **after***.'
+        schema:
+          title: Numéro de la page
+          type: integer
+          default: 1
+      - in: query
+        name: size
+        description: Le nombre de résultats à retourner (taille de la pagination).
+        schema:
+          title: Taille de la pagination
+          default: 12
+          type: integer
+          maximum: 10000
+      - in: query
+        name: sort
+        description: '
+
+          Le tri à effectuer sous forme d''une liste de clés de colonnes séparées par des virgules.
+
+
+          Par défaut le tri est ascendant, si un nom de colonne est préfixé par un "-" alors le tri sera descendant.
+
+
+          Exemple : `ma_colonne,-ma_colonne2`'
+        schema:
+          title: Ordre des résultats
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: select
+        description: La liste des clés de colonnes à retourner.
+        schema:
+          title: La liste des colonnes à retourner
+          type: array
+          items:
+            type: string
+          default: all
+        style: form
+        explode: false
+      - in: query
+        name: highlight
+        description: "\nDemande à retourner des extraits du document qui contiennent les mots utilisés en filtre (paramètres q et qs).\n\nLa valeur est une liste de clés de colonnes séparées par des virgules.\n    "
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: thumbnail
+        description: "\nDemande à retourner un lien de vignette d'une dimension déterminée à partir d'une colonne image.\n\nPour que ce paramètre soit accepté le concept \"Image\" doit être associé à une colonne du jeu de données.\n\nLa valeur du paramètre est la dimension passée sous la form largeurxhauteur (300x200 par exemple) où un 0 sur la largeur ou la hauteur signifie que l'autre valeur est prise en compte et les proportions conservées.\n    "
+        schema:
+          type: string
+      - in: query
+        name: sampling
+        description: "\n  **Uniquement avec le paramètre de tuilage xyz**. Configure le mode d'échantillonnage des résultats pour privilégier soit l'exhaustivité des données soit une densité plus homogène sur la carte.\n\n    - **neighbors** (défaut) : utilise la densité maximale parmi les tuiles voisines pour réduire la densité de la tuile courante au même niveau d'échantillonnage (coûteux en performance).\n    - **max** : retourne le maximum (limité par le paramètre size) de résultat pour chaque tuile.\n      "
+        schema:
+          type: string
+          enum:
+          - null
+          - neighbors
+          - max
+      - in: query
+        name: format
+        description: "Le format de sérialisation de la donnée.\n\n  - **json** (défaut)\n  - **csv**, **xlsx**, **ods** pour formats compatibles tableurs\n  - **pbf** pour tuiles vectorielles\n  - **geojson**, **shp**, **wkt** pour formats géographiques"
+        schema:
+          title: Format de sérialisation
+          default: json
+          type: string
+          enum:
+          - json
+          - csv
+          - xlsx
+          - ods
+          - pbf
+          - geojson
+          - shp
+          - wkt
+      - in: query
+        name: html
+        description: Effectuer le rendu des contenus formatés de **markdown** vers **HTML**.
+        schema:
+          title: Rendu HTML des contenus markdown
+          type: boolean
+      - in: query
+        name: hint
+        description: "Ajouter un champ `hint` au corps de la réponse avec un conseil de performance le cas échéant.\n\n  - **auto** (défaut) : seulement si la requête est lente.\n  - **true** : dès qu'un conseil s'applique.\n  - **false** : jamais."
+        schema:
+          title: Conseil de performance
+          type: string
+          default: auto
+          enum:
+          - auto
+          - 'true'
+          - 'false'
+      - in: query
+        name: q
+        description: "\n  Colonne de recherche simple. Ce paramètre peut être utilisé pour exposer une fonctionnalité de recherche textuelle riche aux utilisateurs sans risque de créer des erreurs de syntaxe.\n\n  Exemple : `\"open data\" | \"open source\"`\n\n  Pour plus d'information voir la documentation [ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html) correspondante.\n    "
+        schema:
+          title: Recherche textuelle
+          type: string
+      - in: query
+        name: q_mode
+        description: "\n  Ce paramètre permet d'altérer le comportement du paramètre \"q\".\n\n  Le mode par défaut \"simple\" expose directement la fonctionnalité [simple-query-string de Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)\n\n  Le mode \"complete\" permet d'enrichir automatiquement la requête soumise par l'utilisateur pour un résultat intuitif dans le contexte d'un champ de type autocomplete. Attention ce mode est potentiellement moins performant et à limiter à des jeux de données au volume raisonnable.\n    "
+        schema:
+          title: Mode de recherche
+          type: string
+          default: simple
+          enum:
+          - simple
+          - complete
+      - in: query
+        name: q_fields
+        description: "\n  Ce paramètre permet de spécifier les clés de colonnes sur lesquelles appliquer le paramètre \"q\".\n\n  Par défaut toutes les colonnes supportant une recherche textuelle sont utilisées.\n    "
+        schema:
+          title: Colonnes de recherche
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: filters
+        schema:
+          type: object
+          title: Filtres sur colonnes
+          patternPropertiesLayout:
+            messages:
+              addItem: Ajouter un filtre
+            help: "Filtres structurés sur colonne.\n\nLe nom est constitué de la clé de la colonne concaténée avec un suffixe par type de filtre (par exemple `ma_colonne_eq`, `ma_colonne_in`, etc.).\n\nLes types de filtres disponibles peuvent varier par colonne.\n\n  - `_eq` : égal à une valeur\n  - `_neq` : différent d'une valeur\n  - `_in` : appartient à une liste de valeurs (séparées par des virgules)\n  - `_nin` : n'appartient pas à une liste de valeurs (séparées par des virgules)\n  - `_gt` : strictement supérieur à une valeur\n  - `_gte` : supérieur ou égal à une valeur\n  - `_lt` : strictement inférieur à une valeur\n  - `_lte` : inférieur ou égal à une valeur\n  - `_starts` : commence par une série de caractères\n  - `_contains` : contient une série de caractères\n  - `_search` : effectue une recherche textuelle simple\n  - `_exists` : la colonne contient une valeur\n  - `_nexists` : la colonne ne contient pas une valeur\n  "
+          patternProperties:
+            .*:
+              type: string
+              default: ''
+              layout:
+                placeholder: saisissez la valeur du filtre
+      - in: query
+        name: qs
+        description: "\nColonne de filtre et recherche textuelle avancée. Ce paramètre permet d'effectuer des requêtes complexes sur la source de données. Vous pouvez spécifier des filtres par colonne, créer des combinaisons logiques à volonté, etc.\n\n**Attention**, ce paramètre est d'utilisation technique et n'est vraiment nécessaire que pour effectuer des combinaisons logiques particulières. Dans la majorité des cas il est recommandé d'utiliser \"Filtres sur colonnes\" ci-dessus.\n\nExemple : `ma_colonne:\"du texte\" AND ma_colonne2:valeur`\n\nPour plus d'information voir la documentation [ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html) correspondante.\n  "
+        schema:
+          title: Recherche textuelle avancée
+          type: string
+      - in: query
+        name: bbox
+        description: Un filtre pour restreindre les résultats à une zone géographique. Le format est 'gauche,bas,droite,haut' autrement dit 'lonMin,latMin,lonMax,latMax'.
+        schema:
+          title: Filtre par zone géographique
+          type: string
+          examples:
+          - 2.2241,48.8156,2.4699,48.9022
+      - in: query
+        name: xyz
+        description: "\n  Un filtre pour restreindre les résultats à une zone géographique avec les paramètres standards de tuiles géographiques x,y et z.\n\n  Le format est 'x,y,z'.\n    "
+        schema:
+          title: Filtre par tuile géographique
+          type: string
+      - in: query
+        name: geo_distance
+        description: "\n  Un filtre pour restreindre les résultats à moins d'une certaine distance du point passé en paramètre.\n\n  Le format est 'lon:lat:distance'. La distance optionnelle (0 par défaut) et est exprimée en mètres.\n\n  Si les documents contiennent des géométries la distance est calculée à partir de leurs centroïdes à moins que la distance soit 0 auquel cas le filtre retourne tous les documents dont la géométrie contient le point passé en paramètre.\n    "
+        schema:
+          title: Filtre par distance géographique
+          type: string
+      - in: query
+        name: collapse
+        description: Afficher une ligne de résultat par valeur distincte d'une colonne.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Le résultat de la requête.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Le nombre total de résultat si on ignore la pagination.
+                  results:
+                    type: array
+                    description: Le tableau de résultats.
+                    items:
+                      type: object
+                      required: []
+                      properties:
+                        name:
+                          type: string
+                          title: Nom
+                          x-refersTo: http://schema.org/name
+                        description:
+                          type: string
+                          title: Description
+                        category:
+                          type: string
+                          title: Catégorie
+                        value:
+                          type: number
+                          title: Valeur
+                        siret:
+                          type: string
+                          title: SIRET
+                          x-refersTo: http://dbpedia.org/ontology/siret
+                        image:
+                          type: string
+                          title: Image
+                          x-refersTo: http://schema.org/image
+                        document:
+                          type: string
+                          title: Document
+                          x-refersTo: http://schema.org/DigitalDocument
+                  next:
+                    type: string
+                    description: URL pour continuer la pagination.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Ajouter une ligne (par propriétaire)
+      description: Ajouter une nouvelle ligne au jeu de données. (restreint par propriétaire de ligne)
+      operationId: createOwnLine
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '201':
+          description: La ligne de données ajoutée.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /datasets/{id}/own/{owner}/lines/{lineId}:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: owner
+      description: Le propriétaire des lignes.
+      required: true
+      schema:
+        title: Propriétaire des lignes
+        type: string
+    - in: path
+      name: lineId
+      description: L'identifiant de la ligne.
+      required: true
+      schema:
+        title: Identifiant de la ligne
+        type: string
+    get:
+      summary: Récupérer une ligne (par propriétaire)
+      description: Récupérer le contenu complet d'une ligne par son identifiant. (restreint par propriétaire de ligne)
+      operationId: readOwnLine
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      responses:
+        '200':
+          description: Le contenu d'une ligne de données.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Remplacer une ligne (par propriétaire)
+      description: Remplacer entièrement le contenu d'une ligne par son identifiant. (restreint par propriétaire de ligne)
+      operationId: updateOwnLine
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '200':
+          description: La ligne de données modifiée.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+    patch:
+      summary: Modifier une ligne (par propriétaire)
+      description: Modifier partiellement le contenu d'une ligne par son identifiant. (restreint par propriétaire de ligne)
+      operationId: patchOwnLine
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Le contenu partiel d'une ligne de données.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+      responses:
+        '200':
+          description: La ligne de données après modification.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: Supprimer une ligne (par propriétaire)
+      description: Supprimer une ligne par son identifiant. (restreint par propriétaire de ligne)
+      operationId: deleteOwnLine
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      responses:
+        '204':
+          description: La ligne de données a été supprimée.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/own/{owner}/_bulk_lines:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: owner
+      description: Le propriétaire des lignes.
+      required: true
+      schema:
+        title: Propriétaire des lignes
+        type: string
+    post:
+      summary: Effectuer des opérations en masse (par propriétaire)
+      description: Créer/modifier/supprimer de multiples lignes en une seule opération. (restreint par propriétaire de ligne)
+      operationId: bulkOwnLines
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      requestBody:
+        description: Les opérations à appliquer.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required: []
+                properties:
+                  name:
+                    type: string
+                    title: Nom
+                    x-refersTo: http://schema.org/name
+                  description:
+                    type: string
+                    title: Description
+                  category:
+                    type: string
+                    title: Catégorie
+                  value:
+                    type: number
+                    title: Valeur
+                  siret:
+                    type: string
+                    title: SIRET
+                    x-refersTo: http://dbpedia.org/ontology/siret
+                  image:
+                    type: string
+                    title: Image
+                    x-refersTo: http://schema.org/image
+                  document:
+                    type: string
+                    title: Document
+                    x-refersTo: http://schema.org/DigitalDocument
+                  _action:
+                    type: string
+                    title: Action
+                    enum:
+                    - create
+                    - delete
+                    - update
+                    - createOrUpdate
+                    - patch
+                    description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+          application/x-ndjson:
+            schema:
+              type: object
+              required: []
+              properties:
+                name:
+                  type: string
+                  title: Nom
+                  x-refersTo: http://schema.org/name
+                description:
+                  type: string
+                  title: Description
+                category:
+                  type: string
+                  title: Catégorie
+                value:
+                  type: number
+                  title: Valeur
+                siret:
+                  type: string
+                  title: SIRET
+                  x-refersTo: http://dbpedia.org/ontology/siret
+                image:
+                  type: string
+                  title: Image
+                  x-refersTo: http://schema.org/image
+                document:
+                  type: string
+                  title: Document
+                  x-refersTo: http://schema.org/DigitalDocument
+                _action:
+                  type: string
+                  title: Action
+                  enum:
+                  - create
+                  - delete
+                  - update
+                  - createOrUpdate
+                  - patch
+                  description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+      responses:
+        '200':
+          description: Le résultat des opérations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nbOk:
+                    type: integer
+                  nbNotModified:
+                    type: integer
+                  nbErrors:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        line:
+                          type: integer
+                        error:
+                          type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          description: Quota de stockage dépassé ou fichier trop volumineux.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /datasets/{id}/own/{owner}/revisions:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: owner
+      description: Le propriétaire des lignes.
+      required: true
+      schema:
+        title: Propriétaire des lignes
+        type: string
+    get:
+      summary: Récupérer les révisions (par propriétaire)
+      description: Récupérer les révisions de lignes triées du plus récent au plus ancien. (restreint par propriétaire de ligne)
+      operationId: readRevisions
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      parameters:
+      - in: query
+        name: size
+        description: Le nombre de résultats à retourner (taille de la pagination).
+        schema:
+          title: Taille de la pagination
+          default: 12
+          type: integer
+          maximum: 10000
+      - in: query
+        name: before
+        description: 'Pagination pour remonter dans l''historique.
+
+
+          *Automatiquement renseigné par la propriété **next** du résultat de la requête précédente.*'
+        schema:
+          title: Pagination pour remonter dans l'historique
+          default: 1
+          type: integer
+      responses:
+        '200':
+          description: Les révisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Le nombre total de résultat si on ignore la pagination.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: []
+                      properties:
+                        name:
+                          type: string
+                          title: Nom
+                          x-refersTo: http://schema.org/name
+                        description:
+                          type: string
+                          title: Description
+                        category:
+                          type: string
+                          title: Catégorie
+                        value:
+                          type: number
+                          title: Valeur
+                        siret:
+                          type: string
+                          title: SIRET
+                          x-refersTo: http://dbpedia.org/ontology/siret
+                        image:
+                          type: string
+                          title: Image
+                          x-refersTo: http://schema.org/image
+                        document:
+                          type: string
+                          title: Document
+                          x-refersTo: http://schema.org/DigitalDocument
+                        _action:
+                          type: string
+                          title: Action
+                          enum:
+                          - create
+                          - delete
+                          - update
+                          - createOrUpdate
+                          - patch
+                          description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+                  next:
+                    type: string
+                    description: URL pour continuer la pagination.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /datasets/{id}/own/{owner}/lines/{lineId}/revisions:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant du jeu de données. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant du jeu de données
+    - in: path
+      name: owner
+      description: Le propriétaire des lignes.
+      required: true
+      schema:
+        title: Propriétaire des lignes
+        type: string
+    - in: path
+      name: lineId
+      description: Identifiant de la ligne.
+      required: true
+      schema:
+        title: Identifiant de la ligne
+        type: string
+    get:
+      summary: Récupérer les révisions d'une ligne (par propriétaire)
+      description: Récupérer les révisions d'une ligne triées du plus récent au plus ancien. (restreint par propriétaire de ligne)
+      operationId: readOwnLineRevisions
+      x-permissionClass: manageOwnLines
+      tags:
+      - JDD / Éditable
+      parameters:
+      - in: query
+        name: size
+        description: Le nombre de résultats à retourner (taille de la pagination).
+        schema:
+          title: Taille de la pagination
+          default: 12
+          type: integer
+          maximum: 10000
+      - in: query
+        name: before
+        description: 'Pagination pour remonter dans l''historique.
+
+
+          *Automatiquement renseigné par la propriété **next** du résultat de la requête précédente.*'
+        schema:
+          title: Pagination pour remonter dans l'historique
+          default: 1
+          type: integer
+      responses:
+        '200':
+          description: Les révisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Le nombre total de résultat si on ignore la pagination.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: []
+                      properties:
+                        name:
+                          type: string
+                          title: Nom
+                          x-refersTo: http://schema.org/name
+                        description:
+                          type: string
+                          title: Description
+                        category:
+                          type: string
+                          title: Catégorie
+                        value:
+                          type: number
+                          title: Valeur
+                        siret:
+                          type: string
+                          title: SIRET
+                          x-refersTo: http://dbpedia.org/ontology/siret
+                        image:
+                          type: string
+                          title: Image
+                          x-refersTo: http://schema.org/image
+                        document:
+                          type: string
+                          title: Document
+                          x-refersTo: http://schema.org/DigitalDocument
+                        _action:
+                          type: string
+                          title: Action
+                          enum:
+                          - create
+                          - delete
+                          - update
+                          - createOrUpdate
+                          - patch
+                          description: "\n- create: crée la ligne\n- delete: supprime la ligne, nécessite la présence de _id\n- update: remplace la ligne, nécessite la présence de _id\n- createOrUpdate: crée la ligne si elle n'existe pas, sinon la remplace\n- patch: modifie la ligne, nécessite la présence de _id\n    "
+                  next:
+                    type: string
+                    description: URL pour continuer la pagination.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        text/plain:
+          schema:
+            type: string
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-apiKey
+    sdCookie:
+      type: apiKey
+      in: cookie
+      name: id_token
+externalDocs:
+  description: Documentation sur GitHub
+  url: https://data-fair.github.io/master/

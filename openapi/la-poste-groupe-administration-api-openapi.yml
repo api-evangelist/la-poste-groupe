@@ -1,0 +1,99 @@
+openapi: 3.2.0
+info:
+  title: Data Fair Administration API
+  description: 'Cette documentation interactive à destination des développeurs permet de gérer les ressources de ce service de publication de données et de consommer les opérations applicables aux jeux de données (toutes variantes confondues : fichier, éditable, virtuel, métadonnées seules, master data), incluant les opérations privées et d''administration.'
+  version: 6.17.2
+  x-api-id: data-fair
+  termsOfService: https://koumoul.com/pages/conditions-generales-dutilisation
+  contact:
+    name: Koumoul
+    url: https://koumoul.com
+    email: support@koumoul.com
+servers:
+- url: https://data.laposte.fr/data-fair/api/v1
+  description: Instance Data Fair - data.laposte.fr
+security:
+- apiKey: []
+- sdCookie: []
+tags:
+- name: Administration
+paths:
+  /ping:
+    get:
+      summary: Obtenir l'état de santé du service
+      description: Vérifier que le service est opérationnel.
+      operationId: ping
+      tags:
+      - Administration
+      x-operationType: http://schema.org/CheckAction
+      responses:
+        '200':
+          description: Service ok.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Service ko.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api-docs.json:
+    get:
+      summary: Obtenir la documentation OpenAPI
+      description: Accéder à cette documentation au format OpenAPI v3.
+      operationId: getApiDoc
+      tags:
+      - Administration
+      responses:
+        '200':
+          description: La documentation de l'API.
+          content:
+            application/json:
+              schema:
+                type: object
+  /vocabulary:
+    get:
+      summary: Lister les concepts
+      description: Récupérer la liste des concepts utilisables pour annoter la donnée sur ce service.
+      operationId: getVocabulary
+      tags:
+      - Administration
+      responses:
+        '200':
+          description: La liste des concepts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    identifiers:
+                      type: array
+                      items:
+                        type: string
+                    type:
+                      type: string
+                    tag:
+                      type: string
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-apiKey
+    sdCookie:
+      type: apiKey
+      in: cookie
+      name: id_token
+externalDocs:
+  description: Documentation sur GitHub
+  url: https://data-fair.github.io/master/

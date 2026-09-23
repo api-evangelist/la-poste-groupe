@@ -1,0 +1,66 @@
+{
+  "provider": "la-poste-groupe",
+  "sources": [
+    "_original/la-poste-groupe-digiposte-openapi.json",
+    "_original/la-poste-groupe-lettre-recommandee-en-ligne-openapi.json",
+    "_original/la-poste-groupe-open-data-openapi.json",
+    "_original/la-poste-groupe-suivi-openapi.json"
+  ],
+  "outputs": [
+    "la-poste-groupe-digiposte-api-openapi.yml",
+    "la-poste-groupe-partner-api-openapi.yml",
+    "la-poste-groupe-resend-purl-api-openapi.yml",
+    "la-poste-groupe-user-api-openapi.yml",
+    "la-poste-groupe-lh-pro-resources-api-openapi.yml",
+    "la-poste-groupe-administration-api-openapi.yml",
+    "la-poste-groupe-applications-api-openapi.yml",
+    "la-poste-groupe-jdd-donn-es-api-openapi.yml",
+    "la-poste-groupe-jdd-m-tadonn-es-api-openapi.yml",
+    "la-poste-groupe-jdd-ditable-api-openapi.yml",
+    "la-poste-groupe-jeux-de-donn-es-jdd-api-openapi.yml",
+    "la-poste-groupe-suivi-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [
+    "la-poste-groupe-digiposte-openapi.json: info.version missing"
+  ],
+  "notes": [
+    "sourced from openapi/_original/ (4 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "la-poste-groupe-digiposte-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /digiposte/v3/document/certified -> Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /digiposte/v3/membership -> Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths DELETE /digiposte/v3/membership/{id} -> Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths GET /digiposte/v3/memberships -> Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /digiposte/v3/oauth/token -> Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths PUT /partner/procedure/{procedure_pid}/qualify -> Partner",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths GET /partner/procedure/{user_procedure_id}/document/{document_id} -> Partner",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths GET /partner/procedure/{user_procedure_id}/documents -> Partner",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths GET /partner/procedures/{procedure_pid} -> Partner",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /user/customizationurl -> User",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /user/partial -> User",
+    "la-poste-groupe-digiposte-openapi.json: tagged paths POST /api/v4/resend-purl -> Resend Purl",
+    "la-poste-groupe-digiposte-openapi.json: declared missing tag: Digiposte",
+    "la-poste-groupe-digiposte-openapi.json: declared missing tag: Partner",
+    "la-poste-groupe-digiposte-openapi.json: declared missing tag: Resend Purl",
+    "la-poste-groupe-digiposte-openapi.json: declared missing tag: User",
+    "la-poste-groupe-lettre-recommandee-en-ligne-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "la-poste-groupe-open-data-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "la-poste-groupe-suivi-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "la-poste-groupe-administration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-applications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-digiposte-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-jdd-ditable-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-jdd-donn-es-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-jdd-m-tadonn-es-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-jeux-de-donn-es-jdd-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-lh-pro-resources-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-partner-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-resend-purl-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-suivi-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-poste-groupe-user-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

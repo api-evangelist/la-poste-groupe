@@ -1,0 +1,477 @@
+openapi: 3.2.0
+info:
+  description: '**Bienvenue sur l’API Coffre-fort numérique Digiposte +.**
+
+
+    !Digiposte
+
+
+    Cette API permet d’envoyer et archiver des documents certifiés dans un coffre-fort numérique Digiposte + à valeur probante, pour vos clients ou utilisateurs.'
+  title: v3 Digiposte API
+  version: ''
+servers: []
+tags:
+- name: Digiposte
+paths:
+  /digiposte/v3/document/certified:
+    post:
+      parameters:
+      - description: e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        example: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        in: header
+        name: X-Okapi-Key
+        required: false
+        schema:
+          type: string
+      - description: e.g. ed249df4e1a149c9bc213bd9b4289a73
+        example: ed249df4e1a149c9bc213bd9b4289a73
+        in: header
+        name: X-RouteCode
+        required: false
+        schema:
+          type: string
+      - description: e.g. 2
+        example: '2'
+        in: header
+        name: X-Api-Version-Minor
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              examples:
+                response:
+                  value:
+                    document:
+                      algo: SHA1
+                      archive_duration: '2020-07-26T13:27:45.690'
+                      author_tags: préfecture,essonne
+                      file_name: test.pdf
+                      file_size: '140939'
+                      hash: e6122b1d8abd2afbeed93fb4672af8b23a5f56b6
+                      id_routage: c441f90e99ca4f958131f1ed31e8fd65
+                      title: Passeport certifié
+                      type: PASSEPORT
+          description: OK
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Digiposte
+      description: 'Les contrôles d''intégrité sont assurés grâce à la taille du document et le calcul préalable d''une empreinte
+
+        du document, et transmis par le truchement des paramètres obligatoires suivants :
+
+
+        - `file_size`: taille du document transmis en octets
+
+
+        - `algo`: algorythme utilisé pour le calcul de l''empreinte (MD5, SHA1, SHA256 ou SHA512)
+
+
+        - `hash`: Empreinte de contrôle du document
+
+
+        Par défaut, si aucune valeur `archive_duration` n''est spécifiée, la durée d''archivage légale du type de
+
+        document s''applique. Quand la durée est atteinte, le document est conservé mais sa taille compte alors
+
+        dans le quota de stockage de l''abonné.
+
+
+        Les `author_tags`peuvent être spécifiés pour permettre à l''abonné de rechercher ses documents par mots-clés.
+
+
+        Exemple de requête curl correspondant à l''appel décris ici :
+
+
+        ```
+
+        curl --header "X-Okapi-Key: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX" \\
+
+        --header "Authorization: bearer 16fc0b67-ca75-4082-b6ba-2079db1ce34d" \\
+
+        --header "X-Dgp-UserId: 185fe86953e94e2692838a5f7cbff298"\\
+
+        --header ''X-RouteCode: ed249df4e1a149c9bc213bd9b4289a73'' \\
+
+        --header ''X-Api-Version-Minor: 2'' \\
+
+        --header "Content-Type:multipart/form-data" \\
+
+        -X POST http://api.laposte.fr/digiposte/v3/document/certified \\
+
+        --form ''title=Passeport certifié'' --form ''type=PASSEPORT'' \\
+
+        --form ''algo=SHA1'' --form ''hash=e6122b1d8abd2afbeed93fb4672af8b23a5f56b6'' \\
+
+        --form ''file_name=test.pdf'' --form ''file_size=140939'' \\
+
+        --form ''archive=@test.pdf;type=application/pdf'' \\
+
+        --form ''archive_duration=2020-07-26T13:27:45.690'' \\
+
+        --form ''author_tags=préfecture,essonne''
+
+        {
+
+        "document": {
+
+        "type": "PASSEPORT",
+
+        "title": "Passeport certifié",
+
+        "file_name": "test.pdf",
+
+        "archive_duration": "2020-07-26T13:27:45.690",
+
+        "author_tags": "préfecture,essonne",
+
+        "hash": "e6122b1d8abd2afbeed93fb4672af8b23a5f56b6",
+
+        "algo": "SHA1",
+
+        "file_size": "140939",
+
+        "id_routage": "c441f90e99ca4f958131f1ed31e8fd65"
+
+        }
+
+        }
+
+        ```'
+      operationId: Déposer un document certifié
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                algo:
+                  description: 'Algorithme de l''empreinte ex: MD5|SHA1|SHA256|SHA512'
+                  type: string
+                archive:
+                  description: Document à ajouter (filename+type en header, binaire en body de la part)
+                  type: string
+                archive_duration:
+                  description: Date de fin d'archivage légal
+                  type: string
+                author_tags:
+                  description: Tags émetteur (séparés par des | ou des ,)
+                  type: string
+                file_name:
+                  description: Nom du document (déprécié, utiliser title)
+                  type: string
+                file_size:
+                  description: Taille du fichier en octets
+                  type: string
+                hash:
+                  description: Empreinte de contrôle du document
+                  type: string
+                title:
+                  description: Nom du document front sans extension
+                  type: string
+                type:
+                  description: Nature de document, liste accessible par GET /profile/documents
+                  type: string
+              required:
+              - title
+              - type
+              - algo
+              - hash
+              - file_name
+              - file_size
+              - archive
+              type: object
+      summary: Déposer un document certifié
+  /digiposte/v3/membership:
+    post:
+      parameters:
+      - description: e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        example: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        in: header
+        name: X-Okapi-Key
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              examples:
+                response:
+                  value:
+                    accept_full_dematerialization: false
+                    cancellable: true
+                    dematerialized_convention_date: '2017-05-30T12:46:34Z'
+                    demo_account: false
+                    field1_label: Aucun
+                    id: ed249df4e1a149c9bc213bd9b4289a73
+                    inbox_folder_id: c967c5116cb14e7aa172337f368ed172
+                    membership_date: '2017-05-30T12:46:34Z'
+                    request_date: '2017-05-30T12:46:34Z'
+                    sender:
+                      alternative_logo: https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png
+                      auto_resiliation: true
+                      auto_validate_expiring_membership_default: false
+                      collected: false
+                      contracted: false
+                      contracted_creation_enabled: false
+                      convention_required: false
+                      convention_url: https://api.laposte.fr
+                      document_naming: Vos Documents Dématérialisés
+                      form_data:
+                        field1_label: Aucun
+                        more_info: Adhésion automatique
+                        security_plus: false
+                        sender_pid: OKAPI
+                      hr: false
+                      is_multi_subscription: true
+                      logo: https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png
+                      mail_trust: false
+                      multilingual: false
+                      name: OKAPI
+                      optional_address: true
+                      pid: OKAPI
+                      sender_side_convention: true
+                      termination_message: Parcours de résiliation
+                      type: SENDER
+                      vip: false
+                    sender_kind: 0
+                    status: ACTIVE
+          description: OK
+          headers: {}
+        '400':
+          description: Bad Request
+          headers: {}
+      security:
+      - oauth2: []
+      - oauth2: []
+      tags:
+      - Digiposte
+      description: 'Pour faire adhérer un abonné à un nouveau flux documentaire.
+
+
+        Le statut d''une adhésion valide est `ACTIVE`.'
+      operationId: Créer une adhésion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example: {}
+              properties: {}
+              type: object
+      summary: Créer une adhésion
+  /digiposte/v3/membership/{id}:
+    delete:
+      parameters:
+      - description: Identifiant de l'adhésion à résilier
+        example: ed249df4e1a149c9bc213bd9b4289a73
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        example: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        in: header
+        name: X-Okapi-Key
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              examples:
+                response:
+                  value:
+                    accept_full_dematerialization: false
+                    cancellable: true
+                    cancellation_date: '2017-05-30T12:50:40Z'
+                    dematerialized_convention_date: '2017-05-30T12:46:34Z'
+                    demo_account: false
+                    field1_label: Aucun
+                    id: ed249df4e1a149c9bc213bd9b4289a73
+                    inbox_folder_id: c967c5116cb14e7aa172337f368ed172
+                    membership_date: '2017-05-30T12:46:34Z'
+                    request_date: '2017-05-30T12:46:34Z'
+                    sender:
+                      alternative_logo: https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png
+                      auto_resiliation: true
+                      auto_validate_expiring_membership_default: false
+                      collected: false
+                      contracted: false
+                      contracted_creation_enabled: false
+                      convention_required: false
+                      convention_url: https://api.laposte.fr
+                      document_naming: Vos Documents Dématérialisés
+                      form_data:
+                        field1_label: Aucun
+                        more_info: Adhésion automatique
+                        security_plus: false
+                        sender_pid: OKAPI
+                      hr: false
+                      is_multi_subscription: true
+                      logo: https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png
+                      mail_trust: false
+                      multilingual: false
+                      name: OKAPI
+                      optional_address: true
+                      pid: OKAPI
+                      sender_side_convention: true
+                      termination_message: Parcours de résiliation
+                      type: SENDER
+                      vip: false
+                    sender_kind: 0
+                    status: ACTIVE
+          description: OK
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Digiposte
+      description: 'Pour mettre fin à l''adhésion entre l''abonné et l''émetteur.
+
+
+        L''adhésion n''est pas immédiatement supprimée, mais son statut passe à `CANCEL_IN_PROGRESS`.
+
+
+        Supprimer une adhésion, ne supprime pas les documents qui ont été déposés par cette dernière.'
+      operationId: Résilier une adhésion
+      summary: Résilier une adhésion
+  /digiposte/v3/memberships:
+    get:
+      parameters:
+      - description: e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        example: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        in: header
+        name: X-Okapi-Key
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              examples:
+                response:
+                  value:
+                    memberships:
+                    - accept_full_dematerialization: false
+                      cancellable: true
+                      dematerialized_convention_date: '2017-05-30T12:46:34Z'
+                      demo_account: false
+                      field1_label: Aucun
+                      id: ed249df4e1a149c9bc213bd9b4289a73
+                      inbox_folder_id: c967c5116cb14e7aa172337f368ed172
+                      membership_date: '2017-05-30T12:46:34Z'
+                      request_date: '2017-05-30T12:46:34Z'
+                      sender:
+                        alternative_logo: https://static.interop.u-post.fr/share/public/images/senders/alt/OKAPI.png
+                        auto_resiliation: true
+                        auto_validate_expiring_membership_default: false
+                        collected: false
+                        contracted: false
+                        contracted_creation_enabled: false
+                        convention_required: false
+                        convention_url: https://api.laposte.fr
+                        document_naming: Vos Documents Dématérialisés
+                        form_data:
+                          field1_label: Aucun
+                          more_info: Adhésion automatique
+                          security_plus: false
+                          sender_pid: OKAPI
+                        hr: false
+                        is_multi_subscription: true
+                        logo: https://static.interop.u-post.fr/share/public/images/senders/OKAPI.png
+                        mail_trust: false
+                        multilingual: false
+                        name: OKAPI
+                        optional_address: true
+                        pid: OKAPI
+                        sender_side_convention: true
+                        termination_message: Parcours de résiliation
+                        type: SENDER
+                        vip: false
+                      sender_kind: 0
+                      status: ACTIVE
+          description: OK
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Digiposte
+      description: Pour connaitre la liste des adhésions en cours (et leur code de routage).
+      operationId: Récupérer la liste des adhésions existantes
+      summary: Récupérer la liste des adhésions existantes
+  /digiposte/v3/oauth/token:
+    post:
+      parameters:
+      - description: e.g. RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        example: RXu1BMRbOmkB7uT+FNj3Sijtk7mgn/MuJWVFmcfoloi0n/zLy2++V/nm6gatpQzX
+        in: header
+        name: X-Okapi-Key
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              examples:
+                response:
+                  value:
+                    access_token: b939b5d6-f3d1-43e4-877a-ecb46e616d40
+                    expires_in: 3599
+                    scope: trust
+                    token_type: bearer
+          description: OK
+          headers: {}
+      security:
+      - basic: []
+      tags:
+      - Digiposte
+      description: 'Concernant le dépôt lui-même, il n''est pas nécessaire d''avoir un token d''accès relié au compte d''un abonné,
+
+        le dépôt pouvant avoir lieu à n''importe quel moment (pas de notion de session abonné), et l''adhésion
+
+        représentant alors le consentement de l''utilisateur.
+
+
+        Dans ce cas, un token en workflow oAuth standard « client_credentials » (token d''accès à l''application
+
+        Digiposte) peut-être obtenu par cette requête de serveur à serveur.
+
+
+        `POST /digiposte/v3/oauth/token` avec en body `grant_type=client_credentials`'
+      operationId: Obtenir un token « client_credentials »
+      summary: Obtenir un token « client_credentials »
+components:
+  parameters:
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: okapi-key
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: okapi-key
+      schema:
+        type: string
+  securitySchemes:
+    basic:
+      scheme: basic
+      type: http
+    oauth2:
+      flows:
+        authorizationCode:
+          authorizationUrl: /
+          scopes: {}
+          tokenUrl: /
+      type: oauth2

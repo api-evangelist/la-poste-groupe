@@ -1,0 +1,1102 @@
+openapi: 3.2.0
+info:
+  title: Data Fair Applications API
+  description: 'Cette documentation interactive à destination des développeurs permet de gérer les ressources de ce service de publication de données et de consommer les opérations applicables aux jeux de données (toutes variantes confondues : fichier, éditable, virtuel, métadonnées seules, master data), incluant les opérations privées et d''administration.'
+  version: 6.17.2
+  x-api-id: data-fair
+  termsOfService: https://koumoul.com/pages/conditions-generales-dutilisation
+  contact:
+    name: Koumoul
+    url: https://koumoul.com
+    email: support@koumoul.com
+servers:
+- url: https://data.laposte.fr/data-fair/api/v1
+  description: Instance Data Fair - data.laposte.fr
+security:
+- apiKey: []
+- sdCookie: []
+tags:
+- name: Applications
+paths:
+  /applications:
+    get:
+      summary: Lister les applications
+      description: Récupérer la liste des applications.
+      operationId: listApplications
+      tags:
+      - Applications
+      parameters:
+      - in: query
+        name: q
+        description: Recherche textuelle
+        required: false
+        schema:
+          title: Recherche textuelle
+          type: string
+      - in: query
+        name: mine
+        description: Voir uniquement les ressources de mon compte actif
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: owner
+        description: Restreindre par propriétaire
+        required: false
+        schema:
+          title: Restreindre par propriétaire
+          type: array
+          items:
+            type: string
+            examples:
+            - organization:myorg
+            - user:myuser
+        style: form
+        explode: false
+      - in: query
+        name: raw
+        description: Ne pas inclure les champs calculés
+        required: false
+        schema:
+          title: Ne pas inclure les champs calculés
+          type: boolean
+      - in: query
+        name: select
+        description: La liste des colonnes à retourner
+        required: false
+        schema:
+          title: La liste des colonnes à retourner
+          type: array
+          items:
+            type: string
+            enum:
+            - id
+            - slug
+            - href
+            - page
+            - title
+            - summary
+            - description
+            - image
+            - applicationName
+            - createdBy
+            - updatedBy
+            - createdAt
+            - updatedAt
+            - lastConfigured
+            - status
+            - owner
+            - configuration
+            - configurationDraft
+            - url
+            - urlDraft
+            - baseApp
+            - baseAppDraft
+            - errorMessage
+            - errorMessageDraft
+            - publications
+            - publicationSites
+            - requestedPublicationSites
+            - topics
+            - extras
+            - preferLargeDisplay
+            - attachments
+            - permissions
+        style: form
+        explode: false
+      - in: query
+        name: ids
+        description: Restreindre sur les identifiants
+        required: false
+        schema:
+          title: Restreindre sur les identifiants
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: dataset
+        description: Restreindre sur les jeux de données utilisés
+        required: false
+        schema:
+          title: Restreindre sur les jeux de données utilisés
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: service
+        description: Restreindre sur les services distants utilisés
+        required: false
+        schema:
+          title: Restreindre sur les services distants utilisés
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - in: query
+        name: page
+        description: Numéro de page
+        required: false
+        schema:
+          title: Numéro de page
+          type: integer
+          default: 1
+          min: 1
+      - in: query
+        name: size
+        description: Taille de la page
+        required: false
+        schema:
+          title: Taille de la page
+          type: integer
+          default: 12
+          min: 1
+      - in: query
+        name: visibility
+        description: 'Filtrer sur la visibilité de la ressource.
+
+          "public" = voir les ressources publiques
+
+          "private" = voir les ressources privées (celles sur lesquelles aucune permission particulière n''a été appliquée)
+
+          "protected" = voir les ressources protégées (celles sur lesquelles une permission a été donnée à des utilisateurs).'
+        required: false
+        schema:
+          title: Filtrer sur la visibilité de la ressource.
+          type: array
+          items:
+            type: string
+            oneOf:
+            - const: public
+              title: Ressources publiques
+            - const: private
+              title: Ressources privées
+            - const: protected
+              title: Ressources protégées
+        style: form
+        explode: false
+      responses:
+        '200':
+          description: Liste des applications que l'utilisateur est autorisé à voir.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    description: Nombre total d'applications.
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/application'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Configurer une application
+      description: Créer une nouvelle application.
+      operationId: postApplication
+      tags:
+      - Applications
+      requestBody:
+        description: Les informations de configuration de l'application.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/application'
+      responses:
+        '201':
+          description: Les informations de configuration de l'application.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /applications/{id}:
+    parameters:
+    - in: path
+      name: id
+      description: Identifiant de l'application. L'identifiant de publication (`slug`) fonctionne aussi lorsque l'API est appelée depuis un portail.
+      required: true
+      schema:
+        type: string
+        title: Identifiant de l'application
+    get:
+      summary: Lire les informations d'une application
+      description: Récupérer les informations d'une application.
+      operationId: getApplication
+      tags:
+      - Applications
+      responses:
+        '200':
+          description: Informations d'une application.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Créer ou mettre à jour une application
+      description: Créer ou mettre à jour une application en spécifiant son identifiant.
+      operationId: putApplication
+      tags:
+      - Applications
+      requestBody:
+        description: Informations de l'application.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/application'
+      responses:
+        '200':
+          description: Application modifiée.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        '201':
+          description: Application créée.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Modifier une application
+      description: Modifier seulement certaines informations d'une application.
+      operationId: patchApplication
+      tags:
+      - Applications
+      requestBody:
+        description: Informations à modifier.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/applicationPatch'
+      responses:
+        '200':
+          description: Informations de l'application modifiée.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Supprimer une application
+      description: Supprimer cette application.
+      operationId: deleteApplication
+      tags:
+      - Applications
+      responses:
+        '204':
+          description: Application supprimée.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        text/plain:
+          schema:
+            type: string
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+  schemas:
+    application:
+      $id: https://github.com/data-fair/data-fair/application-resolved
+      title: Application
+      x-exports:
+      - types
+      - validate
+      - resolvedSchema
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - slug
+      - url
+      - title
+      - owner
+      properties:
+        id:
+          type: string
+          description: Globally unique identifier of the application
+          pattern: ^[a-z0-9_\-]+$
+        slug:
+          type: string
+          description: Identifier of the application, usually a slug for URL readability (unique inside the tenant)
+          pattern: ^[a-z0-9]{1}[a-z0-9_\-]*[a-z0-9]{1}$
+        href:
+          type: string
+          description: Readonly field. The URL where this resource can be fetched
+        page:
+          type: string
+          description: Readonly field. The URL where this resource can be viewed in the UI
+        title:
+          type: string
+          description: Short title of the application
+        summary:
+          type: string
+          description: Short description of the application
+        description:
+          type: string
+          description: Detailed description of the application
+        image:
+          type: string
+          description: URL d'une image, illustration du jeu de données
+        applicationName:
+          type: string
+          description: Identifier of the origin application
+        createdBy:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          properties:
+            id:
+              type: string
+        updatedBy:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          properties:
+            id:
+              type: string
+        createdAt:
+          type: string
+          description: Creation date of this application
+          format: date-time
+        updatedAt:
+          type: string
+          description: Date of the last update for this application
+          format: date-time
+        lastConfigured:
+          type: string
+          description: Date of the last validation of a configuration for this application
+          format: date-time
+        status:
+          type: string
+          enum:
+          - created
+          - configured-draft
+          - configured
+          - error
+        owner:
+          type: object
+          additionalProperties: false
+          required:
+          - type
+          - id
+          - name
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - organization
+              description: Indique si le propriétaire est un utilisateur ou une organisation.
+            id:
+              type: string
+              description: Identifiant unique de l'utilisateur ou de l'organisation.
+            name:
+              type: string
+              description: Nom affiché de l'utilisateur ou de l'organisation.
+            role:
+              type: string
+              deprecated: true
+              description: DÉPRÉCIÉ - Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation ayant ce rôle ou le rôle administrateur.
+            department:
+              type: string
+              description: Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation appartenant à ce département.
+            departmentName:
+              type: string
+              description: Nom affiché du département.
+        configuration:
+          x-exports:
+          - types
+          - validate
+          - resolvedSchema
+          title: App config
+          type: object
+          description: A free format configuration object used by applications. A minimal common structure is used to ensure proper linking between applications and datasets and remote services
+          additionalProperties: true
+          properties:
+            datasets:
+              type: array
+              items:
+                type:
+                - object
+                - 'null'
+                required:
+                - href
+                properties:
+                  href:
+                    type: string
+                  key:
+                    type: string
+                    description: Not the id of the dataset, but a key inside this configuration object to define the role of the dataset in this context.
+                  name:
+                    type: string
+                  applicationKeyPermissions:
+                    type: object
+                    description: The permissions that should be applied to users accessing this dataset through a protecte application key of this application
+                    default:
+                      classes:
+                      - read
+                    properties:
+                      operations:
+                        type: array
+                        items:
+                          type: string
+                          description: API operation that can be used
+                      classes:
+                        type: array
+                        items:
+                          type: string
+                          description: API permission classes that can be used
+        configurationDraft:
+          x-exports:
+          - types
+          - validate
+          - resolvedSchema
+          title: App config
+          type: object
+          description: A free format configuration object used by applications. A minimal common structure is used to ensure proper linking between applications and datasets and remote services
+          additionalProperties: true
+          properties:
+            datasets:
+              type: array
+              items:
+                type:
+                - object
+                - 'null'
+                required:
+                - href
+                properties:
+                  href:
+                    type: string
+                  key:
+                    type: string
+                    description: Not the id of the dataset, but a key inside this configuration object to define the role of the dataset in this context.
+                  name:
+                    type: string
+                  applicationKeyPermissions:
+                    type: object
+                    description: The permissions that should be applied to users accessing this dataset through a protecte application key of this application
+                    default:
+                      classes:
+                      - read
+                    properties:
+                      operations:
+                        type: array
+                        items:
+                          type: string
+                          description: API operation that can be used
+                      classes:
+                        type: array
+                        items:
+                          type: string
+                          description: API permission classes that can be used
+        url:
+          type: string
+          deprecated: true
+          description: The URL the base application is located at (replaced by baseApp.url)
+        urlDraft:
+          type: string
+          description: The URL the base application for the draft configuration is located at (replaced by baseAppDraft.url)
+        baseApp:
+          type: object
+          properties:
+            id:
+              type: string
+            url:
+              type: string
+            meta:
+              type: object
+        baseAppDraft:
+          type: object
+          properties:
+            id:
+              type: string
+            url:
+              type: string
+            meta:
+              type: object
+        errorMessage:
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              message:
+                type: string
+        errorMessageDraft:
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              message:
+                type: string
+        publications:
+          type: array
+          description: References to all the catalogs the application metadata is published too
+          items:
+            type: object
+            required:
+            - catalog
+            - status
+            additionalProperties: false
+            properties:
+              id:
+                type: string
+              catalog:
+                type: string
+                description: L'identifiant du catalogue de destination de cette publication.
+              status:
+                type: string
+                description: Statut indiquant clairement si la publication a réussi. Si "published", la propriété targetUrl doit être renseignée. Si "error", la propriété error doit être renseignée.
+                enum:
+                - waiting
+                - published
+                - error
+                - deleted
+              publishedAt:
+                type: string
+                description: Date de la dernière mise à jour de cette publication.
+                format: date-time
+              error:
+                type: string
+              targetUrl:
+                type: string
+              result:
+                type: object
+                description: Résultat de la publication. La structure de cet objet est libre et dépend du type de catalogue.
+        publicationSites:
+          type: array
+          description: References to all sites the application is exposed in.
+          items:
+            type: string
+        requestedPublicationSites:
+          type: array
+          description: References to all sites the application would be exposed in if validated by an admin.
+          items:
+            type: string
+        topics:
+          type: array
+          title: Liste de thématiques
+          layout:
+            itemTitle: item.title
+          items:
+            title: Topic
+            x-exports:
+            - types
+            - schema
+            type: object
+            required:
+            - title
+            additionalProperties: false
+            properties:
+              id:
+                type: string
+                readOnly: true
+              title:
+                type: string
+                title: Title
+                x-i18n-title:
+                  fr: Titre
+                layout:
+                  cols:
+                    md: 5
+              icon:
+                type: object
+                title: Icon
+                x-i18n-title:
+                  fr: Icône
+                description: Il est possible de consulter plus facilement la liste des icônes disponibles sur <a href='https://pictogrammers.com/library/mdi/' target='_blank'>ce site </a>.<br>Commencez à taper pour rechercher dans la collection complète d'icônes. Seuls quelques icônes sont chargées initialement pour de meilleures performances.
+                x-i18n-description:
+                  en: You can easily browse the list of available icons on this <a href='https://pictogrammers.com/library/mdi/' target='_blank'>this website</a>.<br>Start typing to search through the complete collection of icons. Only a few icons are loaded initially for better performance.
+                layout:
+                  getItems:
+                    url: https://koumoul.com/data-fair/api/v1/datasets/icons-mdi-latest/lines?q={q}&select=name,svg,svgPath&size=25
+                    itemsResults: data.results
+                    itemTitle: item.name
+                    itemIcon: item.svg
+                    itemKey: item.name
+                  cols:
+                    md: 5
+                    sm: 6
+                required:
+                - name
+                properties:
+                  name:
+                    type: string
+                  svg:
+                    type: string
+                  svgPath:
+                    type: string
+              color:
+                type: string
+                title: Color
+                x-i18n-title:
+                  fr: Couleur
+                layout:
+                  comp: color-picker
+                  cols:
+                    md: 2
+                    sm: 6
+        extras:
+          type: object
+          description: An object for extra content from client services of data-fair
+        preferLargeDisplay:
+          type: boolean
+          default: false
+        attachments:
+          type: array
+          items:
+            type: object
+            required:
+            - title
+            - name
+            properties:
+              title:
+                type: string
+                title: Titre
+                layout:
+                  props:
+                    outlined: true
+                    dense: true
+              name:
+                layout: none
+                type: string
+                description: Name of the file that was used to create or update this attachment
+              size:
+                layout: none
+                type: number
+                description: Size of the file on disk
+              mimetype:
+                layout: none
+                type: string
+                description: Mime type of the file
+              updatedAt:
+                layout: none
+                type: string
+                description: Date of the last update for this attachment
+                format: date-time
+              url:
+                layout: none
+                readOnly: true
+                type: string
+                title: URL
+        permissions:
+          title: Permissions
+          x-exports:
+          - types
+          - validate
+          - resolvedSchema
+          type: array
+          items:
+            title: Permission
+            type: object
+            description: Permission to do the operations (identified by their id). If type and id are not set, then the operation is set to public. roles array is used only with type organization
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                enum:
+                - user
+                - organization
+                description: If the entity is a user or an organization
+              id:
+                type: string
+                description: Identifier of the entity
+              name:
+                type: string
+                description: Name of the entity
+              email:
+                type: string
+                description: Email of the user
+              department:
+                type: string
+                description: Identifier of the department or "*" for any department (same as empty) or "-" for no department
+              departmentName:
+                type: string
+                description: Name of the department
+              roles:
+                type: array
+                items:
+                  type: string
+                  description: Role name
+              operations:
+                type: array
+                items:
+                  type: string
+                  description: API operation that can be used
+              classes:
+                type: array
+                items:
+                  type: string
+                  description: API permission classes that can be used
+          $defs:
+            permission:
+              title: Permission
+              type: object
+              description: Permission to do the operations (identified by their id). If type and id are not set, then the operation is set to public. roles array is used only with type organization
+              additionalProperties: false
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - user
+                  - organization
+                  description: If the entity is a user or an organization
+                id:
+                  type: string
+                  description: Identifier of the entity
+                name:
+                  type: string
+                  description: Name of the entity
+                email:
+                  type: string
+                  description: Email of the user
+                department:
+                  type: string
+                  description: Identifier of the department or "*" for any department (same as empty) or "-" for no department
+                departmentName:
+                  type: string
+                  description: Name of the department
+                roles:
+                  type: array
+                  items:
+                    type: string
+                    description: Role name
+                operations:
+                  type: array
+                  items:
+                    type: string
+                    description: API operation that can be used
+                classes:
+                  type: array
+                  items:
+                    type: string
+                    description: API permission classes that can be used
+    applicationPatch:
+      $id: https://github.com/data-fair/data-fair/application-patch
+      title: Application patch
+      x-exports:
+      - types
+      - validate
+      - resolvedSchema
+      type: object
+      additionalProperties: false
+      properties:
+        slug:
+          type: string
+          description: Identifier of the application, usually a slug for URL readability (unique inside the tenant)
+          pattern: ^[a-z0-9]{1}[a-z0-9_\-]*[a-z0-9]{1}$
+        title:
+          type: string
+          description: Short title of the application
+        summary:
+          anyOf:
+          - type: string
+            description: Short description of the application
+          - type: 'null'
+        description:
+          anyOf:
+          - type: string
+            description: Detailed description of the application
+          - type: 'null'
+        image:
+          anyOf:
+          - type: string
+            description: URL d'une image, illustration du jeu de données
+          - type: 'null'
+        configuration:
+          anyOf:
+          - x-exports:
+            - types
+            - validate
+            - resolvedSchema
+            title: App config
+            type: object
+            description: A free format configuration object used by applications. A minimal common structure is used to ensure proper linking between applications and datasets and remote services
+            additionalProperties: true
+            properties:
+              datasets:
+                type: array
+                items:
+                  type:
+                  - object
+                  - 'null'
+                  required:
+                  - href
+                  properties:
+                    href:
+                      type: string
+                    key:
+                      type: string
+                      description: Not the id of the dataset, but a key inside this configuration object to define the role of the dataset in this context.
+                    name:
+                      type: string
+                    applicationKeyPermissions:
+                      type: object
+                      description: The permissions that should be applied to users accessing this dataset through a protecte application key of this application
+                      default:
+                        classes:
+                        - read
+                      properties:
+                        operations:
+                          type: array
+                          items:
+                            type: string
+                            description: API operation that can be used
+                        classes:
+                          type: array
+                          items:
+                            type: string
+                            description: API permission classes that can be used
+          - type: 'null'
+        url:
+          type: string
+          deprecated: true
+          description: The URL the base application is located at (replaced by baseApp.url)
+        urlDraft:
+          anyOf:
+          - type: string
+            description: The URL the base application for the draft configuration is located at (replaced by baseAppDraft.url)
+          - type: 'null'
+        publications:
+          anyOf:
+          - type: array
+            description: References to all the catalogs the application metadata is published too
+            items:
+              type: object
+              required:
+              - catalog
+              - status
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                catalog:
+                  type: string
+                  description: L'identifiant du catalogue de destination de cette publication.
+                status:
+                  type: string
+                  description: Statut indiquant clairement si la publication a réussi. Si "published", la propriété targetUrl doit être renseignée. Si "error", la propriété error doit être renseignée.
+                  enum:
+                  - waiting
+                  - published
+                  - error
+                  - deleted
+                publishedAt:
+                  type: string
+                  description: Date de la dernière mise à jour de cette publication.
+                  format: date-time
+                error:
+                  type: string
+                targetUrl:
+                  type: string
+                result:
+                  type: object
+                  description: Résultat de la publication. La structure de cet objet est libre et dépend du type de catalogue.
+          - type: 'null'
+        publicationSites:
+          anyOf:
+          - type: array
+            description: References to all sites the application is exposed in.
+            items:
+              type: string
+          - type: 'null'
+        requestedPublicationSites:
+          anyOf:
+          - type: array
+            description: References to all sites the application would be exposed in if validated by an admin.
+            items:
+              type: string
+          - type: 'null'
+        topics:
+          anyOf:
+          - type: array
+            title: Liste de thématiques
+            layout:
+              itemTitle: item.title
+            items:
+              title: Topic
+              x-exports:
+              - types
+              - schema
+              type: object
+              required:
+              - title
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  readOnly: true
+                title:
+                  type: string
+                  title: Title
+                  x-i18n-title:
+                    fr: Titre
+                  layout:
+                    cols:
+                      md: 5
+                icon:
+                  type: object
+                  title: Icon
+                  x-i18n-title:
+                    fr: Icône
+                  description: Il est possible de consulter plus facilement la liste des icônes disponibles sur <a href='https://pictogrammers.com/library/mdi/' target='_blank'>ce site </a>.<br>Commencez à taper pour rechercher dans la collection complète d'icônes. Seuls quelques icônes sont chargées initialement pour de meilleures performances.
+                  x-i18n-description:
+                    en: You can easily browse the list of available icons on this <a href='https://pictogrammers.com/library/mdi/' target='_blank'>this website</a>.<br>Start typing to search through the complete collection of icons. Only a few icons are loaded initially for better performance.
+                  layout:
+                    getItems:
+                      url: https://koumoul.com/data-fair/api/v1/datasets/icons-mdi-latest/lines?q={q}&select=name,svg,svgPath&size=25
+                      itemsResults: data.results
+                      itemTitle: item.name
+                      itemIcon: item.svg
+                      itemKey: item.name
+                    cols:
+                      md: 5
+                      sm: 6
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                    svg:
+                      type: string
+                    svgPath:
+                      type: string
+                color:
+                  type: string
+                  title: Color
+                  x-i18n-title:
+                    fr: Couleur
+                  layout:
+                    comp: color-picker
+                    cols:
+                      md: 2
+                      sm: 6
+          - type: 'null'
+        extras:
+          anyOf:
+          - type: object
+            description: An object for extra content from client services of data-fair
+          - type: 'null'
+        preferLargeDisplay:
+          anyOf:
+          - type: boolean
+            default: false
+          - type: 'null'
+        attachments:
+          anyOf:
+          - type: array
+            items:
+              type: object
+              required:
+              - title
+              - name
+              properties:
+                title:
+                  type: string
+                  title: Titre
+                  layout:
+                    props:
+                      outlined: true
+                      dense: true
+                name:
+                  layout: none
+                  type: string
+                  description: Name of the file that was used to create or update this attachment
+                size:
+                  layout: none
+                  type: number
+                  description: Size of the file on disk
+                mimetype:
+                  layout: none
+                  type: string
+                  description: Mime type of the file
+                updatedAt:
+                  layout: none
+                  type: string
+                  description: Date of the last update for this attachment
+                  format: date-time
+                url:
+                  layout: none
+                  readOnly: true
+                  type: string
+                  title: URL
+          - type: 'null'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-apiKey
+    sdCookie:
+      type: apiKey
+      in: cookie
+      name: id_token
+externalDocs:
+  description: Documentation sur GitHub
+  url: https://data-fair.github.io/master/

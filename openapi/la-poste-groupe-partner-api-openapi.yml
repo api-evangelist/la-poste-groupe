@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  description: '**Bienvenue sur l’API Coffre-fort numérique Digiposte +.**
+
+
+    !Digiposte
+
+
+    Cette API permet d’envoyer et archiver des documents certifiés dans un coffre-fort numérique Digiposte + à valeur probante, pour vos clients ou utilisateurs.'
+  title: Digiposte v3 Partner API
+  version: ''
+servers: []
+tags:
+- name: Partner
+paths:
+  /partner/procedure/{procedure_pid}/qualify:
+    put:
+      parameters:
+      - description: PID de la démarche
+        in: path
+        name: procedure_pid
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '204':
+          description: No Content
+          headers: {}
+        '400':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                  - error: invalid_parameter OR unauthorized_status
+                    error_description: 'No user procedure corresponding to {userProcedureId} OR Status {status} not in : {STATUS ALLOWED FOR QUALIFICATION}'
+              schema:
+                items: {}
+                type: array
+          description: Bad Request
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Partner
+      description: ''
+      operationId: Qualifier une démarche
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                refusalGround: ''
+                refusedDocuments:
+                - documentId: ''
+                  refusalGround: ''
+                status: STARTED
+              properties:
+                refusalGround:
+                  description: Cause du refus de la démarche
+                  type: string
+                refusedDocuments:
+                  description: Liste de documents refusés
+                  type: array
+                status:
+                  description: Statut de la démarche
+                  enum:
+                  - STARTED
+                  - REQUESTED
+                  - VALIDATED
+                  - COMPLETED
+                  type: string
+              required:
+              - status
+              type: object
+      summary: Qualifier une démarche
+  /partner/procedure/{user_procedure_id}/document/{document_id}:
+    get:
+      parameters:
+      - description: Identifiant de la démarche utilisateur
+        in: path
+        name: user_procedure_id
+        required: true
+        schema:
+          type: string
+      - description: Identifiant du document à retourner
+        in: path
+        name: document_id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              examples:
+                response:
+                  value: ''
+          description: OK
+          headers: {}
+        '400':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                  - error: invalid_parameter
+                    error_description: No user procedure corresponding to {userProcedureId}.
+              schema:
+                items: {}
+                type: array
+            application/octet-stream:
+              schema:
+                items: {}
+                type: array
+          description: Bad Request
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Partner
+      description: ''
+      operationId: Récupérer un document d'une démarche
+      summary: Récupérer un document d'une démarche
+  /partner/procedure/{user_procedure_id}/documents:
+    get:
+      parameters:
+      - description: Identifiant de la démarche utilisateur
+        in: path
+        name: user_procedure_id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              examples:
+                response:
+                  value: ''
+          description: OK
+          headers: {}
+        '412':
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                response:
+                  value:
+                  - error: MAXIMUM_DOWNLOAD_SIZE_REACHED
+                    error_description: archive to download is too big.
+              schema:
+                items: {}
+                type: array
+            application/octet-stream:
+              schema:
+                items: {}
+                type: array
+          description: Precondition Failed
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Partner
+      description: ''
+      operationId: Récupérer tous les documents d'une démarche dans un fichier zip
+      summary: Récupérer tous les documents d'une démarche dans un fichier zip
+  /partner/procedures/{procedure_pid}:
+    get:
+      parameters:
+      - description: PID de la démarche
+        in: path
+        name: procedure_pid
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    count: 0
+                    index: 0
+                    max_results: 0
+                    nb_started_segmented_procedures: 0
+                    procedures:
+                    - user:
+                        address:
+                          address_alias: string
+                          country_code: string
+                          extended_address: string
+                          id: string
+                          locality: string
+                          post_office_box: string
+                          postal_code: string
+                          street_address: string
+                          sub_locality: string
+                          valid: true
+                        birth_date: '2019-04-10T10:06:51.998Z'
+                        email: string
+                        first_name: string
+                        id_verified: true
+                        last_name: string
+                        login: string
+                        title: string
+                      user_procedure_data:
+                        assets:
+                        - asset_type: string
+                          assets: []
+                          description: string
+                          id: string
+                          is_custom: true
+                          nb_documents: 0
+                          nb_documents_required: 0
+                          pid: string
+                          title: string
+                          visible: true
+                        associated_partners:
+                        - id: string
+                          logo_url: string
+                          name: string
+                        completed: true
+                        description: string
+                        document_assets:
+                          asset_type: string
+                          assets: []
+                          description: string
+                          id: string
+                          is_custom: true
+                          nb_documents: 0
+                          nb_documents_required: 0
+                          pid: string
+                          title: string
+                          visible: true
+                        image: string
+                        link: string
+                        link_description: string
+                        membership_id: string
+                        nb_assets_provided: 0
+                        nb_assets_required: 0
+                        partner:
+                          id: string
+                          logo_url: string
+                          name: string
+                        personal: true
+                        procedure_id: string
+                        procedure_pid: string
+                        qualification_date: '2019-04-10T10:06:51.998Z'
+                        refusal_ground: string
+                        requested_date: '2019-04-10T10:06:51.998Z'
+                        shared: true
+                        short_description: string
+                        status: string
+                        title: string
+                        type: string
+                        universes:
+                          contacts:
+                          - id: string
+                            name: string
+                          goods:
+                          - id: string
+                            name: string
+                          health:
+                          - id: string
+                            name: string
+                          housings:
+                          - id: string
+                            name: string
+                          jobs:
+                          - id: string
+                            name: string
+                        user_procedure_id: string
+                        visible: true
+              schema:
+                properties:
+                  count:
+                    type: number
+                  index:
+                    type: number
+                  max_results:
+                    type: number
+                  nb_started_segmented_procedures:
+                    type: number
+                  procedures:
+                    items: {}
+                    type: array
+                type: object
+          description: OK
+          headers: {}
+        '400':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                  - error: invalid_parameter
+                    error_description: No procedure corresponding to PID {pid}, Procedure {id} corresponding to PID {pid} is not published, Procedure {id} corresponding to PID {pid} is public. Only Submitted user procedures can be requested.
+                    field: procedure_pid
+              schema:
+                items: {}
+                type: array
+          description: Bad Request
+          headers: {}
+      security:
+      - oauth2: []
+      tags:
+      - Partner
+      description: ''
+      operationId: Récupérer les démarches d'un partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                index: 0
+                maxResults: 0
+                status: STARTED
+              properties:
+                index:
+                  description: Numéro de la page
+                  type: number
+                maxResults:
+                  description: nombre maximum de démarches à retourner
+                  type: number
+                status:
+                  description: Statut de la démarche
+                  enum:
+                  - STARTED
+                  - REQUESTED
+                  - VALIDATED
+                  - COMPLETED
+                  type: string
+              type: object
+      summary: Récupérer les démarches d'un partenaire
+components:
+  parameters:
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: okapi-key
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: okapi-key
+      schema:
+        type: string
+  securitySchemes:
+    basic:
+      scheme: basic
+      type: http
+    oauth2:
+      flows:
+        authorizationCode:
+          authorizationUrl: /
+          scopes: {}
+          tokenUrl: /
+      type: oauth2

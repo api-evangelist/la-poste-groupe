@@ -1,0 +1,635 @@
+openapi: 3.2.0
+info:
+  title: OpenAPI definition LH PRO resources API
+  version: v0
+servers:
+- url: https://api-order-lh-pro-ct-sacc.paas-01.build.net.intra.laposte.fr
+  description: Generated server url
+security:
+- default: []
+tags:
+- name: LH PRO resources
+paths:
+  /lh/pro/orders:
+    post:
+      tags:
+      - LH PRO resources
+      summary: Création d'une commande LH PRO
+      description: Permet de soumettre un ensemble de courriers recommandés à traiter au sein d'une commande.
+      operationId: postOrder
+      parameters:
+      - name: X-CT-MODE
+        in: header
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/okapiKeyParameter'
+      requestBody:
+        description: Commande LH PRO
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LhProOrder'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhProOrderResponse'
+        '201':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhProOrderResponse'
+        '206':
+          description: Partial content
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhProOrderResponse'
+        '400':
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        default:
+          description: default response
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhOrderResponse'
+      security:
+      - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: 20_par_sec
+  /lh/pro/orders/pddng:
+    post:
+      tags:
+      - LH PRO resources
+      summary: Permet au client de demander une preuve de dépôt sur un ensemble de commande
+      description: Permet de soumettre un ensemble de courriers recommandés à traiter au sein d'une commande.
+      operationId: postPDDNGGenerationRequest
+      requestBody:
+        description: Identification du client demandeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LhProPDDNGRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhProPDDNGResponse'
+        '201':
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhProPDDNGResponse'
+        '400':
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorOrders'
+        default:
+          description: default response
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LhOrderResponse'
+      security:
+      - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: 20_par_sec
+      parameters:
+      - $ref: '#/components/parameters/okapiKeyParameter'
+components:
+  schemas:
+    Address:
+      required:
+      - country_code
+      - name1
+      - town
+      - zip_code
+      type: object
+      properties:
+        name1:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 1 contenant le nom'
+        add2:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 2'
+        add3:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 3'
+        add4:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 4'
+        add5:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 5'
+        zip_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code postal'
+        town:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ville'
+        country_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code du pays'
+      description: 'Personne pour une commande identifiée par son adresse : expéditeur ou destinataire '
+    LhProAttachmentResponse:
+      type: object
+      properties:
+        smartdata:
+          $ref: '#/components/schemas/SmartData'
+        receiver_address:
+          $ref: '#/components/schemas/LhProReceiverAddress'
+      description: Retour des services de création de commande
+    ErrorOrders:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: Liste des erreurs de type Error
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Objet commun qui contient la liste des objets de type Error
+    Success:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code retour
+        message:
+          type: string
+          description: Message
+      description: 'Définit le retour en succés : code / message
+
+        Liste des codes retour :\r\n<table><tr><th>Code</th><th>Message</th></tr><tr><td>OKI0A</td><td>Your order has been received and it will be processed by La Poste services.</td></tr><tr><td>OKI0B</td><td>Your order has been received. You have 72 hours to complete your order.</td></tr><tr><td>OKI0C</td><td>Your request has been processed.</td></tr><tr><td>'
+    LhOrderResponse:
+      type: object
+      properties:
+        status_order:
+          maxLength: 38
+          minLength: 0
+          type: string
+          description: Statut de la commande
+        order_id:
+          maxLength: 38
+          minLength: 0
+          type: string
+          description: Identifiant technique de la commande
+        order_name:
+          maxLength: 38
+          minLength: 0
+          type: string
+          description: Nom de la commande
+        return_code:
+          $ref: '#/components/schemas/Error'
+        attachments:
+          type: array
+          description: 'Liste des pièces jointes pour une commande : document(s) + options + plis'
+          items:
+            $ref: '#/components/schemas/LhAttachmentResponse'
+      description: 'Retour des services de création de commande indiquant : le statut de prise en compte de la commande et les adresses comportant des erreurs le cas échéant'
+    LhAttachmentResponse:
+      type: object
+      properties:
+        attachment_name:
+          type: string
+          description: Nom de la pièce jointe (document)
+        registered_letters:
+          type: array
+          description: Liste des plis associés au document (1 pli par destinataire du document)
+          items:
+            $ref: '#/components/schemas/LhFoldResponse'
+      description: Retour des services de création de commande indiquant la pièce jointe de la commande
+    LhProPDDNGResponse:
+      type: object
+      properties:
+        order_set_id:
+          type: string
+          description: Identifiant du dépôt UUID de multi-commande
+        return_code:
+          $ref: '#/components/schemas/Success'
+    LhProSenderAddress:
+      required:
+      - country_code
+      - name1
+      - town
+      - zip_code
+      type: object
+      properties:
+        name1:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 1 contenant le nom'
+        add2:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 2'
+        add3:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 3'
+        add4:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 4'
+        add5:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 5'
+        zip_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code postal'
+        town:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ville'
+        country_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code du pays'
+        email:
+          type: string
+          description: 'Expéditeur : Adresse - Email'
+      description: Information de l'expéditeur d'une commande
+    LhProOrder:
+      required:
+      - attachments
+      - contract_number
+      - customer_coclico
+      - partner_coclico
+      - product_id
+      type: object
+      properties:
+        customer_coclico:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: Coclicot du client
+          example: '12345678'
+        partner_coclico:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: "N° Coclico de l'intégrateur \\n\n        - soit l'intégrateur de l'API est également le consommateur, et le n° de coclico du champ 'partner_coclico' est identique à celui du champ 'customer_coclico' \\n\n        - soit l'intégrateur del 'API n'est pas le consommateur et les 2 champs contiennent des valeurs différentes."
+          example: '12345678'
+        contract_number:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: N° de contrat du client cadre de l'API
+          example: D-0001070-5
+        order_name:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: "Référence client de la commande \nUID 36 caractères avec préfixe"
+          example: xxxxxxxx-1111-1111-2222-123456789012
+        sous_compte:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Permet au client utilisateur de refacturer des entités distinctes en interne
+          example: xxxxxxxxxxx1
+        reference_client:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Permet au client utilisateur de faire le lien avec un émetteur final ou avec un autre type de référence
+          example: xxxxxxxxxxx1
+        attachments:
+          type: array
+          description: Liste des pièces jointes pour une commande.
+          items:
+            $ref: '#/components/schemas/LhProAttachment'
+        service_code:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: Code de la prestation
+        product_id:
+          maxLength: 2
+          minLength: 0
+          type: string
+          description: Produit commercial (simple, suivi, recommandé, …).
+        enveloppe_t_flag:
+          type: boolean
+          description: 'Option de commande : Enveloppe T'
+        address_control_flag:
+          type: boolean
+          description: 'Option de commande : Vérification de la normalisation des adresses des destinataires.'
+      description: Une commande client pro LREL, avec smartdata, est un ensemble de courriers (document + expéditeur) auxquels on associe un ensemble de destinataires identifiés par leur adresse (1 pli = 1 document + 1 destinataire).
+    LhOrderStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Statut de la commande
+        status_label:
+          type: string
+          description: Libellé du statut de la commande.
+      description: Code et libellé du statut de la commande
+    LhFoldResponse:
+      type: object
+      properties:
+        customer_reference:
+          type: string
+          description: Réference propre à chaque destinataire
+        receiver_email_address:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Adresse mail du destinataire
+        receiver_phone_number:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Numéro de téléphone du destinataire
+        name1_or_add2:
+          type: string
+          description: 'Expéditeur / Destinataire LEL : Ligne 1 (nom) ou ligne 2 de l''adresse du destinataire permettant d’identifier le destinataire dont on indique le statut de redressement'
+        controlled_address_flag:
+          type: boolean
+          description: 'Destinataire LEL : indique que l''adresse a été contrôlée '
+        rectified_address_flag:
+          type: boolean
+          description: 'Destinataire LEL : indique si l''adresse a été redressée, c''est-à-dire si l’adresse saisie à l’origine a été modifiée par le service de contrôle et normalisation'
+        valid_address_flag:
+          type: boolean
+          description: 'Destinataire LEL : indique si l''adresse (redressée le cas échéant) est valide. Une adresse est réputée valide par défaut tant qu''un contrôle n''a pas prouvé qu''elle ne l''était pas'
+        input_address:
+          $ref: '#/components/schemas/Address'
+        proposed_address:
+          $ref: '#/components/schemas/Address'
+      description: Détail de la réponse à une commande pour chacun des plis de la commande. Les structures adresse saisie et adresse proposée ne sont renseignées qu’au cas où l’adresse est redressée.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code retour ou code erreur
+        message:
+          type: string
+          description: Message d'erreur
+        type:
+          type: string
+          description: 'Type d''erreur : Fonctionnelle ou Technique'
+          enum:
+          - TECHNICAL
+          - FUNCTIONAL
+      description: 'Format et liste des codes retours et codes / messages d''erreurs
+
+        Liste des codes retour :
+
+        <table><tr><th>Code</th><th>Message</th></tr><tr><td>ERR07</td><td> The maximum size authorized is {0} Mo for a PDF attachment.</td></tr><tr><td>ERR08</td><td> The attachment is not at 1.4 PDF format.</td></tr><tr><td>ERR11</td><td>The order does not exist.</td></tr><tr><td>ERR12</td><td>The order has already been submitted for realization.</td></tr><tr><td>ERR15</td><td>The address rectification functionality is suspended for inappropriate use of the service. Your order will not be processed. You can submit your order without the adress rectification functionnality.</td></tr><tr><td>ERR16</td><td> The name1 field of the {0} address is mandatory.</td></tr><tr><td>ERR17</td><td> The zipCode field of the {0} address is mandatory.</td></tr><tr><td>ERR18</td><td>The operation is impossible because the order was abandoned.</td></tr><tr><td>ERR19</td><td>The address rectification functionality has no suggestion for the address.</td></tr><tr><td>ERR20</td><td> The attachment exceeds the authorized number of {0} sheets of paper per letter. </td></tr><tr><td>ERR21</td><td> The order is empty.</td></tr><tr><td>ERR22</td><td> The attachment has not been provided.</td></tr><tr><td>ERR23</td><td> The attachment has more than {0} receivers.</td></tr><tr><td>ERR24</td><td> The deposit proof of the order is not available.</td></tr><tr><td>ERR25</td><td> The registered letter does not exist.</td></tr><tr><td>ERR26</td><td>No proof is available for that order because the order was rejected.</td></tr><tr><td>ERR27</td><td>The format of the ressource ID is incorrect.</td></tr><tr><td>ERR28</td><td> The {0} contract number is not known for that customer account. The request cannot be processed.</td></tr><tr><td>ERR29</td><td>The {0} contract status does not allow use of that product. The request cannot be processed.</td></tr><tr><td>ERR31</td><td> The {0} country_code is not allowed in the approved list.</td></tr><tr><td>ERR34</td><td> The call to SNA rectification service was not successful for the address.</td></tr><tr><td>ERR35</td><td>The address rectification functionality has rectified the address.</td></tr><tr><td>ERR38</td><td>The maximum size of the {0} attribute of the {1} address is 38 characters.</td></tr><tr><td>ERR39</td><td> The zip code is incorrect.</td></tr><tr><td>ERR40</td><td> The add4 field of the {0} address is mandatory.</td></tr><tr><td>ERR41</td><td>The country ISO code {0} does not match the {1} address zip code.</td></tr><tr><td>ERR42</td><td>The service does not authorize this zip code.</td></tr><tr><td>ERR43</td><td>The attachment name is mandatory.</td></tr><tr><td>ERR44</td><td> The access to that resource is unauthorized.</td></tr><tr><td>ERR46</td><td>The receipt proof for the registered letter is not available.</td></tr><tr><td>ERR47</td><td>The receiver corporate name is mandatory.</td></tr><tr><td>ERR48</td><td> The receiver name is mandatory.</td></tr><tr><td>ERR49</td><td> The receiver email address is mandatory.</td></tr><tr><td>ERR50</td><td> The format of the receiver email address is incorrect.</td></tr><tr><td>ERR51</td><td> The attachment has more than {0} receivers.</td></tr><tr><td>ERR53</td><td> The receiver SIREN number is mandatory.</td></tr><tr><td>ERR54</td><td>The format of the SIREN number is incorrect.</td></tr><tr><td>ERR55</td><td>The {0} contract does not allow use of that product. The request cannot be processed.</td></tr><tr><td>ERR56</td><td> The town of the {0} address is mandatory.</td></tr><tr><td>ERR57</td><td>The attachment cannot be retrieved. Please try again later.</td></tr><tr><td>ERR58</td><td>The sender identification didn''t succeed due to an error. Please try again later.</td></tr><tr><td>ERR59</td><td>The receivers information is mandatory.</td></tr><tr><td>ERR60</td><td>The request didn''t succeed due to an internal error. Please try again later.</td></tr><tr><td>ERR61</td><td>The service is momentarily unavailable. Please try again later.</td></tr><tr><td>ERR62</td><td>You have reached the authorized number of {0} registered letters for this product.Your order will not be processed.</td></tr><tr><td>ERR65</td><td>Multiple attachments can not have the same name.</td></tr><tr><td>ERR66</td><td>Your contract does not allow the billing of a different end customer by La Poste services. The end customer''s coclico number and contract number fields must be left empty.</td></tr><tr><td>ERR67</td><td>Your contract mandates the billing of a different end customer by La Poste services. The end customer''s coclico number and contract number fields are mandatory.</td></tr><tr><td>ERR68</td><td>The end customer''s contract number must be different than the main contract number.</td></tr></table>
+
+        En plus des erreurs applicatives, l''application est exposée par la solution d''API management WSO2 dont le détail des erreurs techniques est indiqué à l''adresse suivante https://docs.wso2.com/display/AM210/Error+Handling'
+    LhProOrderResponse:
+      required:
+      - contract_number
+      - customer_coclico
+      - partner_coclico
+      type: object
+      properties:
+        order_id:
+          type: string
+          description: Identifiant technique de la commande
+        order_name:
+          type: string
+          description: Nom de la commande
+        order_status:
+          $ref: '#/components/schemas/LhOrderStatus'
+        customer_coclico:
+          type: string
+          description: Coclicot du client
+          example: '12345678'
+        contract_number:
+          type: string
+          description: N° de contrat du client cadre de l'API
+          example: D-0001070-5
+        sous_compte:
+          type: string
+          description: Permet au client utilisateur de refacturer des entités distinctes en interne
+          example: xxxxxxxxxxx1
+        partner_coclico:
+          type: string
+          description: "N° Coclico de l'intégrateur \\n\n        - soit l'intégrateur de l'API est également le consommateur, et le n° de coclico du champ 'partner_coclico' est identique à celui du champ 'customer_coclico' \\n\n        - soit l'intégrateur del 'API n'est pas le consommateur et les 2 champs contiennent des valeurs différentes."
+          example: '12345678'
+        reference_client:
+          type: string
+          description: Permet au client utilisateur de faire le lien avec un émetteur final ou avec un autre type de référence
+          example: xxxxxxxxxxx1
+        letters:
+          type: array
+          description: 'Liste des pièces jointes pour une commande : document(s) + options + plis'
+          items:
+            $ref: '#/components/schemas/LhProAttachmentResponse'
+        nb_blank_pages:
+          type: integer
+          description: Nombre de pages blanches ajoutées au document
+          format: int32
+      description: 'Retour des services de création de commande indiquant : le statut de prise en compte de la commande et les adresses comportant des erreurs le cas échéant'
+    LhProAttachment:
+      required:
+      - address_sheet_flag
+      - attachment
+      - attachment_name
+      - color_printing_flag
+      - duplex_printing_flag
+      - receivers
+      - sender
+      type: object
+      properties:
+        address_sheet_flag:
+          type: boolean
+          description: Option d'ajout de page porte adresse au pli
+        attachment:
+          type: array
+          description: Pièce jointe (document) du pli
+          items:
+            type: string
+            description: Pièce jointe (document) du pli
+            format: byte
+        attachment_name:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Nom du document
+        color_printing_flag:
+          type: boolean
+          description: 'Option d''imression du pli (Couleur / NB) '
+        duplex_printing_flag:
+          type: boolean
+          description: Option d'impression recto / verso
+        sender:
+          $ref: '#/components/schemas/LhProSenderAddress'
+        undelivered_fold_return_address:
+          $ref: '#/components/schemas/LhProSenderAddress'
+        receivers:
+          type: array
+          description: Destinataires du pli
+          items:
+            $ref: '#/components/schemas/LhProReceiverAddress'
+        blank_pages:
+          type: array
+          description: Positions des pages blanches dans le document
+          items:
+            type: integer
+            description: Positions des pages blanches dans le document
+            format: int32
+      description: Liste des pièces jointes pour une commande.
+    LhProPDDNGOrder:
+      required:
+      - order_id
+      type: object
+      properties:
+        order_id:
+          type: string
+          description: Identifiant technique de la commande  -  UUID
+          example: 231f3d1c-xxxx-xxxx-xxxx-41728cdc0ba8
+      description: Liste de Numéro de commande pour lesquels la PDDNG est demandée
+    LhProReceiverAddress:
+      required:
+      - country_code
+      - name1
+      - town
+      - zip_code
+      type: object
+      properties:
+        name1:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 1 contenant le nom'
+        add2:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 2'
+        add3:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 3'
+        add4:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 4'
+        add5:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ligne 5'
+        zip_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code postal'
+        town:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Ville'
+        country_code:
+          type: string
+          description: 'Expéditeur / Destinataire : Adresse - Code du pays'
+        receiver_reference:
+          type: string
+          description: Réference propre à chaque destinataire qui à pour but d'apparaitre sur le pli.
+        receiver_email_address:
+          type: string
+          description: Adresse mail du destinataire
+        receiver_phone_number:
+          type: string
+          description: Numéro de téléphone du destinataire
+      description: Information du destinataire d'une commande
+    SmartData:
+      type: object
+      properties:
+        item_id:
+          type: string
+          description: id du pli
+        item_id_cckey:
+          type: string
+          description: clef du pli
+        label:
+          type: string
+          description: Nom du pli
+      description: Informations sur la smartdata
+    LhProPDDNGRequest:
+      required:
+      - contract_number
+      - customer_coclico
+      - email
+      - order_date
+      - orders
+      type: object
+      properties:
+        customer_coclico:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: N° Coclico  du client qui envoie la commande
+          example: '12345678'
+        contract_number:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: N° de contrat du client  de l'API
+          example: D-0001070-6
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Adresse mail sur laquelle envoyer la PDDNG
+          example: jean.dupond@laposte.fr
+        order_date:
+          type: string
+          description: Date d'envoi de la commande
+          example: '2021-08-02T00:00:00Z'
+        orders:
+          type: array
+          description: Liste de Numéro de commande pour lesquels la PDDNG est demandée
+          items:
+            $ref: '#/components/schemas/LhProPDDNGOrder'
+  parameters:
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: okapi-key
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: okapi-key
+      schema:
+        type: string
+  securitySchemes:
+    default:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://test.com
+          scopes: {}
