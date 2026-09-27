@@ -88,7 +88,7 @@ paths:
       tags:
       - User
       description: ''
-      operationId: Créer ou renouveler l'url de personnalisation d'un compte partiel
+      operationId: CréerOuRenouvelerL'urlDePersonnalisationD'unComptePartiel
       requestBody:
         content:
           application/json:
@@ -140,6 +140,8 @@ paths:
       summary: Créer ou renouveler l'url de personnalisation d'un compte partiel
       parameters:
       - $ref: '#/components/parameters/okapiKeyParameter'
+      x-operation-id-source: normalized
+      x-operation-id-original: Créer ou renouveler l'url de personnalisation d'un compte partiel
   /user/partial:
     post:
       responses:
@@ -363,7 +365,7 @@ paths:
       tags:
       - User
       description: ''
-      operationId: Créer un nouveau compte partiel
+      operationId: CréerUnNouveauComptePartiel
       requestBody:
         content:
           application/json:
@@ -404,6 +406,8 @@ paths:
       summary: Créer un nouveau compte partiel
       parameters:
       - $ref: '#/components/parameters/okapiKeyParameter'
+      x-operation-id-source: normalized
+      x-operation-id-original: Créer un nouveau compte partiel
 components:
   parameters:
     okapiKeyParameter:

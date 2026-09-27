@@ -1507,7 +1507,7 @@ paths:
     get:
       summary: Récupérer les révisions (par propriétaire)
       description: Récupérer les révisions de lignes triées du plus récent au plus ancien. (restreint par propriétaire de ligne)
-      operationId: readRevisions
+      operationId: getDatasetsByIdOwnByOwnerRevisions
       x-permissionClass: manageOwnLines
       tags:
       - JDD / Éditable
@@ -1591,6 +1591,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-operation-id-source: normalized
+      x-operation-id-original: readRevisions
   /datasets/{id}/own/{owner}/lines/{lineId}/revisions:
     parameters:
     - in: path
@@ -1709,8 +1711,8 @@ components:
         text/plain:
           schema:
             type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
       content:
         text/plain:
           schema:
@@ -1721,8 +1723,8 @@ components:
         text/plain:
           schema:
             type: string
-    BadRequest:
-      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+    NotFound:
+      description: La ressource demandée n'existe pas.
       content:
         text/plain:
           schema:

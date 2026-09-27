@@ -79,7 +79,7 @@ paths:
       - oauth2: []
       tags:
       - Resend Purl
-      operationId: Renvoyer le lien de personnalisation à un utilisateur
+      operationId: RenvoyerLeLienDePersonnalisationÀUnUtilisateur
       requestBody:
         content:
           application/json:
@@ -108,6 +108,8 @@ paths:
       summary: Renvoyer le lien de personnalisation à un utilisateur
       parameters:
       - $ref: '#/components/parameters/okapiKeyParameter'
+      x-operation-id-source: normalized
+      x-operation-id-original: Renvoyer le lien de personnalisation à un utilisateur
 components:
   parameters:
     okapiKeyParameter:

@@ -45,7 +45,7 @@ paths:
       tags:
       - Partner
       description: ''
-      operationId: Qualifier une démarche
+      operationId: QualifierUneDémarche
       requestBody:
         content:
           application/json:
@@ -75,6 +75,8 @@ paths:
               - status
               type: object
       summary: Qualifier une démarche
+      x-operation-id-source: normalized
+      x-operation-id-original: Qualifier une démarche
   /partner/procedure/{user_procedure_id}/document/{document_id}:
     get:
       parameters:
@@ -122,8 +124,10 @@ paths:
       tags:
       - Partner
       description: ''
-      operationId: Récupérer un document d'une démarche
+      operationId: RécupérerUnDocumentD'uneDémarche
       summary: Récupérer un document d'une démarche
+      x-operation-id-source: normalized
+      x-operation-id-original: Récupérer un document d'une démarche
   /partner/procedure/{user_procedure_id}/documents:
     get:
       parameters:
@@ -165,8 +169,10 @@ paths:
       tags:
       - Partner
       description: ''
-      operationId: Récupérer tous les documents d'une démarche dans un fichier zip
+      operationId: RécupérerTousLesDocumentsD'uneDémarcheDansUnFichierZip
       summary: Récupérer tous les documents d'une démarche dans un fichier zip
+      x-operation-id-source: normalized
+      x-operation-id-original: Récupérer tous les documents d'une démarche dans un fichier zip
   /partner/procedures/{procedure_pid}:
     get:
       parameters:
@@ -311,7 +317,7 @@ paths:
       tags:
       - Partner
       description: ''
-      operationId: Récupérer les démarches d'un partenaire
+      operationId: RécupérerLesDémarchesD'unPartenaire
       requestBody:
         content:
           application/json:
@@ -337,6 +343,8 @@ paths:
                   type: string
               type: object
       summary: Récupérer les démarches d'un partenaire
+      x-operation-id-source: normalized
+      x-operation-id-original: Récupérer les démarches d'un partenaire
 components:
   parameters:
     okapiKeyParameter:

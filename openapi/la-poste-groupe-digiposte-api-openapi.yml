@@ -143,7 +143,7 @@ paths:
         }
 
         ```'
-      operationId: Déposer un document certifié
+      operationId: DéposerUnDocumentCertifié
       requestBody:
         content:
           application/json:
@@ -186,6 +186,8 @@ paths:
               - archive
               type: object
       summary: Déposer un document certifié
+      x-operation-id-source: normalized
+      x-operation-id-original: Déposer un document certifié
   /digiposte/v3/membership:
     post:
       parameters:
@@ -256,7 +258,7 @@ paths:
 
 
         Le statut d''une adhésion valide est `ACTIVE`.'
-      operationId: Créer une adhésion
+      operationId: CréerUneAdhésion
       requestBody:
         content:
           application/json:
@@ -265,6 +267,8 @@ paths:
               properties: {}
               type: object
       summary: Créer une adhésion
+      x-operation-id-source: normalized
+      x-operation-id-original: Créer une adhésion
   /digiposte/v3/membership/{id}:
     delete:
       parameters:
@@ -342,8 +346,10 @@ paths:
 
 
         Supprimer une adhésion, ne supprime pas les documents qui ont été déposés par cette dernière.'
-      operationId: Résilier une adhésion
+      operationId: RésilierUneAdhésion
       summary: Résilier une adhésion
+      x-operation-id-source: normalized
+      x-operation-id-original: Résilier une adhésion
   /digiposte/v3/memberships:
     get:
       parameters:
@@ -408,8 +414,10 @@ paths:
       tags:
       - Digiposte
       description: Pour connaitre la liste des adhésions en cours (et leur code de routage).
-      operationId: Récupérer la liste des adhésions existantes
+      operationId: RécupérerLaListeDesAdhésionsExistantes
       summary: Récupérer la liste des adhésions existantes
+      x-operation-id-source: normalized
+      x-operation-id-original: Récupérer la liste des adhésions existantes
   /digiposte/v3/oauth/token:
     post:
       parameters:
@@ -451,8 +459,10 @@ paths:
 
 
         `POST /digiposte/v3/oauth/token` avec en body `grant_type=client_credentials`'
-      operationId: Obtenir un token « client_credentials »
+      operationId: ObtenirUnToken«Client_credentials»
       summary: Obtenir un token « client_credentials »
+      x-operation-id-source: normalized
+      x-operation-id-original: Obtenir un token « client_credentials »
 components:
   parameters:
     okapiKeyParameter:
