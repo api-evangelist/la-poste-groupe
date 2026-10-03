@@ -6378,12 +6378,6 @@ components:
         text/plain:
           schema:
             type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
-      content:
-        text/plain:
-          schema:
-            type: string
     Forbidden:
       description: Permissions insuffisantes pour effectuer cette opération.
       content:
@@ -6392,6 +6386,12 @@ components:
             type: string
     BadRequest:
       description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
       content:
         text/plain:
           schema:
