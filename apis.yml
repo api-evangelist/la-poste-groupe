@@ -368,6 +368,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/la-poste-groupe-capability-edges.yml
+  name: La Poste Groupe Business Capability Map
 - type: Overlay
   url: overlays/la-poste-groupe-suivi-overlay.yaml
 - type: Overlay
