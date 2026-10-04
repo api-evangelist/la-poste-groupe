@@ -335,31 +335,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    Forbidden:
-      description: Permissions insuffisantes pour effectuer cette opération.
-      content:
-        text/plain:
-          schema:
-            type: string
-    BadRequest:
-      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
-      content:
-        text/plain:
-          schema:
-            type: string
   schemas:
     applicationPatch:
       $id: https://github.com/data-fair/data-fair/application-patch
@@ -1088,6 +1063,31 @@ components:
                   items:
                     type: string
                     description: API permission classes that can be used
+  responses:
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        text/plain:
+          schema:
+            type: string
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
   securitySchemes:
     apiKey:
       type: apiKey

@@ -2189,7 +2189,1219 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        text/plain:
+          schema:
+            type: string
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
   schemas:
+    datasetPost:
+      title: Post dataset body
+      type: object
+      additionalProperties: false
+      properties:
+        slug:
+          anyOf:
+          - type: string
+            description: Identifier of the dataset, usually a slug for URL readability (unique inside the tenant)
+            pattern: ^[a-z0-9]{1}[a-z0-9_\-]*[a-z0-9]{1}$
+          - type: 'null'
+        title:
+          type: string
+          description: Short title of the dataset
+        summary:
+          anyOf:
+          - type: string
+            description: Short description of the dataset
+          - type: 'null'
+        description:
+          anyOf:
+          - type: string
+            description: Detailed description of the dataset
+          - type: 'null'
+        image:
+          anyOf:
+          - type: string
+            description: URL d'une image, illustration du jeu de données
+          - type: 'null'
+        spatial:
+          anyOf:
+          - type: string
+            description: spatial coverage
+          - type: 'null'
+        temporal:
+          anyOf:
+          - type: object
+            description: temporal coverage
+            properties:
+              start:
+                type: string
+                format: date
+              end:
+                type: string
+                format: date
+          - type: 'null'
+        keywords:
+          anyOf:
+          - type: array
+            description: keywords
+            items:
+              type: string
+          - type: 'null'
+        frequency:
+          anyOf:
+          - type: string
+            description: update frequency
+            enum:
+            - ''
+            - triennial
+            - biennial
+            - annual
+            - semiannual
+            - threeTimesAYear
+            - quarterly
+            - bimonthly
+            - monthly
+            - semimonthly
+            - biweekly
+            - threeTimesAMonth
+            - weekly
+            - semiweekly
+            - threeTimesAWeek
+            - daily
+            - continuous
+            - irregular
+          - type: 'null'
+        creator:
+          anyOf:
+          - type: string
+          - type: 'null'
+        modified:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+        attachments:
+          anyOf:
+          - type: array
+            items:
+              type: object
+              required:
+              - title
+              properties:
+                title:
+                  type: string
+                  title: Titre
+                  layout:
+                    props:
+                      outlined: true
+                      dense: true
+                description:
+                  type: string
+                  title: Description
+                  layout: markdown
+                includeInCatalogPublications:
+                  type: boolean
+                  title: Inclure dans les publications sur catalogue
+                  default: false
+              oneOf:
+              - title: Fichier
+                required:
+                - name
+                properties:
+                  type:
+                    title: Type de pièce jointe
+                    const: file
+                  name:
+                    layout: none
+                    type: string
+                    description: Name of the file that was used to create or update this attachment
+                  size:
+                    layout: none
+                    type: number
+                    description: Size of the file on disk
+                  mimetype:
+                    layout: none
+                    type: string
+                    description: Mime type of the file
+                  updatedAt:
+                    layout: none
+                    type: string
+                    description: Date of the last update for this attachment
+                    format: date-time
+                  url:
+                    layout: none
+                    readOnly: true
+                    type: string
+                    title: URL
+              - title: Lien
+                required:
+                - url
+                properties:
+                  type:
+                    title: Type de pièce jointe
+                    const: url
+                  url:
+                    type: string
+                    title: URL
+              - title: Fichier récupéré depuis une URL
+                required:
+                - name
+                properties:
+                  type:
+                    title: Type de pièce jointe
+                    const: remoteFile
+                  name:
+                    type: string
+                    title: Nom du fichier
+                    description: Ce nom doit contenir l'extension qui doit correspondre au format du fichier téléchargé.
+                    layout:
+                      rules:
+                      - hasExtension
+                  targetUrl:
+                    type: string
+                    title: URL de téléchargement
+                    description: Cette URL n'est pas consultable après écriture. Elle est utilisée pour télécharger le fichier depuis un service distant et peut contenir un secret. Vous pouvez la laisser vide quand vous modifiez les autres informations, mais vous devez la renseigner de nouveau si vous changez le nom de fichier.
+          - type: 'null'
+        primaryKey:
+          anyOf:
+          - type: array
+            description: List of properties of the schema used as unique primary key for each line
+            items:
+              type: string
+          - type: 'null'
+        schema:
+          anyOf:
+          - type: array
+            description: JSON schema properties of the fields
+            items:
+              type: object
+              required:
+              - key
+              properties:
+                key:
+                  type: string
+                  readOnly: true
+                  layout: none
+                type:
+                  type: string
+                format:
+                  type:
+                  - string
+                  - 'null'
+                x-originalName:
+                  type:
+                  - string
+                  - 'null'
+                title:
+                  type: string
+                description:
+                  type: string
+                icon:
+                  type: string
+                x-group:
+                  type: string
+                x-refersTo:
+                  deprecated: true
+                  type:
+                  - string
+                  - 'null'
+                x-concept:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    primary:
+                      type: boolean
+                x-calculated:
+                  type: boolean
+                x-capabilities:
+                  type: object
+                  properties:
+                    index:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Filtrable sur valeur exacte
+                      description: Désactivez cette capacité si la donnée contient par exemple des textes longs pour lesquels des filtres sur valeurs exactes ont peu de sens.
+                    values:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Triable et groupable
+                      description: Désactivez cette capacité si la donnée contient par exemple des textes longs pour lesquels trier ou grouper par valeur a peu de sens.
+                    textStandard:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Texte analysé pour recherche textuelle
+                      description: Désactivez cette capacité dans le cas d'un code, une url, etc. N'importe quel contenu sur lequel la recherche de mots a peu de sens.
+                    text:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Texte analysé spécifiquement pour la langue française
+                      description: Désactivez cette capacité pour tout contenu qui n'est pas en langue française ou pour lequel la recherche de mots a peu de sens.
+                    textAgg:
+                      type: boolean
+                      default: false
+                      layout: switch
+                      title: Statistiques de mots
+                      description: Activez cette capacité si avez l'intention d'obtenir des statistiques sur les occurrences de mots (par exemple pour construire un nuage de mot).
+                    wildcard:
+                      type: boolean
+                      default: false
+                      layout: switch
+                      title: Texte filtrable sur groupe de caractères
+                      description: Activez cette capacité si vous avez l'intention de filtrer ce contenu spécifiquement sur une suite de caractères (par exemple si un filtre sur mots entiers ou sur valeur exacte ne convient pas).
+                    insensitive:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Tri amélioré avec casse et accents
+                      description: Désactivez cette capacité si le contenu ne sera pas utilisé pour du tri ou bien si il ne contient pas de variations avec accents et majuscules.
+                    geoShape:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Formes géométriques complexes
+                      description: Désactivez cette capacité si la donnée ne contient que des géométries basiques de points ou bien si requêter les géométries uniquement à partir de leurs centroïdes est suffisant pour vos besoins.
+                    vtPrepare:
+                      type: boolean
+                      default: false
+                      layout: switch
+                      title: Tuiles vectorielles préparées
+                      description: Activez cette capacité pour précalculer des éléments utiles à la construction de tuiles vectorielles pour le rendu cartographique du jeu de données. Activez cette option si le jeu de données contient des données géogreaphiques denses à afficher en grande quantité. La contre-partie est une augmentation du temps d'indexation et du volume de données indexées.
+                    indexAttachment:
+                      type: boolean
+                      default: true
+                      layout: switch
+                      title: Contenu des pièces jointes analysé pour recherche textuelle
+                      description: Désactivez cette option si vous souhaitez que les pièces jointes soient simplement téléchargeables et que l'extraction de leur contenu textuel pour recherche de mots n'est pas pertinente.
+                x-labels:
+                  type: object
+                  patternProperties:
+                    .*:
+                      type: string
+                x-labelsRestricted:
+                  type: boolean
+                readOnly:
+                  type: boolean
+                x-required:
+                  type: boolean
+                minLength:
+                  type: integer
+                maxLength:
+                  type: integer
+                minimum:
+                  type: number
+                maximum:
+                  type: number
+                pattern:
+                  type: string
+                  format: regex
+                patternErrorMessage:
+                  type: string
+                x-master:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    remoteService:
+                      type: string
+                      description: L'identifiant du service distant utilisé pour l'enrichissement
+                    action:
+                      type: string
+                      description: L'identifiant de l'action du service distant à utiliser pour l'enrichissement
+                x-display:
+                  type: string
+                enum:
+                  type: array
+                  readOnly: true
+                  description: This differs from JSON schema. It is not a restriction, just and observation of the values that are present in the dataset.
+                x-cardinality:
+                  type: integer
+                  description: The number of distinct values for this field
+                  readOnly: true
+                x-transform:
+                  type: object
+                  description: Transformation to apply to the field
+                  properties:
+                    expr:
+                      type: string
+                    examples:
+                      type: array
+                      items:
+                        type: string
+                    type:
+                      type: string
+                    format:
+                      type: string
+          - type: 'null'
+        projection:
+          anyOf:
+          - type: object
+            description: The cartographic projection of this dataset. Refers to the list of supported projections in contract/projections.json
+            properties:
+              title:
+                type: string
+              code:
+                type: string
+          - type: 'null'
+        conformsTo:
+          anyOf:
+          - type: object
+            description: Reference to an external schema or standard the dataset conforms to.
+            additionalProperties: false
+            properties:
+              title:
+                type: string
+                description: Short title of the schema / standard.
+              version:
+                type: string
+                description: Version of the schema / standard.
+              url:
+                type: string
+                description: URL of the schema / standard specification.
+          - type: 'null'
+        license:
+          anyOf:
+          - type: object
+            additionalProperties: false
+            required:
+            - title
+            - href
+            properties:
+              title:
+                type: string
+                description: Short title for the license
+              href:
+                type: string
+                description: The URL where the license can be read
+          - type: 'null'
+        origin:
+          anyOf:
+          - type: string
+            description: The URL where the original data can be found
+          - type: 'null'
+        constraints:
+          anyOf:
+          - type: array
+            title: Contraintes d'unicité
+            description: Contraintes de validation à l'échelle du jeu de données, au delà des validations par colonne.
+            items:
+              type: object
+              title: Contrainte
+              oneOf:
+              - required:
+                - type
+                - properties
+                title: Unicité
+                properties:
+                  type:
+                    type: string
+                    const: unique
+                  properties:
+                    type: array
+                    title: Colonnes
+                    description: La combinaison des valeurs de ces colonnes doit être unique sur chaque ligne du jeu de données.
+                    items:
+                      type: string
+          - type: 'null'
+        extensions:
+          anyOf:
+          - type: array
+            description: Définition des enrichissements appliqués à ce jeu de données
+            items:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: Toggle on and off the extension
+                needsUpdate:
+                  type: boolean
+                autoUpdate:
+                  type: boolean
+                nextUpdate:
+                  type: string
+                  format: date-time
+              oneOf:
+              - required:
+                - type
+                - expr
+                - property
+                properties:
+                  type:
+                    type: string
+                    const: exprEval
+                  expr:
+                    type: string
+                  property:
+                    type: object
+                    required:
+                    - key
+                    - type
+                    properties:
+                      key:
+                        type: string
+                      type:
+                        type: string
+              - required:
+                - type
+                - remoteService
+                - action
+                properties:
+                  type:
+                    type: string
+                    const: remoteService
+                  remoteService:
+                    type: string
+                    description: L'identifiant du service distant utilisé pour l'enrichissement
+                  action:
+                    type: string
+                    description: L'identifiant de l'action du service distant à utiliser pour l'enrichissement
+                  select:
+                    type: array
+                    description: La liste des colonnes à sélectionner dans le retour du service distant. Toutes les colonnes si absent ou vide.
+                    items:
+                      type: string
+                  overwriteProperties:
+                    type: object
+                    description: Les attributs à surcharger sur les proprités résultats de l'enrichissement
+                    additionalProperties:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        x-originalName:
+                          type: string
+                  shortId:
+                    type: string
+                    description: Id court (déprécié)
+                    readOnly: true
+                  propertyPrefix:
+                    type: string
+                    description: Chaine à utiliser comme préfixe des clés de champs issus de cette extension
+                  mandatory:
+                    type: boolean
+                    description: Si vrai, un échec d'enrichissement sur une ligne est traité comme une erreur de validation bloquante.
+          - type: 'null'
+        masterData:
+          anyOf:
+          - type: object
+            title: Données de référence
+            layout:
+              title: null
+            properties:
+              shareOrgs:
+                type: array
+                title: Partagez cette donnée de référence avec vos partenaires
+                description: Le partage à des partenaires affecte simplement la visibilité des actions liées à ces données de référence. Il est sans effet sur les permissions que vous devez définir séparément.
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                layout:
+                  if:
+                    type: js-eval
+                    expr: context.ownerOrg
+                    pure: true
+                  props:
+                    noDataText: Vous n'avez pas encore de partenaires configurés pour votre organisation.
+                  getItems:
+                    url:
+                      type: js-tpl
+                      expr: ${context.directoryUrl}/api/${context.dataset.owner.type}s/${context.dataset.owner.id}
+                      pure: true
+                    itemKey: data["id"]
+                    itemTitle: data["name"]
+                    itemsResults: data["partners"]
+              bulkSearchs:
+                type: array
+                title: Récupération de lignes en masse
+                description: Permettez à vos utilisateurs de récupérer un grand nombre de lignes à partir d'une règle de correspondance simple. Cette fonctionnalité permet de créer une nouvelle source d'enrichissement.
+                items:
+                  type: object
+                  required:
+                  - title
+                  properties:
+                    id:
+                      type: string
+                      title: Identifiant
+                      readOnly: true
+                      layout:
+                        if:
+                          type: js-eval
+                          expr: parent.data.id
+                          pure: false
+                    title:
+                      type: string
+                      title: Titre
+                      minLength: 3
+                      layout:
+                        props:
+                          placeholder: Exemple "Récupérer les informations de plusieurs produits"
+                    description:
+                      type: string
+                      title: Description
+                      layout:
+                        comp: textarea
+                        props:
+                          placeholder: Exemple "Cet enrichissement vous permet de récupérer les informations de plusieurs produits à partir d'une liste de codes produits."
+                    filters:
+                      type: array
+                      title: Filtres statiques
+                      items:
+                        type: object
+                        required:
+                        - property
+                        - values
+                        properties:
+                          property:
+                            type: object
+                            title: Propriété sur laquelle appliquer le filtre
+                            layout:
+                              getItems:
+                                type: js-eval
+                                expr: context.filterProperties
+                                pure: true
+                                itemKey: data["key"]
+                                itemTitle: data["title"]
+                          values:
+                            type: array
+                            title: Valeurs
+                            items:
+                              type: string
+                    input:
+                      type: array
+                      title: Méthodes de correspondance
+                      minItems: 1
+                      items:
+                        type: object
+                        required:
+                        - type
+                        - property
+                        oneOf:
+                        - title: Valeurs exactement égales
+                          required:
+                          - type
+                          - property
+                          properties:
+                            type:
+                              type: string
+                              const: equals
+                              title: Type de méthode de correspondance
+                            property:
+                              type: object
+                              title: Propriété comparée
+                              layout:
+                                props:
+                                  noDataText: Aucune colonne de ce jeu de données n'a de concept associé. Définissez des concepts dans l'onglet Schéma.
+                                getItems:
+                                  type: js-eval
+                                  expr: context.propertiesWithConcepts
+                                  pure: true
+                                  itemKey: data["key"]
+                                  itemTitle: data["title"]
+                        - title: Date dans un intervalle
+                          required:
+                          - type
+                          - property
+                          properties:
+                            type:
+                              type: string
+                              const: date-in-interval
+                            property:
+                              type: object
+                              title: Date à renseigner
+                              properties:
+                                x-refersTo:
+                                  type: string
+                                  const: http://schema.org/Date
+                                key:
+                                  type: string
+                                  const: _date
+                                type:
+                                  type: string
+                                  const: string
+                                format:
+                                  type: string
+                                  const: date-time
+                          layout:
+                            if:
+                              type: js-eval
+                              expr: context.hasDateIntervalConcepts
+                              pure: true
+                        - title: Coordonnée géographique à proximité
+                          required:
+                          - type
+                          - distance
+                          properties:
+                            type:
+                              type: string
+                              const: geo-distance
+                            distance:
+                              type: integer
+                              title: Distance
+                              default: 0
+                            property:
+                              type: object
+                              title: Point à renseigner
+                              properties:
+                                x-refersTo:
+                                  type: string
+                                  const: http://www.w3.org/2003/01/geo/wgs84_pos#lat_long
+                                key:
+                                  type: string
+                                  const: _geopoint
+                                type:
+                                  type: string
+                                  const: string
+                          layout:
+                            if:
+                              type: js-eval
+                              expr: context.dataset.bbox
+                              pure: true
+                        oneOfLayout:
+                          label: Type de méthode de correspondance
+                    sort:
+                      type: string
+                      title: Tri pour choisir parmi des résultats ambigus
+                      description: '
+
+                        Remarque : ce paramètre est optionnel et utile uniquement si la manière d''établir une correspondance est susceptible de retourner plusieurs résultats par ligne.
+
+
+                        Le tri est exprimé sous forme d''une liste de clés de colonnes séparées par des virgules. Par défaut le tri est ascendant, si un nom de colonne est préfixé par un "-" alors le tri sera descendant.
+
+
+                        Exemple: ma_colonne,-ma_colonne2'
+                layout:
+                  itemTitle: data.title
+              singleSearchs:
+                type: array
+                title: Recherche de paires code / libellé
+                description: Permettez à vos utilisateurs de récupérer une liste de résultats à partir d'une recherche textuelle sur une colonne de libellés. Cette fonctionnalité permet de créer des champs de recherche dans les formulaires d'édition de ligne des jeux éditables.
+                items:
+                  type: object
+                  required:
+                  - title
+                  - output
+                  properties:
+                    id:
+                      type: string
+                      title: Identifiant
+                      readOnly: true
+                      layout:
+                        if:
+                          type: js-eval
+                          expr: parent.data.id
+                          pure: false
+                    title:
+                      type: string
+                      title: Titre
+                      minLength: 3
+                      layout:
+                        props:
+                          placeholder: Exemple "Recherche d'un produit"
+                    description:
+                      type: string
+                      title: Description
+                      layout:
+                        comp: textarea
+                        props:
+                          placeholder: Exemple "Récupérez un code produit en effectuant une recherche dans son code ou son libellé"
+                    output:
+                      type: object
+                      title: Propriété à retourner (code)
+                      layout:
+                        props:
+                          noDataText: Aucune colonne de ce jeu de données n'a de concept associé. Définissez des concepts dans l'onglet Schéma.
+                        getItems:
+                          type: js-eval
+                          expr: context.propertiesWithConcepts
+                          pure: true
+                          itemKey: data["key"]
+                          itemTitle: data["title"]
+                    label:
+                      type: object
+                      title: Propriété affichée lors de la saisie (libellé)
+                      description: Propriété affichée à côté du code dans la liste des suggestions, sous la forme « code (libellé) », pour aider l'utilisateur à identifier la bonne valeur. La recherche s'effectue sur toutes les colonnes textuelles du jeu de données.
+                      layout:
+                        props:
+                          noDataText: Aucune colonne textuelle dans ce jeu de données.
+                        getItems:
+                          type: js-eval
+                          expr: context.stringProperties
+                          pure: true
+                          itemKey: data["key"]
+                          itemTitle: data["title"]
+                    filters:
+                      type: array
+                      title: Filtres statiques
+                      items:
+                        type: object
+                        required:
+                        - property
+                        - values
+                        properties:
+                          property:
+                            type: object
+                            title: Propriété sur laquelle appliquer le filtre
+                            layout:
+                              getItems:
+                                type: js-eval
+                                expr: context.filterProperties
+                                pure: true
+                                itemKey: data["key"]
+                                itemTitle: data["title"]
+                          values:
+                            type: array
+                            title: Valeurs
+                            items:
+                              type: string
+                layout:
+                  itemTitle: data.title
+              virtualDatasets:
+                type: object
+                description: Proposez à vos utilisateurs de créer des jeux virtuels à partir de ce jeu de données. C'est une option intéressante pour faciliter la création de vues filtrées de cette donnée.
+                properties:
+                  active:
+                    type: boolean
+                    title: Création de jeux virtuels
+              standardSchema:
+                type: object
+                description: Proposez à vos utilisateurs d'initialiser des jeux éditables à partir des métadonnées et des données de ce jeu de données.
+                properties:
+                  active:
+                    type: boolean
+                    title: Initialisation de jeux éditables
+          - type: 'null'
+        publications:
+          anyOf:
+          - type: array
+            description: References to all the catalogs the dataset metadata is published too
+            items:
+              type: object
+              required:
+              - catalog
+              - status
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                catalog:
+                  type: string
+                  description: L'identifiant du catalogue de destination de cette publication.
+                status:
+                  type: string
+                  description: Statut indiquant clairement si la publication a réussi. Si "published", la propriété targetUrl doit être renseignée. Si "error", la propriété error doit être renseignée.
+                  enum:
+                  - waiting
+                  - published
+                  - error
+                  - deleted
+                publishedAt:
+                  type: string
+                  description: Date de la dernière mise à jour de cette publication.
+                  format: date-time
+                error:
+                  type: string
+                targetUrl:
+                  type: string
+                result:
+                  type: object
+                  description: Résultat de la publication. La structure de cet objet est libre et dépend du type de catalogue.
+                addToDataset:
+                  type: object
+                  description: Fill this object to create a new resource (or community resource) to an existing dataset.
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                replaceDataset:
+                  type: object
+                  description: Fill this object to overwrite an existing dataset.
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+          - type: 'null'
+        publicationSites:
+          anyOf:
+          - type: array
+            description: References to all sites the dataset is exposed in.
+            items:
+              type: string
+          - type: 'null'
+        requestedPublicationSites:
+          anyOf:
+          - type: array
+            description: References to all sites the dataset would be exposed in if validated by an admin.
+            items:
+              type: string
+          - type: 'null'
+        attachmentsAsImage:
+          anyOf:
+          - type: boolean
+            default: false
+            description: Set to true to use attached files as illustrations of the line
+          - type: 'null'
+        virtual:
+          anyOf:
+          - type: object
+            description: A configuration object dedicated to virtual datasets.
+            required:
+            - children
+            properties:
+              children:
+                type: array
+                description: Array of ids of the children datasets
+                items:
+                  type: string
+              filters:
+                type: array
+                description: Array of static filters to always apply when querying the dataset
+                items:
+                  type: object
+                  required:
+                  - key
+                  - values
+                  properties:
+                    key:
+                      type: string
+                      description: Key of the field in the schema
+                    operator:
+                      type: string
+                      enum:
+                      - in
+                      - nin
+                      default: in
+                    values:
+                      type: array
+                      items:
+                        type: string
+              filterActiveAccount:
+                type: boolean
+          - type: 'null'
+        rest:
+          anyOf:
+          - type: object
+            description: A configuration object dedicated to REST datasets.
+            properties:
+              ttl:
+                type: object
+                required:
+                - prop
+                - delay
+                properties:
+                  active:
+                    type: boolean
+                  prop:
+                    type: string
+                  checkedAt:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  delay:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        default: 0
+                      unit:
+                        type: string
+                        enum:
+                        - hours
+                        - days
+                        - weeks
+                        - months
+                        default: days
+              history:
+                type: boolean
+                default: false
+                description: Set to true to let data-fair store revisions of the lines in the dataset.
+              historyTTL:
+                type: object
+                additionalProperties: false
+                properties:
+                  active:
+                    type: boolean
+                  delay:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      value:
+                        type: integer
+                        default: 0
+                      unit:
+                        type: string
+                        enum:
+                        - hours
+                        - days
+                        - weeks
+                        - months
+                        default: days
+              lineOwnership:
+                type: boolean
+              storeUpdatedBy:
+                type: boolean
+              primaryKeyMode:
+                type: string
+                enum:
+                - base64
+                - sha256
+              indiceMode:
+                type: string
+                enum:
+                - timestamp1
+                - timestamp2
+                - timestamp3
+          - type: 'null'
+        topics:
+          anyOf:
+          - type: array
+            title: Liste de thématiques
+            layout:
+              itemTitle: item.title
+            items:
+              title: Topic
+              x-exports:
+              - types
+              - schema
+              type: object
+              required:
+              - title
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  readOnly: true
+                title:
+                  type: string
+                  title: Title
+                  x-i18n-title:
+                    fr: Titre
+                  layout:
+                    cols:
+                      md: 5
+                icon:
+                  type: object
+                  title: Icon
+                  x-i18n-title:
+                    fr: Icône
+                  description: Il est possible de consulter plus facilement la liste des icônes disponibles sur <a href='https://pictogrammers.com/library/mdi/' target='_blank'>ce site </a>.<br>Commencez à taper pour rechercher dans la collection complète d'icônes. Seuls quelques icônes sont chargées initialement pour de meilleures performances.
+                  x-i18n-description:
+                    en: You can easily browse the list of available icons on this <a href='https://pictogrammers.com/library/mdi/' target='_blank'>this website</a>.<br>Start typing to search through the complete collection of icons. Only a few icons are loaded initially for better performance.
+                  layout:
+                    getItems:
+                      url: https://koumoul.com/data-fair/api/v1/datasets/icons-mdi-latest/lines?q={q}&select=name,svg,svgPath&size=25
+                      itemsResults: data.results
+                      itemTitle: item.name
+                      itemIcon: item.svg
+                      itemKey: item.name
+                    cols:
+                      md: 5
+                      sm: 6
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                    svg:
+                      type: string
+                    svgPath:
+                      type: string
+                color:
+                  type: string
+                  title: Color
+                  x-i18n-title:
+                    fr: Couleur
+                  layout:
+                    comp: color-picker
+                    cols:
+                      md: 2
+                      sm: 6
+          - type: 'null'
+        relatedDatasets:
+          anyOf:
+          - type: array
+            title: Autres jeux de données à recommender
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - id
+              - title
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+          - type: 'null'
+        thumbnails:
+          anyOf:
+          - type: object
+            properties:
+              resizeMode:
+                type: string
+                description: Define how the thumbnails will be adapted to the size requested by visualizations
+                enum:
+                - crop
+                - smartCrop
+                - fitIn
+                default: crop
+          - type: 'null'
+        extras:
+          anyOf:
+          - type: object
+            description: An object for extra content from client services of data-fair
+          - type: 'null'
+        customMetadata:
+          anyOf:
+          - type: object
+            patternProperties:
+              ^(.*)$:
+                type: string
+          - type: 'null'
+        analysis:
+          anyOf:
+          - type: object
+            additionalProperties: false
+            properties:
+              escapeKeyAlgorithm:
+                type: string
+                default: slug
+                enum:
+                - legacy
+                - slug
+                - compat-ods
+          - type: 'null'
+        readApiKey:
+          anyOf:
+          - type: object
+            additionalProperties: false
+            properties:
+              active:
+                type: boolean
+                title: Activer l'accès par clé d'API
+              interval:
+                type: string
+                title: Durée de validité des clés
+                oneOf:
+                - const: P1W
+                  title: 1 semaine
+                - const: P1M
+                  title: 1 mois
+                - const: P1Y
+                  title: 1 année
+              expiresAt:
+                type: string
+                format: date-time
+                readOnly: true
+                layout: none
+              renewAt:
+                type: string
+                format: date-time
+                readOnly: true
+                layout: none
+          - type: 'null'
+        nonBlockingValidation:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        initFrom:
+          type: object
+          title: Init from
+          additionalProperties: false
+          required:
+          - dataset
+          - parts
+          properties:
+            dataset:
+              type: string
+            parts:
+              type: array
+              items:
+                type: string
+                enum:
+                - data
+                - description
+                - schema
+                - metadataAttachments
+                - primaryKey
+                - extensions
+        isVirtual:
+          type: boolean
+          default: false
+          description: Used to identify virtual datasets. A virtual datasets does not have data, only references to other datasets.
+        isRest:
+          type: boolean
+          default: false
+          description: Used to identify REST datasets. A REST dataset is not created from a data file, but instead is based on a dynamic collection in a database.
+        isMetaOnly:
+          type: boolean
+          default: false
+          description: Used to identify datasets without any local data and only some metadata.
+        owner:
+          type: object
+          additionalProperties: false
+          required:
+          - type
+          - id
+          - name
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - organization
+              description: Indique si le propriétaire est un utilisateur ou une organisation.
+            id:
+              type: string
+              description: Identifiant unique de l'utilisateur ou de l'organisation.
+            name:
+              type: string
+              description: Nom affiché de l'utilisateur ou de l'organisation.
+            role:
+              type: string
+              deprecated: true
+              description: DÉPRÉCIÉ - Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation ayant ce rôle ou le rôle administrateur.
+            department:
+              type: string
+              description: Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation appartenant à ce département.
+            departmentName:
+              type: string
+              description: Nom affiché du département.
     dataset:
       x-exports:
       - types
@@ -5184,1218 +6396,6 @@ components:
                   type: string
                 format:
                   type: string
-    datasetPost:
-      title: Post dataset body
-      type: object
-      additionalProperties: false
-      properties:
-        slug:
-          anyOf:
-          - type: string
-            description: Identifier of the dataset, usually a slug for URL readability (unique inside the tenant)
-            pattern: ^[a-z0-9]{1}[a-z0-9_\-]*[a-z0-9]{1}$
-          - type: 'null'
-        title:
-          type: string
-          description: Short title of the dataset
-        summary:
-          anyOf:
-          - type: string
-            description: Short description of the dataset
-          - type: 'null'
-        description:
-          anyOf:
-          - type: string
-            description: Detailed description of the dataset
-          - type: 'null'
-        image:
-          anyOf:
-          - type: string
-            description: URL d'une image, illustration du jeu de données
-          - type: 'null'
-        spatial:
-          anyOf:
-          - type: string
-            description: spatial coverage
-          - type: 'null'
-        temporal:
-          anyOf:
-          - type: object
-            description: temporal coverage
-            properties:
-              start:
-                type: string
-                format: date
-              end:
-                type: string
-                format: date
-          - type: 'null'
-        keywords:
-          anyOf:
-          - type: array
-            description: keywords
-            items:
-              type: string
-          - type: 'null'
-        frequency:
-          anyOf:
-          - type: string
-            description: update frequency
-            enum:
-            - ''
-            - triennial
-            - biennial
-            - annual
-            - semiannual
-            - threeTimesAYear
-            - quarterly
-            - bimonthly
-            - monthly
-            - semimonthly
-            - biweekly
-            - threeTimesAMonth
-            - weekly
-            - semiweekly
-            - threeTimesAWeek
-            - daily
-            - continuous
-            - irregular
-          - type: 'null'
-        creator:
-          anyOf:
-          - type: string
-          - type: 'null'
-        modified:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        attachments:
-          anyOf:
-          - type: array
-            items:
-              type: object
-              required:
-              - title
-              properties:
-                title:
-                  type: string
-                  title: Titre
-                  layout:
-                    props:
-                      outlined: true
-                      dense: true
-                description:
-                  type: string
-                  title: Description
-                  layout: markdown
-                includeInCatalogPublications:
-                  type: boolean
-                  title: Inclure dans les publications sur catalogue
-                  default: false
-              oneOf:
-              - title: Fichier
-                required:
-                - name
-                properties:
-                  type:
-                    title: Type de pièce jointe
-                    const: file
-                  name:
-                    layout: none
-                    type: string
-                    description: Name of the file that was used to create or update this attachment
-                  size:
-                    layout: none
-                    type: number
-                    description: Size of the file on disk
-                  mimetype:
-                    layout: none
-                    type: string
-                    description: Mime type of the file
-                  updatedAt:
-                    layout: none
-                    type: string
-                    description: Date of the last update for this attachment
-                    format: date-time
-                  url:
-                    layout: none
-                    readOnly: true
-                    type: string
-                    title: URL
-              - title: Lien
-                required:
-                - url
-                properties:
-                  type:
-                    title: Type de pièce jointe
-                    const: url
-                  url:
-                    type: string
-                    title: URL
-              - title: Fichier récupéré depuis une URL
-                required:
-                - name
-                properties:
-                  type:
-                    title: Type de pièce jointe
-                    const: remoteFile
-                  name:
-                    type: string
-                    title: Nom du fichier
-                    description: Ce nom doit contenir l'extension qui doit correspondre au format du fichier téléchargé.
-                    layout:
-                      rules:
-                      - hasExtension
-                  targetUrl:
-                    type: string
-                    title: URL de téléchargement
-                    description: Cette URL n'est pas consultable après écriture. Elle est utilisée pour télécharger le fichier depuis un service distant et peut contenir un secret. Vous pouvez la laisser vide quand vous modifiez les autres informations, mais vous devez la renseigner de nouveau si vous changez le nom de fichier.
-          - type: 'null'
-        primaryKey:
-          anyOf:
-          - type: array
-            description: List of properties of the schema used as unique primary key for each line
-            items:
-              type: string
-          - type: 'null'
-        schema:
-          anyOf:
-          - type: array
-            description: JSON schema properties of the fields
-            items:
-              type: object
-              required:
-              - key
-              properties:
-                key:
-                  type: string
-                  readOnly: true
-                  layout: none
-                type:
-                  type: string
-                format:
-                  type:
-                  - string
-                  - 'null'
-                x-originalName:
-                  type:
-                  - string
-                  - 'null'
-                title:
-                  type: string
-                description:
-                  type: string
-                icon:
-                  type: string
-                x-group:
-                  type: string
-                x-refersTo:
-                  deprecated: true
-                  type:
-                  - string
-                  - 'null'
-                x-concept:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    primary:
-                      type: boolean
-                x-calculated:
-                  type: boolean
-                x-capabilities:
-                  type: object
-                  properties:
-                    index:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Filtrable sur valeur exacte
-                      description: Désactivez cette capacité si la donnée contient par exemple des textes longs pour lesquels des filtres sur valeurs exactes ont peu de sens.
-                    values:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Triable et groupable
-                      description: Désactivez cette capacité si la donnée contient par exemple des textes longs pour lesquels trier ou grouper par valeur a peu de sens.
-                    textStandard:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Texte analysé pour recherche textuelle
-                      description: Désactivez cette capacité dans le cas d'un code, une url, etc. N'importe quel contenu sur lequel la recherche de mots a peu de sens.
-                    text:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Texte analysé spécifiquement pour la langue française
-                      description: Désactivez cette capacité pour tout contenu qui n'est pas en langue française ou pour lequel la recherche de mots a peu de sens.
-                    textAgg:
-                      type: boolean
-                      default: false
-                      layout: switch
-                      title: Statistiques de mots
-                      description: Activez cette capacité si avez l'intention d'obtenir des statistiques sur les occurrences de mots (par exemple pour construire un nuage de mot).
-                    wildcard:
-                      type: boolean
-                      default: false
-                      layout: switch
-                      title: Texte filtrable sur groupe de caractères
-                      description: Activez cette capacité si vous avez l'intention de filtrer ce contenu spécifiquement sur une suite de caractères (par exemple si un filtre sur mots entiers ou sur valeur exacte ne convient pas).
-                    insensitive:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Tri amélioré avec casse et accents
-                      description: Désactivez cette capacité si le contenu ne sera pas utilisé pour du tri ou bien si il ne contient pas de variations avec accents et majuscules.
-                    geoShape:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Formes géométriques complexes
-                      description: Désactivez cette capacité si la donnée ne contient que des géométries basiques de points ou bien si requêter les géométries uniquement à partir de leurs centroïdes est suffisant pour vos besoins.
-                    vtPrepare:
-                      type: boolean
-                      default: false
-                      layout: switch
-                      title: Tuiles vectorielles préparées
-                      description: Activez cette capacité pour précalculer des éléments utiles à la construction de tuiles vectorielles pour le rendu cartographique du jeu de données. Activez cette option si le jeu de données contient des données géogreaphiques denses à afficher en grande quantité. La contre-partie est une augmentation du temps d'indexation et du volume de données indexées.
-                    indexAttachment:
-                      type: boolean
-                      default: true
-                      layout: switch
-                      title: Contenu des pièces jointes analysé pour recherche textuelle
-                      description: Désactivez cette option si vous souhaitez que les pièces jointes soient simplement téléchargeables et que l'extraction de leur contenu textuel pour recherche de mots n'est pas pertinente.
-                x-labels:
-                  type: object
-                  patternProperties:
-                    .*:
-                      type: string
-                x-labelsRestricted:
-                  type: boolean
-                readOnly:
-                  type: boolean
-                x-required:
-                  type: boolean
-                minLength:
-                  type: integer
-                maxLength:
-                  type: integer
-                minimum:
-                  type: number
-                maximum:
-                  type: number
-                pattern:
-                  type: string
-                  format: regex
-                patternErrorMessage:
-                  type: string
-                x-master:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    remoteService:
-                      type: string
-                      description: L'identifiant du service distant utilisé pour l'enrichissement
-                    action:
-                      type: string
-                      description: L'identifiant de l'action du service distant à utiliser pour l'enrichissement
-                x-display:
-                  type: string
-                enum:
-                  type: array
-                  readOnly: true
-                  description: This differs from JSON schema. It is not a restriction, just and observation of the values that are present in the dataset.
-                x-cardinality:
-                  type: integer
-                  description: The number of distinct values for this field
-                  readOnly: true
-                x-transform:
-                  type: object
-                  description: Transformation to apply to the field
-                  properties:
-                    expr:
-                      type: string
-                    examples:
-                      type: array
-                      items:
-                        type: string
-                    type:
-                      type: string
-                    format:
-                      type: string
-          - type: 'null'
-        projection:
-          anyOf:
-          - type: object
-            description: The cartographic projection of this dataset. Refers to the list of supported projections in contract/projections.json
-            properties:
-              title:
-                type: string
-              code:
-                type: string
-          - type: 'null'
-        conformsTo:
-          anyOf:
-          - type: object
-            description: Reference to an external schema or standard the dataset conforms to.
-            additionalProperties: false
-            properties:
-              title:
-                type: string
-                description: Short title of the schema / standard.
-              version:
-                type: string
-                description: Version of the schema / standard.
-              url:
-                type: string
-                description: URL of the schema / standard specification.
-          - type: 'null'
-        license:
-          anyOf:
-          - type: object
-            additionalProperties: false
-            required:
-            - title
-            - href
-            properties:
-              title:
-                type: string
-                description: Short title for the license
-              href:
-                type: string
-                description: The URL where the license can be read
-          - type: 'null'
-        origin:
-          anyOf:
-          - type: string
-            description: The URL where the original data can be found
-          - type: 'null'
-        constraints:
-          anyOf:
-          - type: array
-            title: Contraintes d'unicité
-            description: Contraintes de validation à l'échelle du jeu de données, au delà des validations par colonne.
-            items:
-              type: object
-              title: Contrainte
-              oneOf:
-              - required:
-                - type
-                - properties
-                title: Unicité
-                properties:
-                  type:
-                    type: string
-                    const: unique
-                  properties:
-                    type: array
-                    title: Colonnes
-                    description: La combinaison des valeurs de ces colonnes doit être unique sur chaque ligne du jeu de données.
-                    items:
-                      type: string
-          - type: 'null'
-        extensions:
-          anyOf:
-          - type: array
-            description: Définition des enrichissements appliqués à ce jeu de données
-            items:
-              type: object
-              properties:
-                active:
-                  type: boolean
-                  description: Toggle on and off the extension
-                needsUpdate:
-                  type: boolean
-                autoUpdate:
-                  type: boolean
-                nextUpdate:
-                  type: string
-                  format: date-time
-              oneOf:
-              - required:
-                - type
-                - expr
-                - property
-                properties:
-                  type:
-                    type: string
-                    const: exprEval
-                  expr:
-                    type: string
-                  property:
-                    type: object
-                    required:
-                    - key
-                    - type
-                    properties:
-                      key:
-                        type: string
-                      type:
-                        type: string
-              - required:
-                - type
-                - remoteService
-                - action
-                properties:
-                  type:
-                    type: string
-                    const: remoteService
-                  remoteService:
-                    type: string
-                    description: L'identifiant du service distant utilisé pour l'enrichissement
-                  action:
-                    type: string
-                    description: L'identifiant de l'action du service distant à utiliser pour l'enrichissement
-                  select:
-                    type: array
-                    description: La liste des colonnes à sélectionner dans le retour du service distant. Toutes les colonnes si absent ou vide.
-                    items:
-                      type: string
-                  overwriteProperties:
-                    type: object
-                    description: Les attributs à surcharger sur les proprités résultats de l'enrichissement
-                    additionalProperties:
-                      type: object
-                      properties:
-                        title:
-                          type: string
-                        x-originalName:
-                          type: string
-                  shortId:
-                    type: string
-                    description: Id court (déprécié)
-                    readOnly: true
-                  propertyPrefix:
-                    type: string
-                    description: Chaine à utiliser comme préfixe des clés de champs issus de cette extension
-                  mandatory:
-                    type: boolean
-                    description: Si vrai, un échec d'enrichissement sur une ligne est traité comme une erreur de validation bloquante.
-          - type: 'null'
-        masterData:
-          anyOf:
-          - type: object
-            title: Données de référence
-            layout:
-              title: null
-            properties:
-              shareOrgs:
-                type: array
-                title: Partagez cette donnée de référence avec vos partenaires
-                description: Le partage à des partenaires affecte simplement la visibilité des actions liées à ces données de référence. Il est sans effet sur les permissions que vous devez définir séparément.
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                layout:
-                  if:
-                    type: js-eval
-                    expr: context.ownerOrg
-                    pure: true
-                  props:
-                    noDataText: Vous n'avez pas encore de partenaires configurés pour votre organisation.
-                  getItems:
-                    url:
-                      type: js-tpl
-                      expr: ${context.directoryUrl}/api/${context.dataset.owner.type}s/${context.dataset.owner.id}
-                      pure: true
-                    itemKey: data["id"]
-                    itemTitle: data["name"]
-                    itemsResults: data["partners"]
-              bulkSearchs:
-                type: array
-                title: Récupération de lignes en masse
-                description: Permettez à vos utilisateurs de récupérer un grand nombre de lignes à partir d'une règle de correspondance simple. Cette fonctionnalité permet de créer une nouvelle source d'enrichissement.
-                items:
-                  type: object
-                  required:
-                  - title
-                  properties:
-                    id:
-                      type: string
-                      title: Identifiant
-                      readOnly: true
-                      layout:
-                        if:
-                          type: js-eval
-                          expr: parent.data.id
-                          pure: false
-                    title:
-                      type: string
-                      title: Titre
-                      minLength: 3
-                      layout:
-                        props:
-                          placeholder: Exemple "Récupérer les informations de plusieurs produits"
-                    description:
-                      type: string
-                      title: Description
-                      layout:
-                        comp: textarea
-                        props:
-                          placeholder: Exemple "Cet enrichissement vous permet de récupérer les informations de plusieurs produits à partir d'une liste de codes produits."
-                    filters:
-                      type: array
-                      title: Filtres statiques
-                      items:
-                        type: object
-                        required:
-                        - property
-                        - values
-                        properties:
-                          property:
-                            type: object
-                            title: Propriété sur laquelle appliquer le filtre
-                            layout:
-                              getItems:
-                                type: js-eval
-                                expr: context.filterProperties
-                                pure: true
-                                itemKey: data["key"]
-                                itemTitle: data["title"]
-                          values:
-                            type: array
-                            title: Valeurs
-                            items:
-                              type: string
-                    input:
-                      type: array
-                      title: Méthodes de correspondance
-                      minItems: 1
-                      items:
-                        type: object
-                        required:
-                        - type
-                        - property
-                        oneOf:
-                        - title: Valeurs exactement égales
-                          required:
-                          - type
-                          - property
-                          properties:
-                            type:
-                              type: string
-                              const: equals
-                              title: Type de méthode de correspondance
-                            property:
-                              type: object
-                              title: Propriété comparée
-                              layout:
-                                props:
-                                  noDataText: Aucune colonne de ce jeu de données n'a de concept associé. Définissez des concepts dans l'onglet Schéma.
-                                getItems:
-                                  type: js-eval
-                                  expr: context.propertiesWithConcepts
-                                  pure: true
-                                  itemKey: data["key"]
-                                  itemTitle: data["title"]
-                        - title: Date dans un intervalle
-                          required:
-                          - type
-                          - property
-                          properties:
-                            type:
-                              type: string
-                              const: date-in-interval
-                            property:
-                              type: object
-                              title: Date à renseigner
-                              properties:
-                                x-refersTo:
-                                  type: string
-                                  const: http://schema.org/Date
-                                key:
-                                  type: string
-                                  const: _date
-                                type:
-                                  type: string
-                                  const: string
-                                format:
-                                  type: string
-                                  const: date-time
-                          layout:
-                            if:
-                              type: js-eval
-                              expr: context.hasDateIntervalConcepts
-                              pure: true
-                        - title: Coordonnée géographique à proximité
-                          required:
-                          - type
-                          - distance
-                          properties:
-                            type:
-                              type: string
-                              const: geo-distance
-                            distance:
-                              type: integer
-                              title: Distance
-                              default: 0
-                            property:
-                              type: object
-                              title: Point à renseigner
-                              properties:
-                                x-refersTo:
-                                  type: string
-                                  const: http://www.w3.org/2003/01/geo/wgs84_pos#lat_long
-                                key:
-                                  type: string
-                                  const: _geopoint
-                                type:
-                                  type: string
-                                  const: string
-                          layout:
-                            if:
-                              type: js-eval
-                              expr: context.dataset.bbox
-                              pure: true
-                        oneOfLayout:
-                          label: Type de méthode de correspondance
-                    sort:
-                      type: string
-                      title: Tri pour choisir parmi des résultats ambigus
-                      description: '
-
-                        Remarque : ce paramètre est optionnel et utile uniquement si la manière d''établir une correspondance est susceptible de retourner plusieurs résultats par ligne.
-
-
-                        Le tri est exprimé sous forme d''une liste de clés de colonnes séparées par des virgules. Par défaut le tri est ascendant, si un nom de colonne est préfixé par un "-" alors le tri sera descendant.
-
-
-                        Exemple: ma_colonne,-ma_colonne2'
-                layout:
-                  itemTitle: data.title
-              singleSearchs:
-                type: array
-                title: Recherche de paires code / libellé
-                description: Permettez à vos utilisateurs de récupérer une liste de résultats à partir d'une recherche textuelle sur une colonne de libellés. Cette fonctionnalité permet de créer des champs de recherche dans les formulaires d'édition de ligne des jeux éditables.
-                items:
-                  type: object
-                  required:
-                  - title
-                  - output
-                  properties:
-                    id:
-                      type: string
-                      title: Identifiant
-                      readOnly: true
-                      layout:
-                        if:
-                          type: js-eval
-                          expr: parent.data.id
-                          pure: false
-                    title:
-                      type: string
-                      title: Titre
-                      minLength: 3
-                      layout:
-                        props:
-                          placeholder: Exemple "Recherche d'un produit"
-                    description:
-                      type: string
-                      title: Description
-                      layout:
-                        comp: textarea
-                        props:
-                          placeholder: Exemple "Récupérez un code produit en effectuant une recherche dans son code ou son libellé"
-                    output:
-                      type: object
-                      title: Propriété à retourner (code)
-                      layout:
-                        props:
-                          noDataText: Aucune colonne de ce jeu de données n'a de concept associé. Définissez des concepts dans l'onglet Schéma.
-                        getItems:
-                          type: js-eval
-                          expr: context.propertiesWithConcepts
-                          pure: true
-                          itemKey: data["key"]
-                          itemTitle: data["title"]
-                    label:
-                      type: object
-                      title: Propriété affichée lors de la saisie (libellé)
-                      description: Propriété affichée à côté du code dans la liste des suggestions, sous la forme « code (libellé) », pour aider l'utilisateur à identifier la bonne valeur. La recherche s'effectue sur toutes les colonnes textuelles du jeu de données.
-                      layout:
-                        props:
-                          noDataText: Aucune colonne textuelle dans ce jeu de données.
-                        getItems:
-                          type: js-eval
-                          expr: context.stringProperties
-                          pure: true
-                          itemKey: data["key"]
-                          itemTitle: data["title"]
-                    filters:
-                      type: array
-                      title: Filtres statiques
-                      items:
-                        type: object
-                        required:
-                        - property
-                        - values
-                        properties:
-                          property:
-                            type: object
-                            title: Propriété sur laquelle appliquer le filtre
-                            layout:
-                              getItems:
-                                type: js-eval
-                                expr: context.filterProperties
-                                pure: true
-                                itemKey: data["key"]
-                                itemTitle: data["title"]
-                          values:
-                            type: array
-                            title: Valeurs
-                            items:
-                              type: string
-                layout:
-                  itemTitle: data.title
-              virtualDatasets:
-                type: object
-                description: Proposez à vos utilisateurs de créer des jeux virtuels à partir de ce jeu de données. C'est une option intéressante pour faciliter la création de vues filtrées de cette donnée.
-                properties:
-                  active:
-                    type: boolean
-                    title: Création de jeux virtuels
-              standardSchema:
-                type: object
-                description: Proposez à vos utilisateurs d'initialiser des jeux éditables à partir des métadonnées et des données de ce jeu de données.
-                properties:
-                  active:
-                    type: boolean
-                    title: Initialisation de jeux éditables
-          - type: 'null'
-        publications:
-          anyOf:
-          - type: array
-            description: References to all the catalogs the dataset metadata is published too
-            items:
-              type: object
-              required:
-              - catalog
-              - status
-              additionalProperties: false
-              properties:
-                id:
-                  type: string
-                catalog:
-                  type: string
-                  description: L'identifiant du catalogue de destination de cette publication.
-                status:
-                  type: string
-                  description: Statut indiquant clairement si la publication a réussi. Si "published", la propriété targetUrl doit être renseignée. Si "error", la propriété error doit être renseignée.
-                  enum:
-                  - waiting
-                  - published
-                  - error
-                  - deleted
-                publishedAt:
-                  type: string
-                  description: Date de la dernière mise à jour de cette publication.
-                  format: date-time
-                error:
-                  type: string
-                targetUrl:
-                  type: string
-                result:
-                  type: object
-                  description: Résultat de la publication. La structure de cet objet est libre et dépend du type de catalogue.
-                addToDataset:
-                  type: object
-                  description: Fill this object to create a new resource (or community resource) to an existing dataset.
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                replaceDataset:
-                  type: object
-                  description: Fill this object to overwrite an existing dataset.
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-          - type: 'null'
-        publicationSites:
-          anyOf:
-          - type: array
-            description: References to all sites the dataset is exposed in.
-            items:
-              type: string
-          - type: 'null'
-        requestedPublicationSites:
-          anyOf:
-          - type: array
-            description: References to all sites the dataset would be exposed in if validated by an admin.
-            items:
-              type: string
-          - type: 'null'
-        attachmentsAsImage:
-          anyOf:
-          - type: boolean
-            default: false
-            description: Set to true to use attached files as illustrations of the line
-          - type: 'null'
-        virtual:
-          anyOf:
-          - type: object
-            description: A configuration object dedicated to virtual datasets.
-            required:
-            - children
-            properties:
-              children:
-                type: array
-                description: Array of ids of the children datasets
-                items:
-                  type: string
-              filters:
-                type: array
-                description: Array of static filters to always apply when querying the dataset
-                items:
-                  type: object
-                  required:
-                  - key
-                  - values
-                  properties:
-                    key:
-                      type: string
-                      description: Key of the field in the schema
-                    operator:
-                      type: string
-                      enum:
-                      - in
-                      - nin
-                      default: in
-                    values:
-                      type: array
-                      items:
-                        type: string
-              filterActiveAccount:
-                type: boolean
-          - type: 'null'
-        rest:
-          anyOf:
-          - type: object
-            description: A configuration object dedicated to REST datasets.
-            properties:
-              ttl:
-                type: object
-                required:
-                - prop
-                - delay
-                properties:
-                  active:
-                    type: boolean
-                  prop:
-                    type: string
-                  checkedAt:
-                    type: string
-                    format: date-time
-                    readOnly: true
-                  delay:
-                    type: object
-                    properties:
-                      value:
-                        type: integer
-                        default: 0
-                      unit:
-                        type: string
-                        enum:
-                        - hours
-                        - days
-                        - weeks
-                        - months
-                        default: days
-              history:
-                type: boolean
-                default: false
-                description: Set to true to let data-fair store revisions of the lines in the dataset.
-              historyTTL:
-                type: object
-                additionalProperties: false
-                properties:
-                  active:
-                    type: boolean
-                  delay:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      value:
-                        type: integer
-                        default: 0
-                      unit:
-                        type: string
-                        enum:
-                        - hours
-                        - days
-                        - weeks
-                        - months
-                        default: days
-              lineOwnership:
-                type: boolean
-              storeUpdatedBy:
-                type: boolean
-              primaryKeyMode:
-                type: string
-                enum:
-                - base64
-                - sha256
-              indiceMode:
-                type: string
-                enum:
-                - timestamp1
-                - timestamp2
-                - timestamp3
-          - type: 'null'
-        topics:
-          anyOf:
-          - type: array
-            title: Liste de thématiques
-            layout:
-              itemTitle: item.title
-            items:
-              title: Topic
-              x-exports:
-              - types
-              - schema
-              type: object
-              required:
-              - title
-              additionalProperties: false
-              properties:
-                id:
-                  type: string
-                  readOnly: true
-                title:
-                  type: string
-                  title: Title
-                  x-i18n-title:
-                    fr: Titre
-                  layout:
-                    cols:
-                      md: 5
-                icon:
-                  type: object
-                  title: Icon
-                  x-i18n-title:
-                    fr: Icône
-                  description: Il est possible de consulter plus facilement la liste des icônes disponibles sur <a href='https://pictogrammers.com/library/mdi/' target='_blank'>ce site </a>.<br>Commencez à taper pour rechercher dans la collection complète d'icônes. Seuls quelques icônes sont chargées initialement pour de meilleures performances.
-                  x-i18n-description:
-                    en: You can easily browse the list of available icons on this <a href='https://pictogrammers.com/library/mdi/' target='_blank'>this website</a>.<br>Start typing to search through the complete collection of icons. Only a few icons are loaded initially for better performance.
-                  layout:
-                    getItems:
-                      url: https://koumoul.com/data-fair/api/v1/datasets/icons-mdi-latest/lines?q={q}&select=name,svg,svgPath&size=25
-                      itemsResults: data.results
-                      itemTitle: item.name
-                      itemIcon: item.svg
-                      itemKey: item.name
-                    cols:
-                      md: 5
-                      sm: 6
-                  required:
-                  - name
-                  properties:
-                    name:
-                      type: string
-                    svg:
-                      type: string
-                    svgPath:
-                      type: string
-                color:
-                  type: string
-                  title: Color
-                  x-i18n-title:
-                    fr: Couleur
-                  layout:
-                    comp: color-picker
-                    cols:
-                      md: 2
-                      sm: 6
-          - type: 'null'
-        relatedDatasets:
-          anyOf:
-          - type: array
-            title: Autres jeux de données à recommender
-            items:
-              type: object
-              additionalProperties: false
-              required:
-              - id
-              - title
-              properties:
-                id:
-                  type: string
-                title:
-                  type: string
-          - type: 'null'
-        thumbnails:
-          anyOf:
-          - type: object
-            properties:
-              resizeMode:
-                type: string
-                description: Define how the thumbnails will be adapted to the size requested by visualizations
-                enum:
-                - crop
-                - smartCrop
-                - fitIn
-                default: crop
-          - type: 'null'
-        extras:
-          anyOf:
-          - type: object
-            description: An object for extra content from client services of data-fair
-          - type: 'null'
-        customMetadata:
-          anyOf:
-          - type: object
-            patternProperties:
-              ^(.*)$:
-                type: string
-          - type: 'null'
-        analysis:
-          anyOf:
-          - type: object
-            additionalProperties: false
-            properties:
-              escapeKeyAlgorithm:
-                type: string
-                default: slug
-                enum:
-                - legacy
-                - slug
-                - compat-ods
-          - type: 'null'
-        readApiKey:
-          anyOf:
-          - type: object
-            additionalProperties: false
-            properties:
-              active:
-                type: boolean
-                title: Activer l'accès par clé d'API
-              interval:
-                type: string
-                title: Durée de validité des clés
-                oneOf:
-                - const: P1W
-                  title: 1 semaine
-                - const: P1M
-                  title: 1 mois
-                - const: P1Y
-                  title: 1 année
-              expiresAt:
-                type: string
-                format: date-time
-                readOnly: true
-                layout: none
-              renewAt:
-                type: string
-                format: date-time
-                readOnly: true
-                layout: none
-          - type: 'null'
-        nonBlockingValidation:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        initFrom:
-          type: object
-          title: Init from
-          additionalProperties: false
-          required:
-          - dataset
-          - parts
-          properties:
-            dataset:
-              type: string
-            parts:
-              type: array
-              items:
-                type: string
-                enum:
-                - data
-                - description
-                - schema
-                - metadataAttachments
-                - primaryKey
-                - extensions
-        isVirtual:
-          type: boolean
-          default: false
-          description: Used to identify virtual datasets. A virtual datasets does not have data, only references to other datasets.
-        isRest:
-          type: boolean
-          default: false
-          description: Used to identify REST datasets. A REST dataset is not created from a data file, but instead is based on a dynamic collection in a database.
-        isMetaOnly:
-          type: boolean
-          default: false
-          description: Used to identify datasets without any local data and only some metadata.
-        owner:
-          type: object
-          additionalProperties: false
-          required:
-          - type
-          - id
-          - name
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - organization
-              description: Indique si le propriétaire est un utilisateur ou une organisation.
-            id:
-              type: string
-              description: Identifiant unique de l'utilisateur ou de l'organisation.
-            name:
-              type: string
-              description: Nom affiché de l'utilisateur ou de l'organisation.
-            role:
-              type: string
-              deprecated: true
-              description: DÉPRÉCIÉ - Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation ayant ce rôle ou le rôle administrateur.
-            department:
-              type: string
-              description: Si cette propriété est renseignée et que le propriétaire est une organisation, restreint la propriété aux utilisateurs de cette organisation appartenant à ce département.
-            departmentName:
-              type: string
-              description: Nom affiché du département.
-  responses:
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    Forbidden:
-      description: Permissions insuffisantes pour effectuer cette opération.
-      content:
-        text/plain:
-          schema:
-            type: string
-    BadRequest:
-      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
-      content:
-        text/plain:
-          schema:
-            type: string
   securitySchemes:
     apiKey:
       type: apiKey

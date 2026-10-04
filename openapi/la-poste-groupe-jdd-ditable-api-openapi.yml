@@ -1705,14 +1705,8 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    NotFound:
-      description: La ressource demandée n'existe pas.
-      content:
-        text/plain:
-          schema:
-            type: string
-    Forbidden:
-      description: Permissions insuffisantes pour effectuer cette opération.
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
       content:
         text/plain:
           schema:
@@ -1723,8 +1717,14 @@ components:
         text/plain:
           schema:
             type: string
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
       content:
         text/plain:
           schema:

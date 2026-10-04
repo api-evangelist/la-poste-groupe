@@ -3128,6 +3128,31 @@ paths:
               schema:
                 type: string
 components:
+  responses:
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
+      content:
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        text/plain:
+          schema:
+            type: string
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+      content:
+        text/plain:
+          schema:
+            type: string
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+      content:
+        text/plain:
+          schema:
+            type: string
   schemas:
     dataset:
       x-exports:
@@ -6123,31 +6148,6 @@ components:
                   type: string
                 format:
                   type: string
-  responses:
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    Forbidden:
-      description: Permissions insuffisantes pour effectuer cette opération.
-      content:
-        text/plain:
-          schema:
-            type: string
-    BadRequest:
-      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
-      content:
-        text/plain:
-          schema:
-            type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
-      content:
-        text/plain:
-          schema:
-            type: string
   securitySchemes:
     apiKey:
       type: apiKey
