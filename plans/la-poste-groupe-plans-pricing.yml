@@ -109,3 +109,71 @@ no_plans:
   reason: >-
     Not an Okapi-managed API; Colissimo contract pricing is negotiated through
     colissimo.entreprise.laposte.fr, not published as a plan.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Freemium
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Serenite
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Freemium
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Serenite
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Freemium
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Serenite
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Digiposte
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
