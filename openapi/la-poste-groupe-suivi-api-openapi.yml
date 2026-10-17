@@ -95,59 +95,27 @@ paths:
       - JWT: []
 components:
   schemas:
-    partner:
-      type: object
-      readOnly: true
-      description: 'Informations onto partner network and additional identifiers. [scope: open]'
-      properties:
-        name:
-          type: string
-          description: Name of Partner
-        network:
-          type: string
-          description: Network of Partner
-        reference:
-          type: string
-          description: Identifier of the object for the Partner
-        numberInstance:
-          type: string
-          description: Number of instance
-        numberAVPI:
-          type: string
-          description: Number of advise
-    baseResponse:
+    event:
       type: object
       required:
-      - returnCode
+      - order
+      - date
+      - label
+      - code
       properties:
-        lang:
+        date:
           type: string
-          description: Language of the returned response
-          enum:
-          - fr_FR
-          - en_GB
-          - de_DE
-          - it_IT
-          - es_ES
-          - nl_NL
-        returnCode:
-          type: integer
-          format: int32
-          description: Returned value gaving treatment result
-          enum:
-          - 101
-          - 104
-          - 105
-          - 109
-          - 200
-          - 201
-          - 208
-          - 504
-        scope:
+          format: date-time
+          description: 'Date of event, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope: open]'
+          example: '2020-12-07T00:00:00+01:00'
+        label:
           type: string
-          description: Scope used into response
-          enum:
-          - open
+          description: 'Message of event. [scope: open'
+          example: Votre colis est en cours de distribution
+        code:
+          type: string
+          description: 'Code of event. [scope: open]'
+          example: ET2
     removalPoint:
       type: object
       readOnly: true
@@ -162,40 +130,6 @@ components:
         type:
           type: string
           description: 'Kind of point (''BDP'', ''A2P'' ...). [scope: open]'
-    contextData:
-      type: object
-      description: Contextual Informations on call and object
-      properties:
-        deliveryChoice:
-          $ref: '#/components/schemas/deliveryChoice'
-        removalPoint:
-          $ref: '#/components/schemas/removalPoint'
-        originCountry:
-          type: string
-          readOnly: true
-          description: 'Code of origin country. [scope: open]'
-        arrivalCountry:
-          type: string
-          readOnly: true
-          description: 'Code of delivery country. [scope: open]'
-        partner:
-          $ref: '#/components/schemas/partner'
-    shipmentTrk:
-      type: object
-      description: Informations on tracking of object returned
-      properties:
-        timeline:
-          type: array
-          readOnly: true
-          description: 'Definition of timeline : 5 items given'
-          items:
-            $ref: '#/components/schemas/step'
-        event:
-          type: array
-          readOnly: true
-          description: List of event given into anti chronological order
-          items:
-            $ref: '#/components/schemas/event'
     step:
       type: object
       required:
@@ -240,16 +174,6 @@ components:
           type: string
           description: 'Event''s country code. [scope: open]'
           example: DE
-    deliveryChoice:
-      type: object
-      readOnly: true
-      description: List of delivery services possible or chosen
-      required:
-      - deliveryChoice
-      properties:
-        deliveryChoice:
-          type: number
-          description: '0=No, 1=Possible, 2=Chosen. [scope: open]'
     shipmentPropPub:
       type: object
       description: Properties of object returned
@@ -301,27 +225,40 @@ components:
           type: string
           readOnly: true
           description: 'Url of tracking onto laposte.fr = $url+idship. [scope: open]'
-    event:
+    contextData:
       type: object
-      required:
-      - order
-      - date
-      - label
-      - code
+      description: Contextual Informations on call and object
       properties:
-        date:
+        deliveryChoice:
+          $ref: '#/components/schemas/deliveryChoice'
+        removalPoint:
+          $ref: '#/components/schemas/removalPoint'
+        originCountry:
           type: string
-          format: date-time
-          description: 'Date of event, format aaaa-mm-jjThh:mn:ss+hh:mn. [scope: open]'
-          example: '2020-12-07T00:00:00+01:00'
-        label:
+          readOnly: true
+          description: 'Code of origin country. [scope: open]'
+        arrivalCountry:
           type: string
-          description: 'Message of event. [scope: open'
-          example: Votre colis est en cours de distribution
-        code:
-          type: string
-          description: 'Code of event. [scope: open]'
-          example: ET2
+          readOnly: true
+          description: 'Code of delivery country. [scope: open]'
+        partner:
+          $ref: '#/components/schemas/partner'
+    shipmentTrk:
+      type: object
+      description: Informations on tracking of object returned
+      properties:
+        timeline:
+          type: array
+          readOnly: true
+          description: 'Definition of timeline : 5 items given'
+          items:
+            $ref: '#/components/schemas/step'
+        event:
+          type: array
+          readOnly: true
+          description: List of event given into anti chronological order
+          items:
+            $ref: '#/components/schemas/event'
     suiviShipment:
       description: Unified tracking object returned
       allOf:
@@ -335,56 +272,69 @@ components:
             example: 1B34567890123
       - $ref: '#/components/schemas/shipmentTrk'
       - $ref: '#/components/schemas/shipmentPropPub'
-  parameters:
-    acceptH:
-      name: Accept
-      in: header
-      description: Only json, xml is depracated
-      required: true
-      schema:
-        type: string
-        enum:
-        - application/json
-    xffH:
-      name: X-Forwarded-For
-      in: header
-      description: Must contains customer's IP
-      required: false
-      example: 111.222.333.444
-      schema:
-        type: string
-    idshipP:
-      name: idship
-      in: path
-      description: ID of object (1 to 10, comma separated)
-      required: true
-      example: CB662173705US
-      schema:
-        type: string
-    langQ:
-      name: lang
-      in: query
-      description: Lang desired
-      required: false
-      schema:
-        type: string
-        enum:
-        - fr_FR
-        - en_GB
-        - de_DE
-        - es_ES
-        - it_IT
-        - nl_NL
-        default: fr_FR
-    okapiKeyParameter:
-      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
-      example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
-      in: header
-      name: X-Okapi-Key
-      required: true
-      x-example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
-      schema:
-        type: string
+    baseResponse:
+      type: object
+      required:
+      - returnCode
+      properties:
+        lang:
+          type: string
+          description: Language of the returned response
+          enum:
+          - fr_FR
+          - en_GB
+          - de_DE
+          - it_IT
+          - es_ES
+          - nl_NL
+        returnCode:
+          type: integer
+          format: int32
+          description: Returned value gaving treatment result
+          enum:
+          - 101
+          - 104
+          - 105
+          - 109
+          - 200
+          - 201
+          - 208
+          - 504
+        scope:
+          type: string
+          description: Scope used into response
+          enum:
+          - open
+    deliveryChoice:
+      type: object
+      readOnly: true
+      description: List of delivery services possible or chosen
+      required:
+      - deliveryChoice
+      properties:
+        deliveryChoice:
+          type: number
+          description: '0=No, 1=Possible, 2=Chosen. [scope: open]'
+    partner:
+      type: object
+      readOnly: true
+      description: 'Informations onto partner network and additional identifiers. [scope: open]'
+      properties:
+        name:
+          type: string
+          description: Name of Partner
+        network:
+          type: string
+          description: Network of Partner
+        reference:
+          type: string
+          description: Identifier of the object for the Partner
+        numberInstance:
+          type: string
+          description: Number of instance
+        numberAVPI:
+          type: string
+          description: Number of advise
   responses:
     response400:
       description: 'Invalid request: missing parameter'
@@ -410,21 +360,6 @@ components:
                   description: Asked object identifier
                   example: 6S00993561113
             - $ref: '#/components/schemas/baseResponse'
-    response207g:
-      description: Multiple operation
-      headers:
-        Content-Type:
-          description: application/json
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: string
-              description: Array of unitary responses 200, 101, 104, 105 nor 109
-              example: '[{response 200},{response 404}]'
     response401:
       description: 'Unauthorized: HMAC verification failed'
       headers:
@@ -456,6 +391,71 @@ components:
                   description: Asked object identifier
                   example: 6S00993561113
             - $ref: '#/components/schemas/baseResponse'
+    response207g:
+      description: Multiple operation
+      headers:
+        Content-Type:
+          description: application/json
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+              description: Array of unitary responses 200, 101, 104, 105 nor 109
+              example: '[{response 200},{response 404}]'
+  parameters:
+    idshipP:
+      name: idship
+      in: path
+      description: ID of object (1 to 10, comma separated)
+      required: true
+      example: CB662173705US
+      schema:
+        type: string
+    acceptH:
+      name: Accept
+      in: header
+      description: Only json, xml is depracated
+      required: true
+      schema:
+        type: string
+        enum:
+        - application/json
+    okapiKeyParameter:
+      description: Clé Okapi de l'application qui a souscrit à cette API. La clé proposée ci-dessous pour les tests est une clé partagée avec un faible nombre de requêtes autorisées / seconde. Elle retourne une erreur 429 en cas de quota dépassé. <b>Ne pas l'utiliser en production.</b>
+      example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
+      in: header
+      name: X-Okapi-Key
+      required: true
+      x-example: kLgnV4/et77jesDAFHplFMucebM5lyheEei77CsunLyEXRnsglfOW+V2BDM0bQr3
+      schema:
+        type: string
+    xffH:
+      name: X-Forwarded-For
+      in: header
+      description: Must contains customer's IP
+      required: false
+      example: 111.222.333.444
+      schema:
+        type: string
+    langQ:
+      name: lang
+      in: query
+      description: Lang desired
+      required: false
+      schema:
+        type: string
+        enum:
+        - fr_FR
+        - en_GB
+        - de_DE
+        - es_ES
+        - it_IT
+        - nl_NL
+        default: fr_FR
   securitySchemes:
     OKAPIkey:
       type: apiKey

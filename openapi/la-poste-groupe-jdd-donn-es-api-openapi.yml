@@ -3129,8 +3129,8 @@ paths:
                 type: string
 components:
   responses:
-    Forbidden:
-      description: Permissions insuffisantes pour effectuer cette opération.
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
       content:
         text/plain:
           schema:
@@ -3141,8 +3141,8 @@ components:
         text/plain:
           schema:
             type: string
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+    Forbidden:
+      description: Permissions insuffisantes pour effectuer cette opération.
       content:
         text/plain:
           schema:

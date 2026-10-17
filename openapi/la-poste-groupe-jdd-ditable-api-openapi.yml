@@ -1705,14 +1705,14 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    Unauthorized:
-      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
+    NotFound:
+      description: La ressource demandée n'existe pas.
       content:
         text/plain:
           schema:
             type: string
-    BadRequest:
-      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
+    Unauthorized:
+      description: 'Non authentifié : aucune session ni clé d''API valide n''a été fournie.'
       content:
         text/plain:
           schema:
@@ -1723,8 +1723,8 @@ components:
         text/plain:
           schema:
             type: string
-    NotFound:
-      description: La ressource demandée n'existe pas.
+    BadRequest:
+      description: 'Requête invalide : corps de requête mal formé, paramètres manquants ou contraintes métier non respectées.'
       content:
         text/plain:
           schema:
